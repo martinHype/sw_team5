@@ -9,6 +9,8 @@ namespace App\Models;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
+use Laravel\Sanctum\HasApiTokens;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 
 /**
  * Class User
@@ -26,15 +28,13 @@ use Illuminate\Database\Eloquent\Model;
  *
  * @package App\Models
  */
-class User extends Model
+class User extends Authenticatable
 {
+
+	use HasApiTokens;
 	protected $table = 'user';
 	protected $primaryKey = 'iduser';
-	public $timestamps = false;
-
-	protected $casts = [
-		'modified_at' => 'datetime'
-	];
+	public $timestamps = true;
 
 	protected $hidden = [
 		'password'
@@ -44,8 +44,7 @@ class User extends Model
 		'email',
 		'password',
 		'firstname',
-		'lastname',
-		'modified_at'
+		'lastname'
 	];
 
 	public function articles()
