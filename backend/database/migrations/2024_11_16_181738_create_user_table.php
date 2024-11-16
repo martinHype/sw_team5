@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('firstname', 105)->nullable();
             $table->string('lastname', 105)->nullable();
             $table->date('created_at');
-            $table->date('modified_at');
+            $table->date('updated_at');
         });
     }
 
