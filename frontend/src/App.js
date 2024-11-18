@@ -6,7 +6,7 @@ import PrivateRoute from './components/Routes/PrivateRoute';
 import PublicRoute from './components/Routes/PublicRoute';
 
 //pull bozo test
-//pull pato test
+//pull pato test2
 const App = () => {
   return (
       <Router>
