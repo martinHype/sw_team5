@@ -28,6 +28,14 @@ const App = () => {
                         </PrivateRoute>
                     }
                 />
+                <Route
+                    path="/create-conference"
+                    element={
+                        <PublicRoute>
+                            <CreateConference />
+                        </PublicRoute>
+                    }
+                />
             </Routes>
       </Router>
   );

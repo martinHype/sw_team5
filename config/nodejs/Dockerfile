@@ -10,7 +10,7 @@ RUN npm install
 RUN npm install axios
 RUN npm install react-router-dom
 
-FROM node:16.3.0-alpine
+FROM node:18.14.2-alpine3.17
 USER node
 
 WORKDIR /usr/src/frontend
