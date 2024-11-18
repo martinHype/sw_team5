@@ -1,7 +1,10 @@
 import React, { useState } from 'react';
 import styles from './styles';
 import axios from 'axios';
-
+import { useNavigate } from "react-router-dom";
+import graduationHat from "./images/graduation_hatG.png";
+import iconEye from "./images/icons/eye-regular.svg";
+import iconEyeClosed from "./images/icons/eye-slash-solid.svg";
 const AuthForm = () => {
 
     const [isRegister, setIsRegister] = useState(false);
@@ -13,25 +16,61 @@ const AuthForm = () => {
         confirmPassword: '',
         university: '',
     });
-    const [error, setError] = useState(null);
+    const navigate = useNavigate();
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+
+    //variable to indicate if there was an error
+    const [error, setError] = useState(false);
+    //variable to show password control
+    const [showPassword, setShowPassword] = useState(false);
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+    const [errorMessage,setErrorMessage] = useState("");
 
     const toggleForm = () => {
         setIsRegister(!isRegister);
+        setError(false);
+        setShowPassword(false);
+        setShowConfirmPassword(false);
+        formData.password = "";
+        formData.confirmPassword = "";
     };
+
+    const togglePasswordVisibility = () => {
+        setShowPassword(!showPassword); // Toggle password visibility state
+    };
+
+    const toggleConfirmPasswordVisibility = () => {
+        setShowConfirmPassword(!showConfirmPassword); // Toggle password visibility state
+    };
+
 
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
     };
-    const testAPI = async () => {
-        try{
-            const response = await axios.get('http://localhost:8080/api/check_table');
-            console.log(response.data);
-        }catch(error){
-            console.log(error.message);
-        }
-    };
 
     const register = async () => {
+        if(!formData.firstName.trim() || !formData.lastName.trim() || !formData.email.trim() || !formData.password.trim() || !formData.confirmPassword.trim()){
+            setError(true);
+            setErrorMessage("Prosim vyplnte vsetky povinne polia");
+            return;
+        }
+
+        if(!emailRegex.test(formData.email)){
+            setError(true);
+            setErrorMessage("Email adresa nie je spravneho formatu");
+            return;
+        }
+        if(formData.password.length < 6){
+            setError(true);
+            setErrorMessage("Heslo musi byt dlhsie ako 6 znakov");
+            return;
+        }
+        if(formData.password.trim() != formData.confirmPassword.trim()){
+            setError(true);
+            setErrorMessage("Hesla sa nezhodnuju");
+            return;
+        }
         try {
             const response = await axios.post('http://localhost:8080/api/register', {
                 firstname: formData.firstName,
@@ -43,11 +82,20 @@ const AuthForm = () => {
             });
             const token = response.data.token;
             sessionStorage.setItem("authToken", token);
-            alert('Registration successful!');
-            setIsRegister(false); // Switch to login form
+            setError(false);
+            if(token){
+                setError(false);
+                navigate("/home");
+            } // Switch to login form
         } catch (error) {
+            if(error.response){
+                const statusCode = error.response.status;
+                if(statusCode === 409){
+                    setErrorMessage("Pouzivatel s emailom uz existuje");
+                }
+            }
             console.error('Error registering:', error.response?.data || error.message);
-            setError(error.response?.data?.message || 'Registration failed');
+            setError(true);
         }
     };
 
@@ -55,16 +103,22 @@ const AuthForm = () => {
     const login = async () => {
         try {
             const response = await axios.post('http://localhost:8080/api/login', {
-                email: "martintest.batora@student.ukf.sk",
-                password: "student123",
+                email: formData.email,
+                password: formData.password,
             });
+            console.log(response.status);
             const token = response.data.token;
             sessionStorage.setItem("authToken", token);
-            alert('Login successful!');
+            // Navigate to main screen
+            if(token){
+                setError(false);
+                navigate("/home");
+            }
+            
         } catch (error) {
-            console.log(error.message);
+            formData.password = "";
             console.error('Error logging in:', error.response?.data || error.message);
-            setError(error.response?.data?.message || 'Login failed');
+            setError(true);
         }
     };
 
@@ -72,7 +126,10 @@ const AuthForm = () => {
     return (
         <div style={styles.container}>
             <div style={{ ...styles.formWrapper, ...(isRegister ? styles.register : styles.login) }}>
-                <div style={styles.logo}>LOGO</div>
+                <div style={styles.logo}>
+                    <img src={graduationHat} style={styles.img}/>
+                    <p style={styles.text}> ŠTUDENTSKÁ VEDECKÁ KONFERENCIA</p>
+                </div>
                 <form style={styles.form} onSubmit={(e) => e.preventDefault()}>
                     {isRegister ? (
                         <>
@@ -82,7 +139,8 @@ const AuthForm = () => {
                                 placeholder="Meno"
                                 value={formData.firstName}
                                 onChange={handleChange}
-                                style={styles.input}
+                                style={(error && !formData.firstName)?styles.input_error : styles.input}
+                                required
                             />
                             <input
                                 type="text"
@@ -90,7 +148,8 @@ const AuthForm = () => {
                                 placeholder="Priezvisko"
                                 value={formData.lastName}
                                 onChange={handleChange}
-                                style={styles.input}
+                                style={(error && !formData.lastName)?styles.input_error : styles.input}
+                                required
                             />
                             <input
                                 type="email"
@@ -98,32 +157,50 @@ const AuthForm = () => {
                                 placeholder="E-mail"
                                 value={formData.email}
                                 onChange={handleChange}
-                                style={styles.input}
+                                style={(error && (!formData.email || !emailRegex.test(formData.email)))?styles.input_error : styles.input}
                             />
+                            <div style={styles.inputContainer}>
                             <input
-                                type="password"
-                                name="password"
-                                placeholder="Heslo"
-                                value={formData.password}
-                                onChange={handleChange}
-                                style={styles.input}
-                            />
+                                    type={showPassword ? "text" : "password"}
+                                    name="password"
+                                    placeholder="Heslo"
+                                    value={formData.password}
+                                    onChange={handleChange}
+                                    style={(error && (!formData.password|| formData.confirmPassword != formData.password || formData.password.length < 6))?styles.input_error : styles.input}
+                                    required
+                                />
+                            <img src={showPassword ? iconEye:iconEyeClosed} style={styles.eyeIcon} onClick={togglePasswordVisibility}/>
+                                
+                            </div>
+                            <div style={styles.inputContainer}>
                             <input
-                                type="password"
-                                name="confirmPassword"
-                                placeholder="Zopakujte heslo"
-                                value={formData.confirmPassword}
-                                onChange={handleChange}
-                                style={styles.input}
-                            />
-                            <input
-                                type="text"
+                                    type={showConfirmPassword ? "text" : "password"}
+                                    name="confirmPassword"
+                                    placeholder="Zopakujte heslo"
+                                    value={formData.confirmPassword}
+                                    onChange={handleChange}
+                                    style={(error && (!formData.confirmPassword || formData.confirmPassword != formData.password))?styles.input_error : styles.input}
+                                    required
+                                />
+                            <img src={showConfirmPassword ? iconEye:iconEyeClosed} style={styles.eyeIcon} onClick={toggleConfirmPasswordVisibility}/>
+                                
+                            </div>
+                            <select
                                 name="university"
-                                placeholder="Univerzita"
                                 value={formData.university}
                                 onChange={handleChange}
-                                style={styles.input}
-                            />
+                                style={styles.select}
+                            >
+                                <option value="" disabled hidden>
+                                    Vyberte univerzitu
+                                </option>
+                                <option value="value1">UKF FPVAI</option>
+                                <option value="value2">MB FPV</option>
+                                <option value="value3">UCM FPV</option>
+                            </select>
+                            {error && (
+                                <p style={styles.error_message}>{errorMessage}</p>
+                                )}
                             <button type="button" onClick={register} style={styles.btn}>
                                 Registrovať
                             </button>
@@ -136,23 +213,32 @@ const AuthForm = () => {
                                 placeholder="E-mail"
                                 value={formData.email}
                                 onChange={handleChange}
-                                style={styles.input}
+                                style={error?styles.input_error : styles.input}
+                                required
                             />
+                            <div style={styles.inputContainer}>
                             <input
-                                type="password"
-                                name="password"
-                                placeholder="Heslo"
-                                value={formData.password}
-                                onChange={handleChange}
-                                style={styles.input}
-                            />
+                                    type={showPassword ? "text" : "password"}
+                                    name="password"
+                                    placeholder="Heslo"
+                                    value={formData.password}
+                                    onChange={handleChange}
+                                    style={error?styles.input_error : styles.input}
+                                    required
+                                />
+                            <img src={showPassword ? iconEye:iconEyeClosed} style={styles.eyeIcon} onClick={togglePasswordVisibility}/>
+                                
+                            </div>
+                            
+                            {error && (
+                                <p style={styles.error_message}>Poskytnuté údaje sú nesprávne.</p>
+                                )}
                             <button type="button" onClick={login} style={styles.btn}>
                                 Prihlásiť
                             </button>
                         </>
                     )}
                 </form>
-                {error && <p style={{ color: 'red' }}>{error}</p>}
                 <a href="#!" onClick={toggleForm} style={styles.link}>
                     {isRegister ? 'Prihlásiť sa' : 'Registrovať sa'}
                 </a>
@@ -162,3 +248,4 @@ const AuthForm = () => {
 };
 
 export default AuthForm;
+

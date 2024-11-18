@@ -3,11 +3,11 @@ const styles = {
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
-        height: '100vh',
+        minHeight: '100vh',
         backgroundColor: '#f5f5f5',
     },
     formWrapper: {
-        width: '300px',
+        maxWidth: '300px',
         padding: '20px',
         backgroundColor: '#fff',
         borderRadius: '10px',
@@ -17,19 +17,23 @@ const styles = {
         transition: 'height 0.5s ease, transform 0.5s ease',
     },
     login: {
-        height: '250px',
+        minHeight: '250px',
     },
     register: {
-        height: '450px',
+        minHeight: '450px',
     },
     logo: {
         marginBottom: '20px',
         fontSize: '24px',
         fontWeight: 'bold',
         color: '#aaa',
-        backgroundColor: '#e0e0e0',
-        padding: '10px',
+        padding:'5px',
+        backgroundColor: '#f2f2f2',
         borderRadius: '5px',
+        display:'flex',
+        flexDirection:'column',
+        alignItems:'center',
+        gap:'1px'
     },
     form: {
         display: 'flex',
@@ -40,6 +44,13 @@ const styles = {
         padding: '10px',
         fontSize: '16px',
         border: '1px solid #ccc',
+        borderRadius: '5px',
+    },
+    input_error: {
+        marginBottom: '15px',
+        padding: '10px',
+        fontSize: '16px',
+        border: '1px solid red',
         borderRadius: '5px',
     },
     btn: {
@@ -59,6 +70,53 @@ const styles = {
         textDecoration: 'none',
         cursor: 'pointer',
     },
+    error_message:{
+        color: 'red',
+        marginTop: '10px',
+        textAlign: 'center'
+    },
+    img: {
+        maxWidth: '70px',
+        maxHeight: '70px',
+    },
+    text: {
+        fontSize: '18px', // Adjust text size
+        fontWeight: 'bold',
+        color: '#333', // Adjust text color
+        textAlign: 'center',
+    },
+    select: {
+        width: '100%',
+        padding: '10px',
+        marginBottom: '15px',
+        borderRadius: '5px',
+        border: '1px solid #ccc',
+        fontSize: '16px',
+        backgroundColor: '#fff',
+    },
+    inputContainer: {// Enables positioning of the eye icon
+        position: "relative", // For positioning the icon
+        width: "100%", // Ensure the container spans the full width
+        display: "flex", // Ensures proper layout
+        flexDirection: "column",
+    },
+    eyeIcon: {
+        position: "absolute",
+        right: "10px",
+        top: "40%",
+        transform: "translateY(-50%)",
+        cursor: "pointer",
+        width: "20px", // Adjust the icon size
+        height: "20px",
+    },
+    passwordInput:{
+        width: "100%", // Input field spans the full width
+        padding: "10px",
+        borderRadius: "5px",
+        border: "1px solid #ccc",
+        fontSize: "16px",
+        boxSizing: "border-box", // Ensures padding doesn't affect width
+    }
 };
 
 export default styles;

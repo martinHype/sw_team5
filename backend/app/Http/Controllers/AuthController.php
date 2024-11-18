@@ -17,6 +17,15 @@ class AuthController extends Controller
             'password' => 'required|min:6|confirmed',
         ]);
 
+        // Check if the email already exists
+        if (User::where('email', $request->email)->exists()) {
+            return response()->json([
+                'message' => 'The email address is already registered. Please use a different one.',
+            ], 409); // 409 Conflict HTTP status code
+    }
+
+
+
 
         $user = User::create([
             'firstname' => $request->firstname,
@@ -42,7 +51,7 @@ class AuthController extends Controller
 
         $user = User::where('email',$request->email)->first();
         if(!$user || !Hash::check($request->password, $user->password)){
-            return ["message"=>"The provided credentials are incorrect."];
+            return response()->json(["message" => "The provided credentials are incorrect."], 404);
         }
         $token = $user->createToken($user->email);
 
