@@ -1,63 +1,75 @@
-import React, { useState } from "react";
-import styles from "./styles";
+import React, { useState } from 'react';
+import styles from './styles'; // Import your styles
 
 const CreateConference = () => {
-    const [conference, setConference] = useState({
-        name: "",
-        description: "",
-        date: "",
+    const [formData, setFormData] = useState({
+        eventName: '',
+        eventDate: '',
+        uploadEndDate: '',
     });
 
     const handleChange = (e) => {
         const { name, value } = e.target;
-        setConference({ ...conference, [name]: value });
+        setFormData({ ...formData, [name]: value });
     };
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        console.log("Konferencia bola vytvorená:", conference);
-        alert("Konferencia bola úspešne vytvorená!");
-        setConference({ name: "", description: "", date: "" });
+        console.log('Form Data:', formData);
+        alert('Formulár bol úspešne odoslaný.');
+        setFormData({
+            eventName: '',
+            eventDate: '',
+            uploadEndDate: '',
+        });
     };
 
     return (
-        <div style={styles.container}>
-            <h2 style={styles.title}>Vytvoriť Konferenciu</h2>
-            <form onSubmit={handleSubmit} style={styles.form}>
-                <label style={styles.label}>
-                    Názov konferencie:
+        <div style={styles.formContainer}>
+            <form onSubmit={handleSubmit}>
+                {/* Event Name */}
+                <div style={styles.formGroup}>
+                    <label style={styles.label}>Názov konferencie:</label>
                     <input
                         type="text"
-                        name="name"
-                        value={conference.name}
+                        name="eventName"
+                        value={formData.eventName}
                         onChange={handleChange}
-                        required
                         style={styles.input}
-                    />
-                </label>
-                <label style={styles.label}>
-                    Popis konferencie:
-                    <textarea
-                        name="description"
-                        value={conference.description}
-                        onChange={handleChange}
+                        placeholder="Zadajte názov konferencie"
                         required
-                        style={styles.textarea}
-                    ></textarea>
-                </label>
-                <label style={styles.label}>
-                    Dátum:
+                    />
+                </div>
+
+                {/* Event Date */}
+                <div style={styles.formGroup}>
+                    <label style={styles.label}>Dátum konferencie:</label>
                     <input
                         type="date"
-                        name="date"
-                        value={conference.date}
+                        name="eventDate"
+                        value={formData.eventDate}
                         onChange={handleChange}
-                        required
                         style={styles.input}
+                        required
                     />
-                </label>
+                </div>
+
+                {/* Upload End Date */}
+                <div style={styles.formGroup}>
+                    <label style={styles.label}>Dátum ukončenia nahrávania:</label>
+                    <input
+                        type="date"
+                        name="uploadEndDate"
+                        value={formData.uploadEndDate}
+                        onChange={handleChange}
+                        style={styles.input}
+                        required
+                    />
+                </div>
+
+                {/* Submit Button */}
                 <button type="submit" style={styles.button}>
-                    Vytvoriť
+                    Odoslať
                 </button>
             </form>
         </div>

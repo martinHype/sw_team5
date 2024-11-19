@@ -1,52 +1,37 @@
 const styles = {
-    container: {
-        maxWidth: "600px",
-        margin: "20px auto",
-        padding: "20px",
-        border: "1px solid #ddd",
-        borderRadius: "5px",
-        boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
+    formContainer: {
+        maxWidth: '600px',
+        margin: '20px auto',
+        padding: '20px',
+        border: '1px solid #ddd',
+        borderRadius: '5px',
+        backgroundColor: '#fff',
     },
-    title: {
-        textAlign: "center",
-        fontSize: "24px",
-        marginBottom: "20px",
-        color: "#333",
-    },
-    form: {
-        display: "flex",
-        flexDirection: "column",
-        gap: "15px",
+    formGroup: {
+        marginBottom: '15px',
     },
     label: {
-        display: "flex",
-        flexDirection: "column",
-        fontSize: "16px",
-        color: "#555",
+        display: 'block',
+        marginBottom: '5px',
+        fontWeight: 'bold',
     },
     input: {
-        width: "100%",
-        padding: "8px",
-        marginTop: "5px",
-        border: "1px solid #ccc",
-        borderRadius: "4px",
-    },
-    textarea: {
-        width: "100%",
-        padding: "8px",
-        marginTop: "5px",
-        border: "1px solid #ccc",
-        borderRadius: "4px",
-        resize: "vertical",
+        width: '100%',
+        padding: '8px',
+        marginBottom: '10px',
+        border: '1px solid #ccc',
+        borderRadius: '4px',
     },
     button: {
-        padding: "10px 15px",
-        backgroundColor: "#007bff",
-        color: "white",
-        border: "none",
-        borderRadius: "4px",
-        cursor: "pointer",
-        fontSize: "16px",
+        padding: '10px 15px',
+        backgroundColor: '#00A357',
+        color: '#fff',
+        border: 'none',
+        borderRadius: '4px',
+        cursor: 'pointer',
+        fontSize: '16px',
+        margin: '0 auto', // Center the button horizontally
+        display: 'block', // Ensure the margin works properly
     },
 };
 

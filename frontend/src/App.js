@@ -4,6 +4,7 @@ import AuthForm from './components/LoginComponent/AuthForm';
 import MainScreen from './screens/MainScreen/MainScreen';
 import PrivateRoute from './components/Routes/PrivateRoute';
 import PublicRoute from './components/Routes/PublicRoute';
+import NewConferencePage from "./screens/NewConferenceScreen/NewConferencePage.js";
 
 
 const App = () => {
@@ -31,9 +32,9 @@ const App = () => {
                 <Route
                     path="/create-conference"
                     element={
-                        <PublicRoute>
-                            <CreateConference />
-                        </PublicRoute>
+                        <PrivateRoute>
+                            <NewConferencePage />
+                        </PrivateRoute>
                     }
                 />
             </Routes>

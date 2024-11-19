@@ -10,6 +10,9 @@ RUN npm install
 RUN npm install axios
 RUN npm install react-router-dom
 
+RUN npm install @fortawesome/react-fontawesome @fortawesome/free-solid-svg-icons @fortawesome/fontawesome-svg-core
+
+
 FROM node:18.14.2-alpine3.17
 USER node
 
