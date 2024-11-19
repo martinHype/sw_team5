@@ -7,34 +7,35 @@ import axios from 'axios';
 
 const Navbar = () => {
     const handleLogout = async () => {
-        const token = localStorage.getItem('authToken');
+        console.log(sessionStorage.getItem('authToken'))
         try {
-            const response = await axios.post(
+            // Send a POST request to the logout route
+            await axios.post(
                 'http://localhost:8080/api/logout',
                 {},
                 {
                     headers: {
-                        'Authorization': `Bearer e4bb0f92e698e338e38b6cb9b285d386ef3ea4c19d116ee0fad386609b1b5f4f`, // Include the token in the Authorization header
-                        'Content-Type': 'application/json',
+                        Authorization: `Bearer ${sessionStorage.getItem('authToken')}`,
                     },
                 }
             );
 
-            if (response.status === 200) {
-                alert('You have been logged out successfully.');
-                localStorage.removeItem('authToken'); // Clear client-side auth token
-                navigate('/'); // Redirect to the login page
-            }
+            // Clear the token from localStorage
+            sessionStorage.removeItem('authToken');
+            navigate('/');
+
+            // For testing, display an alert to confirm logout
+            alert("Logged out successfully!");
         } catch (error) {
-            console.error('Logout Error:', error);
-            alert(`Failed to log out: ${error.response?.data?.message || error.message}`);
+            console.error("Logout failed:", error);
+            alert("Logout failed!");
         }
     };
 
     return (
         <div style={styles.navbar}>
             <div style={styles.logo}>
-                <img src={graduationHat} style={styles.img} alt={}/>
+                <img src={graduationHat} style={styles.img}/>
                 <p style={styles.text}> ŠTUDENTSKÁ VEDECKÁ KONFERENCIA</p>
             </div>
             <div style={styles.navLinks}>

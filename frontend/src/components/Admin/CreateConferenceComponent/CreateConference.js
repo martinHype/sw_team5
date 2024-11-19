@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import axios from 'axios'; // For API requests
 import styles from './styles'; // Import your styles
 
 const CreateConference = () => {
@@ -13,15 +14,36 @@ const CreateConference = () => {
         setFormData({ ...formData, [name]: value });
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log('Form Data:', formData);
-        alert('Formulár bol úspešne odoslaný.');
-        setFormData({
-            eventName: '',
-            eventDate: '',
-            uploadEndDate: '',
-        });
+        const token = sessionStorage.getItem('authToken');
+
+        try {
+            const response = await axios.post('http://localhost:8080/api/events', {
+                event_name: formData.eventName,
+                event_date: formData.eventDate,
+                event_upload_EndDate: formData.uploadEndDate,
+            },
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`, // Attach Bearer token
+                        'Content-Type': 'application/json',
+                    },
+                });
+
+            alert('Formulár bol úspešne odoslaný.');
+            console.log('Server Response:', response.data);
+
+            // Reset the form
+            setFormData({
+                eventName: '',
+                eventDate: '',
+                uploadEndDate: '',
+            });
+        } catch (error) {
+            console.error('Chyba pri ukladaní:', error.response?.data || error.message);
+            alert('Pri ukladaní konferencie nastala chyba.');
+        }
     };
 
     return (
