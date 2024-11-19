@@ -4,8 +4,10 @@ import graduationHat from "./images/graduation_hatG.png";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUser, faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
 import axios from 'axios';
+import {useNavigate} from "react-router-dom";
 
 const Navbar = () => {
+    const navigate = useNavigate();
     const handleLogout = async () => {
         console.log(sessionStorage.getItem('authToken'))
         try {
