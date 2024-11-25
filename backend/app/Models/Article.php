@@ -39,7 +39,7 @@ class Article extends Model
 {
 	protected $table = 'article';
 	protected $primaryKey = 'idarticle';
-	public $timestamps = false;
+	public $timestamps = true;
 
 	protected $casts = [
 		'user_iduser' => 'int',
@@ -48,8 +48,6 @@ class Article extends Model
 		'acticle_status_idacticle_status' => 'int',
 		'category_idcategory' => 'int',
 		'idreviewer' => 'int',
-		'created_on' => 'datetime',
-		'modified_on' => 'datetime'
 	];
 
 	protected $fillable = [
@@ -57,14 +55,11 @@ class Article extends Model
 		'title',
 		'Description',
 		'event_idevent',
-		'status_idstatus',
 		'acticle_status_idacticle_status',
 		'category_idcategory',
 		'idreviewer',
 		'positive_review',
 		'negative_review',
-		'created_on',
-		'modified_on'
 	];
 
 	public function acticle_status()
@@ -83,6 +78,10 @@ class Article extends Model
 	}
 
 	public function user()
+	{
+		return $this->belongsTo(User::class, 'user_iduser');
+	}
+	public function reviewer()
 	{
 		return $this->belongsTo(User::class, 'idreviewer');
 	}

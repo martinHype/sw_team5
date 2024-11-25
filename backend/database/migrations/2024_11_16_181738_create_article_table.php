@@ -17,14 +17,13 @@ return new class extends Migration
             $table->string('title');
             $table->string('Description', 500)->nullable();
             $table->integer('event_idevent')->index('fk_article_event1_idx');
-            $table->integer('status_idstatus');
             $table->integer('acticle_status_idacticle_status')->index('fk_article_acticle_status1_idx');
             $table->integer('category_idcategory')->index('fk_article_category1_idx');
-            $table->integer('idreviewer')->index('fk_article_user1_idx');
+            $table->integer('idreviewer')->index('fk_article_user1_idx')->nullable();
             $table->string('positive_review', 500)->nullable();
             $table->string('negative_review', 500)->nullable();
-            $table->date('created_on');
-            $table->date('modified_on');
+            $table->date('created_at');
+            $table->date('updated_at');
         });
     }
 
