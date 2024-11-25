@@ -23,6 +23,7 @@ RUN chmod 777 -R ./bootstrap/cache
 
 RUN composer install
 RUN php artisan optimize
+RUN php artisan install:api
 
 EXPOSE 9000
 

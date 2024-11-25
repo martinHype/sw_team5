@@ -2,9 +2,9 @@ import React, { useState } from 'react';
 import styles from './styles';
 import axios from 'axios';
 import { useNavigate } from "react-router-dom";
-import graduationHat from "./images/graduation_hatG.png";
-import iconEye from "./images/icons/eye-regular.svg";
-import iconEyeClosed from "./images/icons/eye-slash-solid.svg";
+import graduationHat from "../../images/graduation_hatG.png";
+import iconEye from "../../images/icons/eye-regular.svg";
+import iconEyeClosed from "../../images/icons/eye-slash-solid.svg";
 const AuthForm = () => {
 
     const [isRegister, setIsRegister] = useState(false);
@@ -117,7 +117,7 @@ const AuthForm = () => {
             
         } catch (error) {
             formData.password = "";
-            console.error('Error logging in:', error.response?.data || error.message);
+            console.error('Error:', error.response?.data || error.message);
             setError(true);
         }
     };

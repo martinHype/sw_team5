@@ -1,7 +1,9 @@
 FROM node:18.14.2-alpine3.17 as builder-stage
 
 WORKDIR /usr/src/frontend
-RUN mkdir -p /usr/src/frontend/node_modules
+RUN mkdir /usr/src/frontend/node_modules
+RUN mkdir /usr/src/frontend/node_modules/.cache
+
 RUN chmod -R 777 /usr/src/frontend/node_modules
 
 COPY ./frontend/package*.json ./
