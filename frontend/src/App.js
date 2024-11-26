@@ -5,7 +5,9 @@ import MainScreen from './screens/MainScreen/MainScreen';
 import UploadArticle from './screens/UploadArticleScreen/UploadArticle';
 import PrivateRoute from './components/Routes/PrivateRoute';
 import PublicRoute from './components/Routes/PublicRoute';
-
+import NewConferencePage from "./screens/NewConferenceScreen/NewConferencePage.js";
+import ShowAllConferencesScreen from "./screens/ShowAllConferencesScreen/ShowAllConferencesScreen";
+import UploadArticle from './screens/UploadArticleScreen/UploadArticle';
 
 //pull bozo test
 //pull pato test2
@@ -40,6 +42,22 @@ const App = () => {
                     }
                 />
 
+                <Route
+                    path="/create-conference"
+                    element={
+                        <PrivateRoute>
+                            <NewConferencePage />
+                        </PrivateRoute>
+                    }
+                />
+                <Route
+                    path="/conferences"
+                    element={
+                        <PrivateRoute>
+                            <ShowAllConferencesScreen />
+                        </PrivateRoute>
+                    }
+                />
             </Routes>
       </Router>
   );
