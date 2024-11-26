@@ -6,6 +6,7 @@ import PrivateRoute from './components/Routes/PrivateRoute';
 import PublicRoute from './components/Routes/PublicRoute';
 import NewConferencePage from "./screens/NewConferenceScreen/NewConferencePage.js";
 import ShowAllConferencesScreen from "./screens/ShowAllConferencesScreen/ShowAllConferencesScreen";
+import UploadArticle from './screens/UploadArticleScreen/UploadArticle';
 
 const App = () => {
   return (
@@ -26,6 +27,14 @@ const App = () => {
                     element={
                         <PrivateRoute>
                             <MainScreen />
+                        </PrivateRoute>
+                    }
+                />
+                <Route
+                    path="/uploadarticle"
+                    element={
+                        <PrivateRoute>
+                            <UploadArticle />
                         </PrivateRoute>
                     }
                 />
