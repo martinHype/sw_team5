@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios'; // For API requests
 import styles from './styles'; // Import your styles
+import { useNavigate } from 'react-router-dom';
 
 const CreateConference = () => {
     const [formData, setFormData] = useState({
@@ -9,6 +10,7 @@ const CreateConference = () => {
         uploadEndDate: '',
     });
 
+    const navigate = useNavigate();
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData({ ...formData, [name]: value });
@@ -31,7 +33,6 @@ const CreateConference = () => {
                     },
                 });
 
-            alert('Formulár bol úspešne odoslaný.');
             console.log('Server Response:', response.data);
 
             // Reset the form
@@ -40,6 +41,10 @@ const CreateConference = () => {
                 eventDate: '',
                 uploadEndDate: '',
             });
+
+            console.log("Idem presmerovať")
+            navigate('/conferences');
+
         } catch (error) {
             console.error('Chyba pri ukladaní:', error.response?.data || error.message);
             alert('Pri ukladaní konferencie nastala chyba.');

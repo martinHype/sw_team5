@@ -31,4 +31,25 @@ class EventController extends Controller
             'event' => $event,
         ], 201);
     }
+    public function allEvents()
+    {
+        try {
+            // Získajte všetky udalosti z databázy
+            $events = Event::all();
+
+            // Vráťte úspešnú odpoveď vo formáte JSON
+            return response()->json([
+                'success' => true,
+                'data' => $events
+            ], 200);
+
+        } catch (\Exception $e) {
+            // Ošetrenie chyby a návrat chybovej odpovede
+            return response()->json([
+                'success' => false,
+                'message' => 'Nepodarilo sa načítať udalosti.',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
 }

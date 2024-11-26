@@ -5,7 +5,7 @@ import MainScreen from './screens/MainScreen/MainScreen';
 import PrivateRoute from './components/Routes/PrivateRoute';
 import PublicRoute from './components/Routes/PublicRoute';
 import NewConferencePage from "./screens/NewConferenceScreen/NewConferencePage.js";
-
+import ShowAllConferencesScreen from "./screens/ShowAllConferencesScreen/ShowAllConferencesScreen";
 
 const App = () => {
   return (
@@ -34,6 +34,14 @@ const App = () => {
                     element={
                         <PrivateRoute>
                             <NewConferencePage />
+                        </PrivateRoute>
+                    }
+                />
+                <Route
+                    path="/conferences"
+                    element={
+                        <PrivateRoute>
+                            <ShowAllConferencesScreen />
                         </PrivateRoute>
                     }
                 />

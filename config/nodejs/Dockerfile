@@ -9,6 +9,7 @@ RUN npm install
 
 RUN npm install axios
 RUN npm install react-router-dom
+RUN npm install date-fns
 
 RUN npm install @fortawesome/react-fontawesome @fortawesome/free-solid-svg-icons @fortawesome/fontawesome-svg-core
 
