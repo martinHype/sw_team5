@@ -28,20 +28,16 @@ class Document extends Model
 	protected $table = 'document';
 	protected $primaryKey = 'iddocument';
 	public $incrementing = false;
-	public $timestamps = false;
+	public $timestamps = true;
 
 	protected $casts = [
 		'iddocument' => 'int',
-		'created_on' => 'datetime',
-		'modified_on' => 'datetime',
 		'article_idarticle' => 'int'
 	];
 
 	protected $fillable = [
 		'document_name',
 		'document_path',
-		'created_on',
-		'modified_on',
 		'article_idarticle'
 	];
 
