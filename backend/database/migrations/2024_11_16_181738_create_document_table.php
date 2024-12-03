@@ -12,11 +12,11 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('document', function (Blueprint $table) {
-            $table->integer('iddocument')->primary();
+            $table->integer('iddocument',true);
             $table->string('document_name', 105);
             $table->string('document_path');
-            $table->date('created_on');
-            $table->date('modified_on');
+            $table->date('created_at');
+            $table->date('updated_at');
             $table->integer('article_idarticle')->index('fk_document_article1_idx');
         });
     }

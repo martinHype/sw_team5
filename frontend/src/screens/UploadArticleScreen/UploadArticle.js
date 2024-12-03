@@ -20,9 +20,50 @@ const UploadArticle = () => {
       [e.target.name]: e.target.value || "", // Ensure fallback for undefined
     });
   };
+  const uploadFiles = async (id_article) =>{
+      try{
+        const filesData = localStorage.getItem('files');
+        if (!filesData) {
+          console.error(`No files found in localStorage under the key: ${id_article}`);
+          return;
+        }
+        const files = JSON.parse(filesData);
 
+        files.forEach(async (file) => {
+          try{
+            const response = await axios.post(
+              'http://localhost:8080/api/upload',
+              {
+                file_content: file.content,
+                file_name: file.name,
+                file_type: file.type,
+                article_id: id_article, // Replace with dynamic article ID if needed
+              },
+              {
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: 'Bearer ' + sessionStorage.getItem('authToken'),
+                },
+              }
+            );
+            console.log(`File ${file.name} uploaded successfully:`, response.data);
+          } catch (error){
+            console.error(`Error uploading file ${file.name}:`, error.response?.data || error.message);
+          }
+        });
+        
+
+        localStorage.removeItem('files');
+
+
+
+      } catch(error){
+        console.error('Error logging in:', error.response?.data || error.message);
+      }
+  };
+
+  // function that will create a new article
   const createArticle = async () => {
-    console.log(ArticleData.category);
     try {
       const response = await axios.post(
         'http://localhost:8080/api/article', {
@@ -33,10 +74,16 @@ const UploadArticle = () => {
       {
         headers: {
           'Content-Type': 'application/json',
-          Authorization: 'Bearer 3|t0kB1SkRq0GQtwr9ssdQurOIqBHZpZWC6wmLO6qV899bd315',
+          Authorization: 'Bearer ' + sessionStorage.getItem('authToken'),
         },
       });
-      console.log(response.status);
+      console.log(response);
+      const id_article = response.data.article_id;
+
+
+      uploadFiles(id_article);
+
+      
       //sessionStorage.getItem("authToken");
       
   } catch (error) {

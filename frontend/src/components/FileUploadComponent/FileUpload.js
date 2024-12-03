@@ -13,6 +13,27 @@ const FileDropArea = () => {
   const handleMouseEnter = () => setIsHovered(true);
   const handleMouseLeave = () => setIsHovered(false);
 
+
+  const saveFileToLocalStorage = (file) => {
+    const reader = new FileReader();
+
+    reader.onload = () => {
+      const base64String = reader.result.split(",")[1];
+      const files = JSON.parse(localStorage.getItem("files") || "[]");
+
+      files.push({
+        name: file.name,
+        type: file.type,
+        size: file.size,
+        content: base64String,
+      });
+
+      localStorage.setItem("files", JSON.stringify(files));
+    };
+
+    reader.readAsDataURL(file);
+  };
+
   const handleClick = () => {
     if (files.length < 2) {
         fileInputRef.current.click(); // Allow clicking only if less than 2 files
@@ -22,9 +43,13 @@ const FileDropArea = () => {
   const handleFileSelect = (event) => {
     if (files.length + event.target.files.length <= 2) {
         setFiles((prevFiles) => [...prevFiles, ...Array.from(event.target.files)]);
+        const file = event.target.files[0];
+        saveFileToLocalStorage(file);
       }
     
   };
+
+
 
   const handleDrop = (event) => {
     event.preventDefault();
