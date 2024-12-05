@@ -12,12 +12,12 @@ use Illuminate\Database\Eloquent\Model;
 
 /**
  * Class Category
- * 
+ *
  * @property int $idcategory
  * @property string $category_name
  * @property Carbon $created_on
  * @property Carbon $modified_on
- * 
+ *
  * @property Collection|Article[] $articles
  *
  * @package App\Models
@@ -36,7 +36,8 @@ class Category extends Model
 	protected $fillable = [
 		'category_name',
 		'created_on',
-		'modified_on'
+		'modified_on',
+        'event_id'
 	];
 
 	public function articles()

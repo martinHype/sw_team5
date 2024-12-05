@@ -37,14 +37,14 @@ const Navbar = () => {
     return (
         <div style={styles.navbar}>
             <div style={styles.logo}>
-                <img src={graduationHat} style={styles.img}/>
+                <img src={graduationHat} style={styles.img} alt="Graduation hat"/>
                 <p style={styles.text}> ŠTUDENTSKÁ VEDECKÁ KONFERENCIA</p>
             </div>
             <div style={styles.navLinks}>
                 <a href="#" style={styles.link}>
                     Vyhľadávanie
                 </a>
-                <a href="#" style={styles.link}>
+                <a href="/create-conference" style={styles.link}>
                     Nový
                 </a>
                 <a href="#" style={styles.link}>
