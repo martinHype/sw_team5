@@ -55,24 +55,35 @@ class EventController extends Controller
         }
     }
 
-    public function allEvents()
+    public function getAdminEvents(Request $request)
     {
         try {
-            // Získajte všetky udalosti z databázy
-            $events = Event::all();
+            // Start building the query
+            $query = Event::query();
 
-            // Vráťte úspešnú odpoveď vo formáte JSON
+            // Filter by the exact date if provided
+            if ($request->filled('date')) {
+                $query->whereDate('event_date', $request->date);
+            }
+
+            if ($request->filled('name')) {
+                $query->where('event_name', 'like', '%' . $request->name . '%');
+            }
+
+            // Execute the query and fetch the events
+            $events = $query->get();
+
+            // Return a successful JSON response
             return response()->json([
                 'success' => true,
-                'data' => $events
+                'data' => $events,
             ], 200);
-
-        } catch (\Exception $e) {
-            // Ošetrenie chyby a návrat chybovej odpovede
+        } catch (\Throwable $e) {
+            // Handle exceptions and return an error response
             return response()->json([
                 'success' => false,
                 'message' => 'Nepodarilo sa načítať udalosti.',
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ], 500);
         }
     }

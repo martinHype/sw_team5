@@ -27,7 +27,7 @@ Route::post('/login',[AuthController::class,'login']);
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/events', [EventController::class, 'store']);
-    Route::get('/all-events', [EventController::class, 'allEvents']);
+    Route::get('/get-admin-events', [EventController::class, 'getAdminEvents']);
     Route::get('/categories', [CategoryController::class, 'fetchCategories']);
 
     Route::post("/logout",[AuthController::class,'logout']);

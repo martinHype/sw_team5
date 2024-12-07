@@ -7,6 +7,7 @@ import PrivateRoute from './components/Routes/PrivateRoute';
 import PublicRoute from './components/Routes/PublicRoute';
 import NewConferencePage from "./screens/NewConferenceScreen/NewConferencePage.js";
 import ShowAllConferencesScreen from "./screens/ShowAllConferencesScreen/ShowAllConferencesScreen";
+import AdminRoute from "./components/Routes/AdminRoute";
 
 //pull bozo test
 //pull pato test2
@@ -42,19 +43,19 @@ const App = () => {
                 />
 
                 <Route
-                    path="/create-conference"
+                    path="admin/create-conference"
                     element={
-                        <PrivateRoute>
+                        <AdminRoute>
                             <NewConferencePage />
-                        </PrivateRoute>
+                        </AdminRoute>
                     }
                 />
                 <Route
-                    path="/conferences"
+                    path="admin/conferences"
                     element={
-                        <PrivateRoute>
+                        <AdminRoute>
                             <ShowAllConferencesScreen />
-                        </PrivateRoute>
+                        </AdminRoute>
                     }
                 />
             </Routes>
