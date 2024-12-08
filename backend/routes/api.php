@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\EventController;
+use App\Http\Controllers\RoleController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
@@ -27,8 +28,15 @@ Route::post('/login',[AuthController::class,'login']);
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/events', [EventController::class, 'store']);
+
+    //admin
     Route::get('/get-admin-events', [EventController::class, 'getAdminEvents']);
     Route::get('/categories', [CategoryController::class, 'fetchCategories']);
+    Route::get('/admin/get-event-detail/{id}', [EventController::class, 'getAdminEventDetail']);
+    Route::get('/admin/conference/{id}/users', [EventController::class, 'getAdminEventUsers']) ->name('EventUsers');
+    Route::get('/admin/roles', [RoleController::class, 'getRoles']);
+
+
 
     Route::post("/logout",[AuthController::class,'logout']);
 });

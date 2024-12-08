@@ -7,6 +7,8 @@ import PrivateRoute from './components/Routes/PrivateRoute';
 import PublicRoute from './components/Routes/PublicRoute';
 import NewConferencePage from "./screens/NewConferenceScreen/NewConferencePage.js";
 import ShowAllConferencesScreen from "./screens/ShowAllConferencesScreen/ShowAllConferencesScreen";
+import AdminDetailConferenceScreen from "./screens/AdminDetailConferenceScreen/AdminDetailConferenceScreen";
+import ConferenceUsersScreen from "./screens/AdminConferenceUsersScreen/ConferenceUsersScreen.js";
 import AdminRoute from "./components/Routes/AdminRoute";
 
 //pull bozo test
@@ -55,6 +57,22 @@ const App = () => {
                     element={
                         <AdminRoute>
                             <ShowAllConferencesScreen />
+                        </AdminRoute>
+                    }
+                />
+                <Route
+                    path="admin/conference/:id"
+                    element={
+                        <AdminRoute>
+                            <AdminDetailConferenceScreen />
+                        </AdminRoute>
+                    }
+                />
+                <Route
+                    path="/admin/conference/:id/roles"
+                    element={
+                        <AdminRoute>
+                            <ConferenceUsersScreen />
                         </AdminRoute>
                     }
                 />

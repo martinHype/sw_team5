@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Category;
 use App\Models\Event;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 
@@ -87,4 +88,52 @@ class EventController extends Controller
             ], 500);
         }
     }
+    public function getAdminEventDetail($id)
+    {
+        try {
+            // Fetch the conference by ID
+            $conference = Event::find($id);
+
+            // Check if the conference exists
+            if (!$conference) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Konferencia nebola nájdená.',
+                ], 404);
+            }
+
+            // Return the conference details
+            return response()->json([
+                'success' => true,
+                'data' => $conference,
+            ], 200);
+
+        } catch (\Throwable $e) {
+            // Handle exceptions
+            return response()->json([
+                'success' => false,
+                'message' => 'Nepodarilo sa načítať detaily konferencie.',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
+    }
+    public function getAdminEventUsers($id)
+    {
+
+        //TODO Neberie do uvahy ci je prihlaseny na konferenciu iba ci ma rolu. ak má hned to vyhodi na vserkych konf
+
+        // Načítanie používateľov a ich rolí pre konkrétnu konferenciu
+        $users = User::with(['roles' => function ($query) use ($id) {
+            $query->wherePivot('conference_id', $id); // Filter podľa conference_id v pivot tabuľke
+        }])->get();
+
+        // Skontrolovať, či boli nájdení nejakí používatelia
+        if ($users->isEmpty()) {
+            return response()->json(['message' => 'No users found for this conference'], 404);
+        }
+
+        // Vrátiť výsledky vo formáte JSON
+        return response()->json($users, 200);
+    }
+
 }

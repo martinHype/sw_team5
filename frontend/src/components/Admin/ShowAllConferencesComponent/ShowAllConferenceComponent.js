@@ -123,7 +123,7 @@ const ShowAllConferenceComponent = () => {
                         <div
                             key={conference.idevent} // Ensure key is unique
                             style={styles.conferenceItem}
-                            onClick={() => navigate(`/conferences/${conference.idevent}`)}
+                            onClick={() => navigate(`/admin/conference/${conference.idevent}`)}
                         >
                             <h3>{conference.event_name}</h3>
                             <p>Dátum konferencie: {format(new Date(conference.event_date), 'dd.MM.yyyy')}</p>
