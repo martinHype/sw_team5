@@ -1,7 +1,21 @@
 export const styles = {
     container: {
+        display: 'flex',
+        flexDirection: 'column',
         minHeight: '100vh',
-        backgroundColor: 'white',
+        fontFamily: 'Arial, sans-serif',
+        backgroundColor: '#f5f5f5',
+        width: '100%', // Ensures full screen width
+        margin: 0, // No extra margins
+    },
+    contentWrapper: {
+        display:'flex',
+        flexDirection: 'column',
+        maxWidth: '900px', // Set the same max width for alignment
+        width: '100%',      // Allow full expansion
+        margin: '0 auto',   // Center the content horizontally
+        padding: '0 20px',  // Consistent padding on both sides
+
     },
     header: {
         backgroundColor: '#4CAF50',
@@ -14,87 +28,111 @@ export const styles = {
         fontWeight: 'semibold',
     },
     main: {
-        maxWidth: '48rem',
-        margin: '0 auto',
-        padding: '2rem 1rem',
+        flex:1,
+        width: '100%',      // Stretch within the contentWrapper
+        backgroundColor: '#fff',
+        padding: '5px 30px',
+        borderRadius: '8px',
+        boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
     },
     sectionTitle: {
-        fontSize: '1.5rem',
+        fontSize: '35px',
         fontWeight: 'bold',
-        marginBottom: '1.5rem',
+        margin: 0, // Reset default margins for precision
+        marginTop:'20px'
     },
-    dropdown: {
-        position: 'relative',
+    list: { 
+        listStyleType: 'none', 
+        padding: 0 
     },
-    dropdownButton: {
-        width: '100%',
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        padding: '1rem',
-        textAlign: 'left',
-        border: '1px solid #e2e8f0',
-        borderRadius: '0.5rem',
-        backgroundColor: 'white',
-        transition: 'background-color 0.2s',
+    listItem: { 
+        position: 'relative', // For button positioning
+        marginBottom: '20px', 
+        padding: '15px', 
+        borderRadius: '8px', 
+        backgroundColor: '#f9f9f9', 
+        boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)', 
+        border: '1px solid #e0e0e0',
     },
-    dropdownButtonHover: {
-        backgroundColor: '#f7fafc',
+    listItemContent: { 
+        display: 'flex', 
+        flexDirection: 'column' 
     },
-    dropdownButtonText: {
-        fontSize: '1.25rem',
-        fontWeight: 'semibold',
+    listItemText: { 
+        fontSize: '25px',  // Increased font size from 16px to 20px
+        fontWeight: 'bold', // Added bold for emphasis
+        color: '#333', 
     },
-    dropdownIcon: {
-        width: '1.5rem',
-        height: '1.5rem',
-        transition: 'transform 0.2s',
+    datesContainer: { 
+        display: 'flex', 
+        justifyContent: 'space-between' 
     },
-    dropdownIconOpen: {
-        transform: 'rotate(180deg)',
+    dateField: { 
+        display: 'flex', 
+        flexDirection: 'column', 
+        width: '48%' 
     },
-    dropdownMenu: {
+    dateLabel: { 
+        marginBottom: '5px', 
+        fontSize: '14px', 
+        color: '#555' 
+    },
+    dateValue: { 
+        fontSize: '16px', 
+        fontWeight: 'normal', 
+        color: '#333' 
+    },
+    conferenceDescription: {
+        fontSize: '14px', // Smaller than the title
+        color: '#666',    // Muted text color
+        marginBottom: '10px', // Spacing between description and dates
+        lineHeight: '1.4',    // Better readability
+    },
+    addButton: { 
         position: 'absolute',
-        width: '100%',
-        marginTop: '0.5rem',
-        backgroundColor: 'white',
-        border: '1px solid #e2e8f0',
-        borderRadius: '0.5rem',
-        boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
-        zIndex: 10,
-    },
-    dropdownMenuItem: {
-        padding: '1rem',
-        cursor: 'pointer',
-        transition: 'background-color 0.2s',
-    },
-    dropdownMenuItemHover: {
-        backgroundColor: '#f7fafc',
-    },
-    conferenceBox: {
-        marginTop: '1rem',
-        padding: '1rem',
-        border: '1px solid #e2e8f0',
-        borderRadius: '0.5rem',
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-    },
-    conferenceName: {
-        fontSize: '1.25rem',
-        fontWeight: 'semibold',
-    },
-    uploadButton: {
-        padding: '0.5rem 1rem',
-        backgroundColor: '#4CAF50',
-        color: 'white',
+        top: '10px',
+        right: '10px',
+        backgroundColor: '#4CAF50', // Green button
+        color: '#ffffff', // White text
         border: 'none',
-        borderRadius: '0.25rem',
+        padding: '8px 12px',
+        borderRadius: '5px',
         cursor: 'pointer',
-        transition: 'background-color 0.2s',
+        fontSize: '14px',
+        fontWeight: 'bold',
+        transition: 'background-color 0.3s ease',
     },
-    uploadButtonHover: {
-        backgroundColor: '#45a049',
+    
+    addButtonHover: {
+        backgroundColor: '#45a049', // Slightly darker green on hover
     },
+    footer: {
+        backgroundColor: '#4CAF50',
+        color: '#ffffff',
+        textAlign: 'center',
+        padding: '10px 0',
+        fontSize: '14px',
+        borderTop: '1px solid #3e8e41',
+        marginTop: 'auto', // Ensures footer stays at the bottom
+    },
+    
+    footerText: {
+        margin: 0,
+        fontSize: '14px',
+        fontWeight: '400',
+    },
+    searchBar: {
+        flex:1,
+        width: '100%',      // Stretch to fill the contentWrapper
+        padding: '10px',    
+        margin: '10px 0 20px', // Add spacing between title and main part
+        borderRadius: '8px',
+        border: '1px solid #ccc',
+        fontSize: '16px',
+        boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+        boxSizing: 'border-box', // Prevent padding from affecting width
+    },
+    
+    
 };
 
