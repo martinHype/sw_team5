@@ -2,38 +2,68 @@ export const styles = {
     container: {
         display: 'flex',
         flexDirection: 'column',
-        minHeight: '100vh',
+        minHeight: '100vh', // Ensures the container takes up the full viewport height
         fontFamily: 'Arial, sans-serif',
         backgroundColor: '#f5f5f5',
-        width: '100%', // Ensures full screen width
-        margin: 0, // No extra margins
     },
     contentWrapper: {
-        display:'flex',
-        flexDirection: 'column',
-        maxWidth: '900px', // Set the same max width for alignment
-        width: '100%',      // Allow full expansion
-        margin: '0 auto',   // Center the content horizontally
-        padding: '0 20px',  // Consistent padding on both sides
-
+        flex: 1, // Allows content to grow and fill remaining space
+        maxWidth: '1000px',
+        width: '100%',
+        margin: '0 auto',
+        padding: '0 20px',
     },
     header: {
-        backgroundColor: '#4CAF50',
-        color: 'white',
-        padding: '1rem',
-        textAlign: 'center',
-    },
-    headerTitle: {
-        fontSize: '1.5rem',
-        fontWeight: 'semibold',
-    },
+        position: 'sticky',
+        top: 0,
+        zIndex: 1000,
+        backgroundColor: "#4caf50",
+        color: "white",
+        display: "flex",
+        alignItems: "center",
+        padding: "10px 20px",
+        height: "50px",
+  
+      },
+      headerContainer: {
+          width: "1000px", // Match the form's maxWidth
+          margin: "0 auto",  // Center the content
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+        },
+      logo: {
+        backgroundColor: "white",
+        color: "black",
+        padding: "10px",
+        fontWeight: "bold",
+        borderRadius: "5px",
+      },
+      nav: {
+        display: "flex",
+        gap: "20px",
+      },
+      navLink: {
+        color: "white",
+        textDecoration: "none",
+      },
+      activeLink: {
+        borderBottom: "2px solid white",
+      },
+      icons: {
+        display: "flex",
+        gap: "15px",
+      },
     main: {
-        flex:1,
-        width: '100%',      // Stretch within the contentWrapper
+        flex: 1, // Ensures the main part grows to fill available space
         backgroundColor: '#fff',
-        padding: '5px 30px',
         borderRadius: '8px',
         boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+        padding: '20px',
+        overflowY: 'auto', // Makes the content scrollable when overflowing
+        minHeight: 'calc(100vh - 200px)', // Adjusts height to account for header and footer
+        boxSizing: 'border-box', // Prevent padding from affecting height
+        margin:'10px'
     },
     sectionTitle: {
         fontSize: '35px',
@@ -125,12 +155,79 @@ export const styles = {
         flex:1,
         width: '100%',      // Stretch to fill the contentWrapper
         padding: '10px',    
-        margin: '10px 0 20px', // Add spacing between title and main part
+        margin: '10px 0', // Add spacing between title and main part
         borderRadius: '8px',
         border: '1px solid #ccc',
         fontSize: '16px',
         boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
         boxSizing: 'border-box', // Prevent padding from affecting width
+    },
+    articlesSection: {
+        marginTop: '10px', // Add space between the dates and articles
+        padding: '10px',
+        borderTop: '1px solid #ddd',
+    },
+    
+    articlesTitle: {
+        fontSize: '18px',
+        fontWeight: 'bold',
+        marginBottom: '10px',
+    },
+    
+    articleList: {
+        listStyleType: 'none',
+        padding: 0,
+    },
+    
+    articleItem: {
+        position: 'relative',
+        padding: '10px',
+        marginBottom: '10px',
+        backgroundColor: '#f9f9f9',
+        borderRadius: '5px',
+        boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+        transition: 'background-color 0.3s ease',
+        cursor: 'pointer', // Makes the mouse cursor a clickable pointer
+    },
+    
+    articleTitle: {
+        fontSize: '16px',
+        fontWeight: 'bold',
+        marginBottom: '5px',
+    },
+    
+    articleText: {
+        margin: '5px 0',
+        fontSize: '14px',
+        color: '#555',
+    },
+    
+    articleDate: {
+        position: 'absolute',
+        bottom: '10px',
+        right: '15px',
+        fontSize: '12px',
+        color: '#777',
+    },
+    toggleButton: {
+        marginTop: '10px',
+        padding: '12px 12px',
+        backgroundColor: '#4CAF50', // Green background
+        color: '#fff', // White text
+        border: 'none',
+        borderRadius: '6px', // Slightly rounded corners
+        fontSize: '12px',
+        fontWeight: '600',
+        textTransform: 'uppercase',
+        letterSpacing: '0.5px',
+        cursor: 'pointer',
+        transition: 'background-color 0.3s ease, transform 0.2s ease',
+        boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+    },
+    
+    toggleButtonHover: {
+        backgroundColor: '#45a049', // Darker green on hover
+        transform: 'scale(1.05)', // Slightly enlarge on hover
     },
     
     
