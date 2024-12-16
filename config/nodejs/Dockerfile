@@ -2,13 +2,21 @@ FROM node:18.14.2-alpine3.17 as builder-stage
 
 WORKDIR /usr/src/frontend
 RUN mkdir /usr/src/frontend/node_modules
+RUN mkdir /usr/src/frontend/node_modules/.cache
+
 RUN chmod -R 777 /usr/src/frontend/node_modules
 
 COPY ./frontend/package*.json ./
 RUN npm install
 
+RUN npm install axios
+RUN npm install react-router-dom
+RUN npm install date-fns
 
-FROM node:16.3.0-alpine
+RUN npm install @fortawesome/react-fontawesome @fortawesome/free-solid-svg-icons @fortawesome/fontawesome-svg-core
+
+
+FROM node:18.14.2-alpine3.17
 USER node
 
 WORKDIR /usr/src/frontend
