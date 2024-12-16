@@ -12,14 +12,14 @@ use Illuminate\Database\Eloquent\Model;
 
 /**
  * Class Event
- * 
+ *
  * @property int $idevent
  * @property string $event_name
  * @property Carbon $event_date
  * @property Carbon $event_upload_EndDate
  * @property Carbon $created_on
  * @property Carbon $modified_on
- * 
+ *
  * @property Collection|Article[] $articles
  *
  * @package App\Models
@@ -48,5 +48,11 @@ class Event extends Model
 	public function articles()
 	{
 		return $this->hasMany(Article::class, 'event_idevent');
+
 	}
+
+    public function categories()
+    {
+        return $this->hasMany(Category::class, 'event_id');
+    }
 }
