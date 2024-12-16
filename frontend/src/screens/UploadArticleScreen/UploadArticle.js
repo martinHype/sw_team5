@@ -4,9 +4,16 @@ import graduation_hat from "../../images/graduation_hat.png";
 import user from "../../images/user.png";
 import logout from "../../images/logout.png";
 import FileDropArea from "../../components/FileUploadComponent/FileUpload.js";
+import { useLocation } from 'react-router-dom';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 const UploadArticle = () => {
+
+  const navigate = useNavigate();
+  const location = useLocation();
+  const { conferenceName } = location.state || {};
+  console.log(conferenceName);
 
   const [ArticleData, setArticleData] = useState({
     title: "",
@@ -54,6 +61,7 @@ const UploadArticle = () => {
         
 
         localStorage.removeItem('files');
+        navigate("/home");
 
 
 
@@ -65,11 +73,13 @@ const UploadArticle = () => {
   // function that will create a new article
   const createArticle = async () => {
     try {
+      const { conferenceName } = location.state || {};
       const response = await axios.post(
         'http://localhost:8080/api/article', {
           title: ArticleData.title,
           description: ArticleData.Description,
-          category:parseInt(ArticleData.category,10)
+          category:parseInt(ArticleData.category,10),
+          event:conferenceName
       },
       {
         headers: {
