@@ -9,11 +9,13 @@ export const styles = {
         margin: 0, // No extra margins
     },
     contentWrapper: {
-        maxWidth: '900px', // Wider max width for large screens
-        width: '100%', // Take up all available space within container
-        margin: '0 auto', // Center the content horizontally
-        padding: '0 20px', // Horizontal padding for breathing room
-        marginTop:'30px'
+        display:'flex',
+        flexDirection: 'column',
+        maxWidth: '900px', // Set the same max width for alignment
+        width: '100%',      // Allow full expansion
+        margin: '0 auto',   // Center the content horizontally
+        padding: '0 20px',  // Consistent padding on both sides
+
     },
     header: {
         backgroundColor: '#4CAF50',
@@ -26,27 +28,18 @@ export const styles = {
         fontWeight: 'semibold',
     },
     main: {
-        flex: 1,
-        width: '100%', // Expand fully within contentWrapper
+        flex:1,
+        width: '100%',      // Stretch within the contentWrapper
         backgroundColor: '#fff',
-        padding: '30px', // Internal spacing
+        padding: '5px 30px',
         borderRadius: '8px',
         boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
-        marginTop:'10px'
-    },
-    sectionTitleContainer: {
-        display: 'flex',
-        justifyContent: 'flex-start', // Aligns content to the left
-        alignItems: 'center', // Vertically centers content
-        paddingLeft: '20px', // Adjust padding to match main content
-        maxWidth: '1200px',
-        margin: '0px auto', // Centers container horizontally
-
     },
     sectionTitle: {
         fontSize: '35px',
         fontWeight: 'bold',
         margin: 0, // Reset default margins for precision
+        marginTop:'20px'
     },
     list: { 
         listStyleType: 'none', 
@@ -128,22 +121,18 @@ export const styles = {
         fontSize: '14px',
         fontWeight: '400',
     },
-    searchBarContainer: {
-        display: 'flex',
-        justifyContent: 'center',
-        margin: '10px 0 20px', // Top and bottom spacing
-    },
-    
     searchBar: {
-        width: '100%',
-        maxWidth: '600px', // Limits the width of the search bar
-        padding: '10px',
-        borderRadius: '5px',
+        flex:1,
+        width: '100%',      // Stretch to fill the contentWrapper
+        padding: '10px',    
+        margin: '10px 0 20px', // Add spacing between title and main part
+        borderRadius: '8px',
         border: '1px solid #ccc',
         fontSize: '16px',
-        outline: 'none',
         boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+        boxSizing: 'border-box', // Prevent padding from affecting width
     },
+    
     
 };
 

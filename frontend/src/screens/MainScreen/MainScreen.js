@@ -53,15 +53,14 @@ const MainScreen = () => {
             {/* Title */}
             <h2 style={styles.sectionTitle}>Konferencie</h2>
             {/* Search Bar */}
-            <div style={styles.searchBarContainer}>
-                <input
-                    type="text"
-                    placeholder="Hľadajte konferenciu..."
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    style={styles.searchBar}
-                />
-            </div>
+            {/* Search Bar */}
+            <input
+                type="text"
+                placeholder="Hľadajte konferenciu..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                style={styles.searchBar}
+            />
             {/* Main Content */}
             <main style={styles.main}>
                 <ul style={styles.list}>
