@@ -229,6 +229,18 @@ export const styles = {
         backgroundColor: '#45a049', // Darker green on hover
         transform: 'scale(1.05)', // Slightly enlarge on hover
     },
+    statusLabel: {
+        position: "absolute",
+        top: "10px",
+        right: "10px",
+        color: "#fff",
+        fontSize: "0.9em",
+        fontWeight: "bold",
+        padding: "5px 10px",
+        borderRadius: "12px",
+        textTransform: "uppercase",
+        boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.2)",
+    },
     
     
 };

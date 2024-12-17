@@ -47,6 +47,7 @@ class AuthController extends Controller
         return [
             'user' => $user,
             'token' => $token->plainTextToken,
+            'roles' => ['student'],
             'message' => 'Registration successful. Default role: Student.'
         ];
     }
