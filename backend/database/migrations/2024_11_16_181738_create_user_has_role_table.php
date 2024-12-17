@@ -14,7 +14,6 @@ return new class extends Migration
         Schema::create('user_has_role', function (Blueprint $table) {
             $table->integer('user_iduser')->index('fk_user_has_role_user1_idx');
             $table->integer('role_idrole')->index('fk_user_has_role_role1_idx');
-
             $table->primary(['user_iduser', 'role_idrole']);
         });
     }

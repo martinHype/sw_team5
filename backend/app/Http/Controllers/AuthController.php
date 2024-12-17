@@ -6,6 +6,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 
 class AuthController extends Controller
 {
@@ -33,13 +34,20 @@ class AuthController extends Controller
             'email' => $request->email,
             'password' => Hash::make($request->password)
         ]);
+
+         // Assign default role "student" in the user_has_role table
+        DB::table('user_has_role')->insert([
+            'user_iduser' => $user->iduser,
+            'role_idrole' => 1, // Assuming 1 corresponds to the 'student' role in the role table
+        ]);
         $token = $user->createToken($request->email);
 
         
         //$user->assignRole($request->role);
         return [
             'user' => $user,
-            'token' => $token->plainTextToken
+            'token' => $token->plainTextToken,
+            'message' => 'Registration successful. Default role: Student.'
         ];
     }
 
@@ -53,10 +61,17 @@ class AuthController extends Controller
         if(!$user || !Hash::check($request->password, $user->password)){
             return response()->json(["message" => "The provided credentials are incorrect."], 404);
         }
+
+        // Fetch user roles from the database
+        $roles = DB::table('user_has_role')
+        ->join('role', 'user_has_role.role_idrole', '=', 'role.idrole')
+        ->where('user_has_role.user_iduser', $user->iduser) // Correct column name
+        ->pluck('role.role_name'); // Fetch role names only
         $token = $user->createToken($user->email);
 
         return [
             'user' => $user,
+            'roles' => $roles,
             'token' => $token->plainTextToken
         ];
     }
