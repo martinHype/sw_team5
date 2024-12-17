@@ -26,7 +26,21 @@ const MainScreen = () => {
     };
     //const [loading, setLoading] = useState(true);
     //const [error, setError] = useState(null);
-
+    const getFormMode = (articleStatus) => {
+        switch (articleStatus) {
+            case "Koncept":
+                return "Edit"; // Article is in draft, so form should be editable
+            case "Čaká na recenziu":
+            case "Prebieha kontrola":
+                return "Review";
+            case "Publikovať v predloženej forme":
+            case "Publikovať po zapracovaní pripomienok":
+            case "Neprijať pre publikovanie":
+                return "View"; // These statuses indicate read-only review mode
+            default:
+                return "New"; // Default to "New" mode if status is unknown
+        }
+    };
     useEffect(() => {
         const rolesString = sessionStorage.getItem("userRoles");
         const rolesArray = rolesString ? rolesString.split(",") : [];
@@ -179,18 +193,20 @@ const MainScreen = () => {
                                                         onMouseLeave={() => setHoveredArticle(null)}
                                                         onClick={() => navigate('/uploadarticle', 
                                                             { state: {
-                                                                formMode: article.acticle_status_name === "Koncept" ? "Edit" : "Review", 
+                                                                formMode: getFormMode(article.acticle_status_name), 
                                                                 articleid: article.idarticle,
                                                                 title:article.title,
                                                                 description:article.Description,
                                                                 category:article.category_idcategory,
+                                                                reviewerId:article.idreviewer,
+                                                                ownerid:article.user_iduser,
                                                             } })}
                                                     >
                                                         <h3 style={styles.articleTitle}>{article.title}</h3>
                                                         <p style={styles.articleText}>{article.Description}</p>
                                                         <p style={styles.articleText}><strong>{article.category_name}</strong></p>
                                                         <p style={styles.articleText}>Key words</p>
-                                                        <span style={styles.articleDate}>{article.created_at}</span>
+                                                        <span style={styles.articleDate}>{format(new Date(article.created_at), 'dd.MM.yyyy')}</span>
                                                         {/* Status Label */}
                                                         <div
                                                             style={{
