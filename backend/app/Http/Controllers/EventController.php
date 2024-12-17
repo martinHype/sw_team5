@@ -6,11 +6,44 @@ use App\Models\Category;
 use App\Models\Event;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 
 class EventController extends Controller
 {
     public function index(){
         $events = Event::with('articles')->get(); // Load related articles
+        return response()->json($events);
+    }
+
+    public function getEvents(){
+        $user = Auth::user();
+
+        $roles = DB::table('user_has_role')
+            ->join('role', 'user_has_role.role_idrole', '=', 'role.idrole')
+            ->where('user_has_role.user_iduser', $user->iduser)
+            ->pluck('role.role_name')
+            ->toArray();
+
+        if(in_array('admin',$roles)){
+            $events = Event::with('articles')->get();
+        }else{
+            // Step 2: Build the query for events and conditionally filter articles
+            $events = Event::with(['articles' => function ($query) use ($user, $roles) {
+                $query->where(function ($q) use ($user, $roles) {
+                    // Group conditions to avoid fetching all articles
+                    if (in_array('student', $roles)) {
+                        $q->orWhere('user_iduser', $user->iduser);
+                    }
+
+                    if (in_array('reviewer', $roles)) {
+                        $q->orWhere('idreviewer', $user->iduser);
+                    }
+                });
+            }])->get();
+        }
+        
+
         return response()->json($events);
     }
 

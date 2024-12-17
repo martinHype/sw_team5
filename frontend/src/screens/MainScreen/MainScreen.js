@@ -17,7 +17,13 @@ const MainScreen = () => {
     useEffect(() => {
         const fetchEvents = async () => {
             try {
-                const response = await fetch('http://localhost:8080/api/events'); // Replace with your API URL
+                const response = await fetch('http://localhost:8080/api/studentevents',{
+                    method:"GET",
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Authorization: 'Bearer ' + sessionStorage.getItem('authToken'),
+                      },
+                }); // Replace with your API URL
                 if (!response.ok) throw new Error('Failed to fetch events');
                 const data = await response.json();
                 setEvents(data);

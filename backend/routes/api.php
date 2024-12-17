@@ -26,6 +26,8 @@ Route::post('/login',[AuthController::class,'login']);
 
 
 Route::get('/events', [EventController::class, 'index']);
+Route::get('/studentevents', [EventController::class, 'getEvents'])->middleware('auth:sanctum');
+
 Route::get('/events/{id}/articles', [EventController::class, 'showArticles']);
 
 
