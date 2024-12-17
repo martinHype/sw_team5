@@ -16,36 +16,51 @@ class EventController extends Controller
         return response()->json($events);
     }
 
-    public function getEvents(){
+    public function getEvents()
+    {
         $user = Auth::user();
 
+        // Fetch user's roles
         $roles = DB::table('user_has_role')
             ->join('role', 'user_has_role.role_idrole', '=', 'role.idrole')
             ->where('user_has_role.user_iduser', $user->iduser)
             ->pluck('role.role_name')
             ->toArray();
 
-        if(in_array('admin',$roles)){
-            $events = Event::with('articles')->get();
-        }else{
-            // Step 2: Build the query for events and conditionally filter articles
+        // Query to include status name and category name
+        if (in_array('admin', $roles)) {
+            $events = Event::with(['articles' => function ($query) {
+                $query->select(
+                    'article.*',
+                    'acticle_status.acticle_status_name',
+                    'category.category_name'
+                )
+                ->leftJoin('acticle_status', 'article.acticle_status_idacticle_status', '=', 'acticle_status.idacticle_status')
+                ->leftJoin('category', 'article.category_idcategory', '=', 'category.idcategory');
+            }])->get();
+        } else {
             $events = Event::with(['articles' => function ($query) use ($user, $roles) {
-                $query->where(function ($q) use ($user, $roles) {
-                    // Group conditions to avoid fetching all articles
+                $query->select(
+                    'article.*',
+                    'acticle_status.acticle_status_name',
+                    'category.category_name'
+                )
+                ->leftJoin('acticle_status', 'article.acticle_status_idacticle_status', '=', 'acticle_status.idacticle_status')
+                ->leftJoin('category', 'article.category_idcategory', '=', 'category.idcategory')
+                ->where(function ($q) use ($user, $roles) {
                     if (in_array('student', $roles)) {
-                        $q->orWhere('user_iduser', $user->iduser);
+                        $q->orWhere('article.user_iduser', $user->iduser);
                     }
-
                     if (in_array('reviewer', $roles)) {
-                        $q->orWhere('idreviewer', $user->iduser);
+                        $q->orWhere('article.idreviewer', $user->iduser);
                     }
                 });
             }])->get();
         }
-        
 
         return response()->json($events);
     }
+
 
     public function showArticles($id){
         $event = Event::find($id);

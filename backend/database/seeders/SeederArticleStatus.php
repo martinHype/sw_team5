@@ -15,17 +15,32 @@ class SeederArticleStatus extends Seeder
     {
         DB::table('acticle_status')->insert([
             [
-                'acticle_status_name' => 'Open',
+                'acticle_status_name' => 'Koncept',
                 'created_on' => now(),
                 'modified_on' => now(),
             ],
             [
-                'acticle_status_name' => 'Awaiting Review',
+                'acticle_status_name' => 'Čaká na recenziu',
                 'created_on' => now(),
                 'modified_on' => now(),
             ],
             [
-                'acticle_status_name' => 'Reviewed',
+                'acticle_status_name' => 'Prebieha kontrola',
+                'created_on' => now(),
+                'modified_on' => now(),
+            ],
+            [
+                'acticle_status_name' => 'Publikovať v predloženej forme',
+                'created_on' => now(),
+                'modified_on' => now(),
+            ],
+            [
+                'acticle_status_name' => 'Publikovať po zapracovaní pripomienok',
+                'created_on' => now(),
+                'modified_on' => now(),
+            ],
+            [
+                'acticle_status_name' => 'Neprijať pre publikovanie',
                 'created_on' => now(),
                 'modified_on' => now(),
             ],
