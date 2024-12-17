@@ -5,7 +5,7 @@ const styles = {
       display: "flex",
       alignItems: "center",
       padding: "10px 20px",
-      height: "50px",
+      height: "80px",
 
     },
     headerContainer: {

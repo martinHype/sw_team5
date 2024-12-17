@@ -1,4 +1,4 @@
-import React, { useState,useEffect } from "react";
+import React, { useState } from "react";
 import styles from "./styles.js";
 import graduation_hat from "../../images/graduation_hat.png";
 import user from "../../images/user.png";
@@ -12,36 +12,14 @@ const UploadArticle = () => {
 
   const navigate = useNavigate();
   const location = useLocation();
-  const { conferenceName,formMode, articleid, title, description, category } = location.state || {};
+  const { conferenceName } = location.state || {};
+  console.log(conferenceName);
 
-  //console.log(conferenceName);
   const [ArticleData, setArticleData] = useState({
     title: "",
     Description: "",
     category:"",
   });
-  useEffect(() => {
-    // Code to run only once when the form loads
-    console.log('Form loaded with state:', {
-      formMode,
-      articleid,
-      title,
-      description,
-      category,
-      conferenceName,
-    });
-  
-    if (formMode === "View") {
-      setArticleData((prev) => ({
-        ...prev,
-        title: title || "",
-        description: description || "",
-        category: category || "",
-      }));
-    }
-  }, [formMode, title, description, category]);
-
-  
 
   const handleChange = (e) => {
     setArticleData({
@@ -165,15 +143,13 @@ const UploadArticle = () => {
             placeholder="Názov práce" 
             value={ArticleData.title}
             onChange={handleChange}
-            style={styles.input}
-            readOnly={formMode === "View"} />
+            style={styles.input} />
           <label>Sekcia</label>
           <select 
           name="category"
           style={styles.select}
           onChange={handleChange}
           value={ArticleData.category}
-          readOnly={formMode === "View"}
           >
                 <option value="" hidden>Vyberte sekciu</option>
                 <option value="1">Biológia, ekológia a environmentalistika</option>
@@ -190,18 +166,16 @@ const UploadArticle = () => {
             onChange={handleChange}
             placeholder="Popis práce" 
             rows="10"
-            style={styles.textarea}
-            readOnly={formMode === "View"}/>
+            style={styles.textarea}/>
           <label>Kľúčové slová</label>
           <input 
           name="keywords"
           type="text" 
           placeholder="Kľúčové slová" 
-          style={styles.input}
-          readOnly={formMode === "View"} />
+          style={styles.input} />
 
           <label>Dokumenty</label>
-          <FileDropArea disabled={formMode === "View"}/>
+          <FileDropArea/>
           {/* Submit Button */}
           <button type="submit" style={styles.submitButton} onClick={createArticle}>
             Nahrať prácu
