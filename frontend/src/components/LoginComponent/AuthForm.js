@@ -81,7 +81,12 @@ const AuthForm = () => {
                 //university: formData.university,
             });
             const token = response.data.token;
+            const roles = response.data.roles;
+            const userId = response.data.user.iduser;
             sessionStorage.setItem("authToken", token);
+            sessionStorage.setItem("userRoles", roles);
+            sessionStorage.setItem("userId", userId);
+
             setError(false);
             if(token){
                 setError(false);
@@ -108,7 +113,11 @@ const AuthForm = () => {
             });
             console.log(response.status);
             const token = response.data.token;
+            const roles = response.data.roles;
+            const userId = response.data.user.iduser;
             sessionStorage.setItem("authToken", token);
+            sessionStorage.setItem("userRoles", roles);
+            sessionStorage.setItem("userId", userId);
             // Navigate to main screen
             if(token){
                 setError(false);
