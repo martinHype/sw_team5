@@ -1,70 +1,56 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { styles } from './styles';
 import graduation_hat from "../../images/graduation_hat.png";
 import user from "../../images/user.png";
 import logout from "../../images/logout.png";
+import { useNavigate } from 'react-router-dom';
 
 const MainScreen = () => {
-    const conferences = [
-        {
-            name: "Konferencia 1",
-            description: "Táto konferencia sa zameriava na nové trendy vo vede a technológii.",
-            eventDate: "2024-12-20",
-            uploadEndDate: "2024-12-15",
-            articles: [
-                { title: "Trendy vo vede", category: "Technológie", keywords: "veda, inovácie", createdOn: "2024-10-10" },
-                { title: "Nové objavy", category: "Výskum", keywords: "objavy, výskum", createdOn: "2024-10-15" },
-            ],
-        },
-        {
-            name: "Konferencia 2",
-            description: "Diskusia o inováciách v oblasti umelej inteligencie.",
-            eventDate: "2025-01-10",
-            uploadEndDate: "2025-01-05",
-            articles: [
-                { title: "AI vo výrobe", category: "AI", keywords: "AI, výroba", createdOn: "2024-11-01" },
-            ],
-        },
-        {
-            name: "Konferencia 3",
-            description: "Konferencia na tému ochrany životného prostredia.",
-            eventDate: "2025-02-15",
-            uploadEndDate: "2025-02-10",
-            articles: [],
-        },
-        {
-            name: "Konferencia 4",
-            description: "Diskusia o inováciách v oblasti umelej inteligencie.",
-            eventDate: "2025-01-10",
-            uploadEndDate: "2025-01-05",
-            articles: [
-                { title: "AI vo výrobe", category: "AI", keywords: "AI, výroba", createdOn: "2024-11-01" },
-            ],
-        },
-    ];
+    const [events, setEvents] = useState([]);
+    const [visibleArticles, setVisibleArticles] = useState({});
+    const navigate = useNavigate();
+    //const [loading, setLoading] = useState(true);
+    //const [error, setError] = useState(null);
+
+    useEffect(() => {
+        const fetchEvents = async () => {
+            try {
+                const response = await fetch('http://localhost:8080/api/events'); // Replace with your API URL
+                if (!response.ok) throw new Error('Failed to fetch events');
+                const data = await response.json();
+                setEvents(data);
+                console.log(data);
+                const initialVisibility = data.reduce((acc, event) => {
+                    acc[event.idevent] = true;
+                    return acc;
+                }, {});
+                setVisibleArticles(initialVisibility);
+                //setEvents(data);
+                //setLoading(false);
+            } catch (err) {
+                console.log(err.message);
+                
+            }
+        };
+        fetchEvents();
+    }, []);
 
     const [searchTerm, setSearchTerm] = useState('');
 
-    const filteredConferences = conferences.filter((conference) =>
-        conference.name.toLowerCase().includes(searchTerm.toLowerCase())
+    const filteredEvents = events.filter((event) =>
+        event.event_name.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
-    const [visibleArticles, setVisibleArticles] = useState(
-        conferences.reduce((acc, _, index) => {
-            acc[index] = true; // Open all articles by default
-            return acc;
-        }, {})
-    );
     const [hoveredArticle, setHoveredArticle] = useState(null);
     
 
-    // Toggle visibility of articles for a specific conference
-    const toggleArticles = (index) => {
+    // Toggle articles visibility
+    const toggleArticles = (id) => {
         setVisibleArticles((prev) => ({
             ...prev,
-            [index]: !prev[index], // Toggle the visibility for the specific conference
+            [id]: !prev[id],
         }));
     };
 
@@ -117,53 +103,67 @@ const MainScreen = () => {
                     style={styles.searchBar}
                 />
                     <ul style={styles.list}>
-                        {filteredConferences.map((conference, index) => (
-                            <li key={index} style={styles.listItem}>
+                        {filteredEvents.map((event) => (
+                            <li key={event.idevent} style={styles.listItem}>
                                 <div style={styles.listItemContent}>
-                                    <button style={styles.addButton}>Pridať prácu</button>
-                                    <span style={styles.listItemText}>{conference.name}</span>
-                                    <p style={styles.conferenceDescription}>{conference.description}</p>
+                                    <button 
+                                    style={styles.addButton}
+                                    onClick={() => navigate('/uploadarticle', { state: { 
+                                        formMode:"New",
+                                        conferenceName: event.idevent
+                                     } })}
+                                    >Pridať prácu</button>
+                                    <span style={styles.listItemText}>{event.event_name}</span>
+                                    <p style={styles.conferenceDescription}>This is the event description</p>
                                     <div style={styles.datesContainer}>
                                         <div style={styles.dateField}>
                                             <label style={styles.dateLabel}>Event Date:</label>
-                                            <span style={styles.dateValue}>{conference.eventDate}</span>
+                                            <span style={styles.dateValue}>{event.event_date}</span>
                                         </div>
                                         <div style={styles.dateField}>
                                             <label style={styles.dateLabel}>Upload End Date:</label>
-                                            <span style={styles.dateValue}>{conference.uploadEndDate}</span>
+                                            <span style={styles.dateValue}>{event.event_upload_EndDate}</span>
                                         </div>
                                     </div>
                                     {/* Show/Hide Articles Button (Only if there are articles) */}
-                                    {conference.articles.length > 0 && (
+                                    {event.articles.length > 1 && (
                                         <button
-                                            onClick={() => toggleArticles(index)}
+                                            onClick={() => toggleArticles(event.idevent)}
                                             style={styles.toggleButton}
                                         >
-                                            {visibleArticles[index] ? 'Skryť články' : 'Zobraziť články'}
+                                            {visibleArticles[event.idevent] ? 'Skryť články' : 'Zobraziť články'}
                                         </button>
                                     )}
 
                                     {/* Sublist of Articles */}
                                     <div style={styles.articlesSection}>
                                     {/* Articles List */}
-                                    {visibleArticles[index] && conference.articles.length > 0 && (
+                                    {visibleArticles[event.idevent] && event.articles.length > 0 && (
                                         <div style={styles.articlesSection}>
                                             <ul style={styles.articleList}>
-                                                {conference.articles.map((article, idx) => (
+                                                {event.articles.map(article => (
                                                     <li
-                                                        key={idx}
+                                                        key={article.idarticle}
                                                         style={{
                                                             ...styles.articleItem,
-                                                            backgroundColor: hoveredArticle === idx ? '#ffffff' : '#f9f9f9',
+                                                            backgroundColor: hoveredArticle === article.idarticle ? '#ffffff' : '#f9f9f9',
                                                         }}
-                                                        onMouseEnter={() => setHoveredArticle(idx)}
+                                                        onMouseEnter={() => setHoveredArticle(article.idarticle)}
                                                         onMouseLeave={() => setHoveredArticle(null)}
+                                                        onClick={() => navigate('/uploadarticle', 
+                                                            { state: {
+                                                                formMode:"View", 
+                                                                articleid: article.idarticle,
+                                                                title:article.title,
+                                                                description:article.Description,
+                                                                category:article.category_idcategory,
+                                                            } })}
                                                     >
                                                         <h3 style={styles.articleTitle}>{article.title}</h3>
-                                                        <p style={styles.articleText}>Tato praca sa zaobera vyskumom v oblasti ...</p>
-                                                        <p style={styles.articleText}><strong>{article.category}</strong></p>
-                                                        <p style={styles.articleText}>{article.keywords}</p>
-                                                        <span style={styles.articleDate}>{article.createdOn}</span>
+                                                        <p style={styles.articleText}>{article.Description}</p>
+                                                        <p style={styles.articleText}><strong>{article.category_idcategory}</strong></p>
+                                                        <p style={styles.articleText}>some keywords</p>
+                                                        <span style={styles.articleDate}>{article.created_at}</span>
                                                     </li>
                                                 ))}
                                             </ul>
