@@ -16,6 +16,7 @@ class DatabaseSeeder extends Seeder
         $this->call([
             SeederArticleStatus::class,
             SeederCategory::class,
+            RoleSeeder::class,
         ]);
     }
 }
