@@ -1,100 +1,235 @@
 export const styles = {
     container: {
-        minHeight: '100vh',
-        backgroundColor: 'white',
+        display: 'flex',
+        flexDirection: 'column',
+        minHeight: '100vh', // Ensures the container takes up the full viewport height
+        fontFamily: 'Arial, sans-serif',
+        backgroundColor: '#f5f5f5',
+    },
+    contentWrapper: {
+        flex: 1, // Allows content to grow and fill remaining space
+        maxWidth: '1000px',
+        width: '100%',
+        margin: '0 auto',
+        padding: '0 20px',
     },
     header: {
-        backgroundColor: '#4CAF50',
-        color: 'white',
-        padding: '1rem',
-        textAlign: 'center',
-    },
-    headerTitle: {
-        fontSize: '1.5rem',
-        fontWeight: 'semibold',
-    },
+        position: 'sticky',
+        top: 0,
+        zIndex: 1000,
+        backgroundColor: "#4caf50",
+        color: "white",
+        display: "flex",
+        alignItems: "center",
+        padding: "10px 20px",
+        height: "50px",
+  
+      },
+      headerContainer: {
+          width: "1000px", // Match the form's maxWidth
+          margin: "0 auto",  // Center the content
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+        },
+      logo: {
+        backgroundColor: "white",
+        color: "black",
+        padding: "10px",
+        fontWeight: "bold",
+        borderRadius: "5px",
+      },
+      nav: {
+        display: "flex",
+        gap: "20px",
+      },
+      navLink: {
+        color: "white",
+        textDecoration: "none",
+      },
+      activeLink: {
+        borderBottom: "2px solid white",
+      },
+      icons: {
+        display: "flex",
+        gap: "15px",
+      },
     main: {
-        maxWidth: '48rem',
-        margin: '0 auto',
-        padding: '2rem 1rem',
+        flex: 1, // Ensures the main part grows to fill available space
+        backgroundColor: '#fff',
+        borderRadius: '8px',
+        boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+        padding: '20px',
+        overflowY: 'auto', // Makes the content scrollable when overflowing
+        minHeight: 'calc(100vh - 200px)', // Adjusts height to account for header and footer
+        boxSizing: 'border-box', // Prevent padding from affecting height
+        margin:'10px'
     },
     sectionTitle: {
-        fontSize: '1.5rem',
+        fontSize: '35px',
         fontWeight: 'bold',
-        marginBottom: '1.5rem',
+        margin: 0, // Reset default margins for precision
+        marginTop:'20px'
     },
-    dropdown: {
-        position: 'relative',
+    list: { 
+        listStyleType: 'none', 
+        padding: 0 
     },
-    dropdownButton: {
-        width: '100%',
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        padding: '1rem',
-        textAlign: 'left',
-        border: '1px solid #e2e8f0',
-        borderRadius: '0.5rem',
-        backgroundColor: 'white',
-        transition: 'background-color 0.2s',
+    listItem: { 
+        position: 'relative', // For button positioning
+        marginBottom: '20px', 
+        padding: '15px', 
+        borderRadius: '8px', 
+        backgroundColor: '#f9f9f9', 
+        boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)', 
+        border: '1px solid #e0e0e0',
     },
-    dropdownButtonHover: {
-        backgroundColor: '#f7fafc',
+    listItemContent: { 
+        display: 'flex', 
+        flexDirection: 'column' 
     },
-    dropdownButtonText: {
-        fontSize: '1.25rem',
-        fontWeight: 'semibold',
+    listItemText: { 
+        fontSize: '25px',  // Increased font size from 16px to 20px
+        fontWeight: 'bold', // Added bold for emphasis
+        color: '#333', 
     },
-    dropdownIcon: {
-        width: '1.5rem',
-        height: '1.5rem',
-        transition: 'transform 0.2s',
+    datesContainer: { 
+        display: 'flex', 
+        justifyContent: 'space-between' 
     },
-    dropdownIconOpen: {
-        transform: 'rotate(180deg)',
+    dateField: { 
+        display: 'flex', 
+        flexDirection: 'column', 
+        width: '48%' 
     },
-    dropdownMenu: {
+    dateLabel: { 
+        marginBottom: '5px', 
+        fontSize: '14px', 
+        color: '#555' 
+    },
+    dateValue: { 
+        fontSize: '16px', 
+        fontWeight: 'normal', 
+        color: '#333' 
+    },
+    conferenceDescription: {
+        fontSize: '14px', // Smaller than the title
+        color: '#666',    // Muted text color
+        marginBottom: '10px', // Spacing between description and dates
+        lineHeight: '1.4',    // Better readability
+    },
+    addButton: { 
         position: 'absolute',
-        width: '100%',
-        marginTop: '0.5rem',
-        backgroundColor: 'white',
-        border: '1px solid #e2e8f0',
-        borderRadius: '0.5rem',
-        boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
-        zIndex: 10,
-    },
-    dropdownMenuItem: {
-        padding: '1rem',
-        cursor: 'pointer',
-        transition: 'background-color 0.2s',
-    },
-    dropdownMenuItemHover: {
-        backgroundColor: '#f7fafc',
-    },
-    conferenceBox: {
-        marginTop: '1rem',
-        padding: '1rem',
-        border: '1px solid #e2e8f0',
-        borderRadius: '0.5rem',
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-    },
-    conferenceName: {
-        fontSize: '1.25rem',
-        fontWeight: 'semibold',
-    },
-    uploadButton: {
-        padding: '0.5rem 1rem',
-        backgroundColor: '#4CAF50',
-        color: 'white',
+        top: '10px',
+        right: '10px',
+        backgroundColor: '#4CAF50', // Green button
+        color: '#ffffff', // White text
         border: 'none',
-        borderRadius: '0.25rem',
+        padding: '8px 12px',
+        borderRadius: '5px',
         cursor: 'pointer',
-        transition: 'background-color 0.2s',
+        fontSize: '14px',
+        fontWeight: 'bold',
+        transition: 'background-color 0.3s ease',
     },
-    uploadButtonHover: {
-        backgroundColor: '#45a049',
+    
+    addButtonHover: {
+        backgroundColor: '#45a049', // Slightly darker green on hover
     },
+    footer: {
+        backgroundColor: '#4CAF50',
+        color: '#ffffff',
+        textAlign: 'center',
+        padding: '10px 0',
+        fontSize: '14px',
+        borderTop: '1px solid #3e8e41',
+        marginTop: 'auto', // Ensures footer stays at the bottom
+    },
+    
+    footerText: {
+        margin: 0,
+        fontSize: '14px',
+        fontWeight: '400',
+    },
+    searchBar: {
+        flex:1,
+        width: '100%',      // Stretch to fill the contentWrapper
+        padding: '10px',    
+        margin: '10px 0', // Add spacing between title and main part
+        borderRadius: '8px',
+        border: '1px solid #ccc',
+        fontSize: '16px',
+        boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+        boxSizing: 'border-box', // Prevent padding from affecting width
+    },
+    articlesSection: {
+        marginTop: '10px', // Add space between the dates and articles
+        padding: '10px',
+        borderTop: '1px solid #ddd',
+    },
+    
+    articlesTitle: {
+        fontSize: '18px',
+        fontWeight: 'bold',
+        marginBottom: '10px',
+    },
+    
+    articleList: {
+        listStyleType: 'none',
+        padding: 0,
+    },
+    
+    articleItem: {
+        position: 'relative',
+        padding: '10px',
+        marginBottom: '10px',
+        backgroundColor: '#f9f9f9',
+        borderRadius: '5px',
+        boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+        transition: 'background-color 0.3s ease',
+        cursor: 'pointer', // Makes the mouse cursor a clickable pointer
+    },
+    
+    articleTitle: {
+        fontSize: '16px',
+        fontWeight: 'bold',
+        marginBottom: '5px',
+    },
+    
+    articleText: {
+        margin: '5px 0',
+        fontSize: '14px',
+        color: '#555',
+    },
+    
+    articleDate: {
+        position: 'absolute',
+        bottom: '10px',
+        right: '15px',
+        fontSize: '12px',
+        color: '#777',
+    },
+    toggleButton: {
+        marginTop: '10px',
+        padding: '12px 12px',
+        backgroundColor: '#4CAF50', // Green background
+        color: '#fff', // White text
+        border: 'none',
+        borderRadius: '6px', // Slightly rounded corners
+        fontSize: '12px',
+        fontWeight: '600',
+        textTransform: 'uppercase',
+        letterSpacing: '0.5px',
+        cursor: 'pointer',
+        transition: 'background-color 0.3s ease, transform 0.2s ease',
+        boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+    },
+    
+    toggleButtonHover: {
+        backgroundColor: '#45a049', // Darker green on hover
+        transform: 'scale(1.05)', // Slightly enlarge on hover
+    },
+    
+    
 };
 
