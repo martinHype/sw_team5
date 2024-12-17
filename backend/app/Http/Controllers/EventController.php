@@ -9,6 +9,20 @@ use Carbon\Carbon;
 
 class EventController extends Controller
 {
+    public function index(){
+        $events = Event::with('articles')->get(); // Load related articles
+        return response()->json($events);
+    }
+
+    public function showArticles($id){
+        $event = Event::find($id);
+
+        if (!$event) {
+            return response()->json(['message' => 'Event not found'], 404);
+        }
+
+        return response()->json($event->articles);
+    }
     public function store(Request $request)
     {
         // Validácia údajov
