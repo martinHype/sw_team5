@@ -6,18 +6,59 @@ import graduation_hat from "../../images/graduation_hat.png";
 import user from "../../images/user.png";
 import logout from "../../images/logout.png";
 import { useNavigate } from 'react-router-dom';
+import { format } from "date-fns";
 
 const MainScreen = () => {
     const [events, setEvents] = useState([]);
     const [visibleArticles, setVisibleArticles] = useState({});
     const navigate = useNavigate();
+    const [userRole, setUserRole] = useState([]);
+    const [loggedInUserId, setLoggedInUserId] = useState(null);
+
+
+    const statusColors = {
+        "Koncept": "#d3d3d3", // Light Grey
+        "Čaká na recenziu": "#2196F3", // Blue
+        "Prebieha kontrola":"#FFD700", // Yellow
+        "Publikovať v predloženej forme": "#4CAF50", // Green
+        "Publikovať po zapracovaní pripomienok": "#FF9800", // Orange
+        "Neprijať pre publikovanie": "#F44336", // Red
+    };
     //const [loading, setLoading] = useState(true);
     //const [error, setError] = useState(null);
-
+    const getFormMode = (articleStatus) => {
+        switch (articleStatus) {
+            case "Koncept":
+                return "Edit"; // Article is in draft, so form should be editable
+            case "Čaká na recenziu":
+            case "Prebieha kontrola":
+                return "Review";
+            case "Publikovať v predloženej forme":
+            case "Publikovať po zapracovaní pripomienok":
+            case "Neprijať pre publikovanie":
+                return "View"; // These statuses indicate read-only review mode
+            default:
+                return "New"; // Default to "New" mode if status is unknown
+        }
+    };
     useEffect(() => {
+        const rolesString = sessionStorage.getItem("userRoles");
+        const rolesArray = rolesString ? rolesString.split(",") : [];
+
+        const userId = sessionStorage.getItem("userId");
+        console.log(rolesArray);
+        setUserRole(rolesArray);
+        setLoggedInUserId(parseInt(userId, 10));
+        
         const fetchEvents = async () => {
             try {
-                const response = await fetch('http://localhost:8080/api/events'); // Replace with your API URL
+                const response = await fetch('http://localhost:8080/api/studentevents',{
+                    method:"GET",
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Authorization: 'Bearer ' + sessionStorage.getItem('authToken'),
+                      },
+                }); // Replace with your API URL
                 if (!response.ok) throw new Error('Failed to fetch events');
                 const data = await response.json();
                 setEvents(data);
@@ -106,23 +147,23 @@ const MainScreen = () => {
                         {filteredEvents.map((event) => (
                             <li key={event.idevent} style={styles.listItem}>
                                 <div style={styles.listItemContent}>
-                                    <button 
+                                    {userRole.includes('student') && event.articles.some((article) => article.user_iduser === loggedInUserId) &&  <button 
                                     style={styles.addButton}
                                     onClick={() => navigate('/uploadarticle', { state: { 
                                         formMode:"New",
                                         conferenceName: event.idevent
                                      } })}
-                                    >Pridať prácu</button>
+                                    >Pridať prácu</button>}
                                     <span style={styles.listItemText}>{event.event_name}</span>
                                     <p style={styles.conferenceDescription}>This is the event description</p>
                                     <div style={styles.datesContainer}>
                                         <div style={styles.dateField}>
                                             <label style={styles.dateLabel}>Event Date:</label>
-                                            <span style={styles.dateValue}>{event.event_date}</span>
+                                            <span style={styles.dateValue}>{format(new Date(event.event_date), 'dd.MM.yyyy')}</span>
                                         </div>
                                         <div style={styles.dateField}>
                                             <label style={styles.dateLabel}>Upload End Date:</label>
-                                            <span style={styles.dateValue}>{event.event_upload_EndDate}</span>
+                                            <span style={styles.dateValue}>{format(new Date(event.event_upload_EndDate), 'dd.MM.yyyy')}</span>
                                         </div>
                                     </div>
                                     {/* Show/Hide Articles Button (Only if there are articles) */}
@@ -152,18 +193,31 @@ const MainScreen = () => {
                                                         onMouseLeave={() => setHoveredArticle(null)}
                                                         onClick={() => navigate('/uploadarticle', 
                                                             { state: {
-                                                                formMode:"View", 
+                                                                formMode: getFormMode(article.acticle_status_name), 
                                                                 articleid: article.idarticle,
                                                                 title:article.title,
                                                                 description:article.Description,
                                                                 category:article.category_idcategory,
+                                                                reviewerId:article.idreviewer,
+                                                                ownerid:article.user_iduser,
                                                             } })}
                                                     >
                                                         <h3 style={styles.articleTitle}>{article.title}</h3>
                                                         <p style={styles.articleText}>{article.Description}</p>
-                                                        <p style={styles.articleText}><strong>{article.category_idcategory}</strong></p>
-                                                        <p style={styles.articleText}>some keywords</p>
-                                                        <span style={styles.articleDate}>{article.created_at}</span>
+                                                        <p style={styles.articleText}><strong>{article.category_name}</strong></p>
+                                                        <p style={styles.articleText}>Key words</p>
+                                                        <span style={styles.articleDate}>{format(new Date(article.created_at), 'dd.MM.yyyy')}</span>
+                                                        {/* Status Label */}
+                                                        <div
+                                                            style={{
+                                                                ...styles.statusLabel,
+                                                                backgroundColor:
+                                                                    statusColors[article.acticle_status_name] ||
+                                                                    "#000000", // Default fallback color
+                                                            }}
+                                                        >
+                                                            {article.acticle_status_name}
+                                                        </div>
                                                     </li>
                                                 ))}
                                             </ul>
