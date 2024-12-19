@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 
 class EventController extends Controller
 {
@@ -81,6 +82,8 @@ class EventController extends Controller
             'event_upload_EndDate' => 'required|date',
             'categories' => 'nullable|array', // Validate categories as an array
             'categories.*' => 'required|string|max:255', // Validate each category as a string
+            'password' => 'string',
+            'description' => 'nullable|string',
         ]);
 
         try {
@@ -91,6 +94,8 @@ class EventController extends Controller
                 'event_upload_EndDate' => Carbon::parse($validatedData['event_upload_EndDate']),
                 'created_on' => Carbon::now(),
                 'modified_on' => Carbon::now(),
+                'password' => $validatedData['password'],
+                'description' => $validatedData['description'],
             ]);
 
             // Vytvorenie kategórií pre udalosť
@@ -181,9 +186,6 @@ class EventController extends Controller
     }
     public function getAdminEventUsers($id)
     {
-
-        //TODO Neberie do uvahy ci je prihlaseny na konferenciu iba ci ma rolu. ak má hned to vyhodi na vserkych konf
-
         // Načítanie používateľov a ich rolí pre konkrétnu konferenciu
         $users = User::with(['roles' => function ($query) use ($id) {
             $query->wherePivot('conference_id', $id); // Filter podľa conference_id v pivot tabuľke
@@ -196,28 +198,6 @@ class EventController extends Controller
 
         // Vrátiť výsledky vo formáte JSON
         return response()->json($users, 200);
-    }
-    public function assignRole(Request $request, $id)
-    {
-        // Overenie vstupov
-        $validatedData = $request->validate([
-            'role' => 'required|exists:role,idrole',
-            'conference' => 'required|exists:event,idevent',
-        ]);
-
-        $user = User::findOrFail($id);
-
-        $roleId = $validatedData['role'];
-        $conference = $validatedData['conference'];
-
-        $user->roles()->attach($roleId, ['conference_id' => $conference]);
-
-        return response()->json([
-            'message' => 'Rola bola úspešne priradená používateľovi.',
-            'userId' => $user->id,
-            'roleId' => $roleId,
-            'conferenceId' => $conference,
-        ], 200);
     }
 
 }
