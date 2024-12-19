@@ -42,7 +42,9 @@ class Event extends Model
 		'event_date',
 		'event_upload_EndDate',
 		'created_on',
-		'modified_on'
+		'modified_on',
+        'password',
+        'description',
 	];
 
 	public function articles()

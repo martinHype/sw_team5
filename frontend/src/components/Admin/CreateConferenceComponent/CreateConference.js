@@ -8,6 +8,9 @@ const CreateConference = () => {
         eventName: '',
         eventDate: '',
         uploadEndDate: '',
+        description: '', // Added description field
+        conferencePassword: '',
+        isPrivate: false, // Added for checkbox logic
     });
     const [categories, setCategories] = useState([]);
     const [newCategory, setNewCategory] = useState('');
@@ -16,8 +19,11 @@ const CreateConference = () => {
     const navigate = useNavigate();
 
     const handleChange = (e) => {
-        const { name, value } = e.target;
-        setFormData({ ...formData, [name]: value });
+        const { name, value, type, checked } = e.target;
+        setFormData({
+            ...formData,
+            [name]: type === 'checkbox' ? checked : value,
+        });
     };
 
     const fetchSuggestions = async (query) => {
@@ -71,6 +77,8 @@ const CreateConference = () => {
                     event_name: formData.eventName,
                     event_date: formData.eventDate,
                     event_upload_EndDate: formData.uploadEndDate,
+                    description: formData.description, // Include description in the request
+                    password: formData.isPrivate ? formData.conferencePassword : null, // Include password only if private
                     categories, // Send the categories array
                 },
                 {
@@ -88,11 +96,14 @@ const CreateConference = () => {
                 eventName: '',
                 eventDate: '',
                 uploadEndDate: '',
+                description: '',
+                conferencePassword: '',
+                isPrivate: false,
             });
             setCategories([]);
 
             console.log("Idem presmerovať");
-            navigate('/conferences');
+            navigate('/admin/conferences');
 
         } catch (error) {
             console.error('Chyba pri ukladaní:', error.response?.data || error.message);
@@ -142,6 +153,48 @@ const CreateConference = () => {
                         required
                     />
                 </div>
+
+                {/* Description */}
+                <div style={styles.formGroup}>
+                    <label style={styles.label}>Popis konferencie:</label>
+                    <textarea
+                        name="description"
+                        value={formData.description}
+                        onChange={handleChange}
+                        style={styles.textarea}
+                        placeholder="Zadajte popis konferencie"
+                        required
+                    />
+                </div>
+
+                {/* Private Conference Checkbox */}
+                <div style={styles.formGroup}>
+                    <label style={styles.label}>
+                        <input
+                            type="checkbox"
+                            name="isPrivate"
+                            checked={formData.isPrivate}
+                            onChange={handleChange}
+                            style={styles.checkbox}
+                        />
+                        Súkromná konferencia
+                    </label>
+                </div>
+
+                {/* Password Field (Visible Only If Private) */}
+                {formData.isPrivate && (
+                    <div style={styles.formGroup}>
+                        <label style={styles.label}>Heslo konferencie:</label>
+                        <input
+                            type="text"
+                            name="conferencePassword"
+                            value={formData.conferencePassword}
+                            onChange={handleChange}
+                            style={styles.input}
+                            placeholder="Zadajte heslo konferencie"
+                        />
+                    </div>
+                )}
 
                 {/* Categories */}
                 <div style={styles.formGroup}>

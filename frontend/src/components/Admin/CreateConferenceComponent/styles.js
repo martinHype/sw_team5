@@ -88,6 +88,18 @@ const styles = {
     suggestionItemHover: {
         backgroundColor: '#f0f0f0',
     },
+    textarea: {
+        width: '100%',
+        minHeight: '100px', // Minimum height for the textarea
+        padding: '8px',
+        marginBottom: '10px',
+        border: '1px solid #ccc',
+        borderRadius: '4px',
+        resize: 'vertical', // Allow the user to resize the height
+        fontFamily: 'inherit', // Match the font of the input fields
+        fontSize: '14px',
+    },
+
 };
 
 export default styles;
