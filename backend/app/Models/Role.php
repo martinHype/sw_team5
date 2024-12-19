@@ -40,10 +40,4 @@ class Role extends Model
 		'created_on',
 		'modified_on'
 	];
-
-    public function users()
-    {
-        return $this->belongsToMany(User::class, 'role_user', 'role_id', 'user_id')
-            ->withPivot('conference_id');
-    }
 }

@@ -12,7 +12,7 @@ use Illuminate\Database\Eloquent\Model;
 
 /**
  * Class Article
- * 
+ *
  * @property int $idarticle
  * @property int $user_iduser
  * @property string $title
@@ -26,7 +26,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property string|null $negative_review
  * @property Carbon $created_on
  * @property Carbon $modified_on
- * 
+ *
  * @property ActicleStatus $acticle_status
  * @property Category $category
  * @property Event $event

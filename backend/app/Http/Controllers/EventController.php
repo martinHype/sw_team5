@@ -135,5 +135,27 @@ class EventController extends Controller
         // Vrátiť výsledky vo formáte JSON
         return response()->json($users, 200);
     }
+    public function assignRole(Request $request, $id)
+    {
+        // Overenie vstupov
+        $validatedData = $request->validate([
+            'role' => 'required|exists:role,idrole',
+            'conference' => 'required|exists:event,idevent',
+        ]);
+
+        $user = User::findOrFail($id);
+
+        $roleId = $validatedData['role'];
+        $conference = $validatedData['conference'];
+
+        $user->roles()->attach($roleId, ['conference_id' => $conference]);
+
+        return response()->json([
+            'message' => 'Rola bola úspešne priradená používateľovi.',
+            'userId' => $user->id,
+            'roleId' => $roleId,
+            'conferenceId' => $conference,
+        ], 200);
+    }
 
 }

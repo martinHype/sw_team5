@@ -3,16 +3,16 @@ import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import styles from './styles'; // Import your styles
 
-const ConferenceUsersComponent = ({ conferenceId }) => {
+const ConferenceArticlesComponent = ({ conferenceId }) => {
     const { id } = useParams();
     const [conference, setConference] = useState(null);
-    const [users, setUsers] = useState([]);
-    const [roles, setRoles] = useState([]);
+    const [articles, setArticles] = useState([]);
+    const [reviewers, setReviewers] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(null);
 
     useEffect(() => {
-        const fetchConferenceAndUsers = async () => {
+        const fetchConferenceAndArticles = async () => {
             const token = sessionStorage.getItem('authToken');
             setIsLoading(true);
             setError(null);
@@ -25,23 +25,28 @@ const ConferenceUsersComponent = ({ conferenceId }) => {
                     },
                 });
 
-                // Fetch registered users
-                const usersResponse = await axios.get(`http://localhost:8080/api/admin/conference/${id}/users`, {
+                // Fetch articles assigned to the conference
+                const articlesResponse = await axios.get(`http://localhost:8080/api/admin/conference/${id}/articles`, {
                     headers: {
                         Authorization: `Bearer ${token}`,
                     },
                 });
 
-                // Fetch available roles
-                const rolesResponse = await axios.get(`http://localhost:8080/api/admin/roles`, {
+                // Fetch users with the reviewers role
+                const reviewersResponse = await axios.get(`http://localhost:8080/api/admin/roles/reviewers`, {
                     headers: {
                         Authorization: `Bearer ${token}`,
                     },
                 });
 
                 setConference(conferenceResponse.data.data);
-                setUsers(Object.values(usersResponse.data));
-                setRoles(Object.values(rolesResponse.data));
+                setArticles(
+                    Object.values(articlesResponse.data).map((article) => ({
+                        ...article,
+                        user: article.user || { firstname: 'Unknown', lastname: '' }, // Default if user is null
+                    }))
+                );
+                setReviewers(Object.values(reviewersResponse.data));
             } catch (error) {
                 console.error('Error fetching data:', error.response?.data || error.message);
                 setError('Nepodarilo sa načítať údaje.');
@@ -50,26 +55,32 @@ const ConferenceUsersComponent = ({ conferenceId }) => {
             }
         };
 
-        fetchConferenceAndUsers();
+        fetchConferenceAndArticles();
     }, [conferenceId]);
 
-    const handleRoleChange = async (userId, newRole) => {
+    const handleReviewerChange = async (articleId, userId) => {
         const token = sessionStorage.getItem('authToken');
 
         try {
             await axios.post(
-                `http://localhost:8080/api/users/${userId}/assign-role`,
-                { role: newRole, conferenceId },
+                `http://localhost:8080/api/admin/articles/${articleId}/assign-reviewer`,
+                { reviewer_id: userId },
                 {
                     headers: {
                         Authorization: `Bearer ${token}`,
                     },
                 }
             );
-            alert('Rola bola úspešne zmenená.');
+            alert('Recenzent bol úspešne priradený.');
+            const articlesResponse = await axios.get(`http://localhost:8080/api/admin/conference/${id}/articles`, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+            setArticles(Object.values(articlesResponse.data));
         } catch (error) {
-            console.error('Error assigning role:', error.response?.data || error.message);
-            alert('Pri zmene roly nastala chyba.');
+            console.error('Error assigning reviewer:', error.response?.data || error.message);
+            alert('Pri priraďovaní recenzenta nastala chyba.');
         }
     };
 
@@ -88,28 +99,24 @@ const ConferenceUsersComponent = ({ conferenceId }) => {
     return (
         <div style={styles.container}>
             <h2 style={styles.heading}>{conference.event_name}</h2>
-
-            {/* TODO dropdown nemá mať žiadnu hodnotu ak nema priradenu rolu
-                    medzi menom a Dropdown ma byt space-between
-             */}
-            <div style={styles.usersList}>
-                {users.map((user) => (
-                    <div style={styles.userCard}>
-                        {/* User's Name with Dropdown */}
-                        <div style={styles.userDetails}>
-                            <p style={styles.userName}>
-                                <strong>{user.firstname} {user.lastname}</strong>
-                            </p>
+            <div style={styles.articlesList}>
+                {articles.map((article) => (
+                    <div style={styles.articleCard} key={article.idarticle}>
+                        <div style={styles.articleDetails}>
+                            <p style={styles.articleTitle}><strong>{article.title}</strong></p>
+                            <p style={styles.articleAuthor}>Author: {article.user.firstname} {article.user.lastname}</p>
+                            <p style={styles.articleDescription}>{article.Description}</p>
                             <select
-                                id={`role-${user.iduser}`}
-                                value={user.role ? user.role.role_name : ''} // Show role name or empty if no role
-                                onChange={(e) => handleRoleChange(user.iduser, e.target.value)}
+                                id={`article-${article.idarticle}`}
+                                value={article.reviewer_id || ''} // Show reviewer_id or empty if none assigned
+                                onChange={(e) => handleReviewerChange(article.idarticle, e.target.value)}
                                 style={styles.dropdownSmall}
                             >
-                                <option value="">Prideliť rolu</option>
-                                {roles.map((role) => (
-                                    <option key={role.idrole} value={role.role_name}>
-                                        {role.role_name}
+                                <option
+                                    value="">{article.idreviewer ? `Assigned: ${reviewers.find(reviewer => reviewer.iduser === article.idreviewer)?.firstname || ''} ${reviewers.find(reviewer => reviewer.iduser === article.idreviewer)?.lastname || ''}` : 'Prideliť recenzenta'}</option>
+                                {reviewers.map((reviewer) => (
+                                    <option key={reviewer.iduser} value={reviewer.iduser}>
+                                        {reviewer.firstname} {reviewer.lastname}
                                     </option>
                                 ))}
                             </select>
@@ -117,9 +124,8 @@ const ConferenceUsersComponent = ({ conferenceId }) => {
                     </div>
                 ))}
             </div>
-
         </div>
     );
 };
 
-export default ConferenceUsersComponent;
+export default ConferenceArticlesComponent;

@@ -9,7 +9,7 @@ services:
       context: .
       dockerfile: config/db/Dockerfile
     image: sw-ing-db
-    platform: 'linux/x86_64'
+    platform: 'linux/amd64'
     container_name: SW-ING-DB
     restart: unless-stopped
     volumes:
@@ -35,6 +35,7 @@ services:
 
   redis-commander:
     image: rediscommander/redis-commander:latest
+    platform: 'linux/amd64'
     container_name: SW-ING-RedisCommander
     environment:
       - REDIS_HOSTS=local-0:redis:6379:0,local-1:redis:6379:1

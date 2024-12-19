@@ -41,10 +41,10 @@ const Navbar = () => {
                 <p style={styles.text}> ŠTUDENTSKÁ VEDECKÁ KONFERENCIA</p>
             </div>
             <div style={styles.navLinks}>
-                <a href="#" style={styles.link}>
-                    Vyhľadávanie
+                <a href="/admin/conferences" style={styles.link}>
+                    Konferencie
                 </a>
-                <a href="/create-conference" style={styles.link}>
+                <a href="/admin/create-conference" style={styles.link}>
                     Nový
                 </a>
                 <a href="#" style={styles.link}>

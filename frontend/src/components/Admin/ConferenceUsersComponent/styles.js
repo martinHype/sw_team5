@@ -1,43 +1,56 @@
 const styles = {
     container: {
         padding: '20px',
-        maxWidth: '800px',
+        maxWidth: '900px',
         margin: '0 auto',
+        backgroundColor: '#f9f9f9',
+        borderRadius: '8px',
+        boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
     },
     heading: {
         textAlign: 'center',
         marginBottom: '20px',
-        fontSize: '24px',
+        fontSize: '28px',
+        color: '#333',
+        fontWeight: 'bold',
     },
-    usersList: {
+    articlesList: {
         display: 'flex',
         flexDirection: 'column',
-        gap: '15px', // Space between user cards
+        gap: '15px', // Space between article cards
     },
-    userCard: {
-        backgroundColor: '#D9D9D9',
-        padding: '10px',
+    articleCard: {
+        backgroundColor: '#ffffff',
+        padding: '15px',
         borderRadius: '10px',
         boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
         display: 'flex',
-        alignItems: 'center', // Center align the dropdown with the name
         justifyContent: 'space-between',
+        alignItems: 'center',
     },
-    userDetails: {
+    articleDetails: {
+        flex: 1,
         display: 'flex',
-        alignItems: 'center', // Align name and dropdown in the same row
-        gap: '10px', // Add space between name and dropdown
+        flexDirection: 'column',
+        gap: '10px',
     },
-    userName: {
+    articleTitle: {
         margin: 0,
-        fontSize: '14px',
+        fontSize: '18px',
+        color: '#555',
     },
     dropdownSmall: {
-        height: '30px', // Smaller height for dropdown
-        fontSize: '12px', // Smaller font for dropdown text
+        height: '35px',
+        fontSize: '14px',
         borderRadius: '5px',
-        padding: '4px 8px',
+        padding: '5px 10px',
         border: '1px solid #ccc',
+        outline: 'none',
+        backgroundColor: '#ffffff',
+        transition: 'border-color 0.2s ease-in-out',
+    },
+    dropdownSmallFocus: {
+        borderColor: '#3498db',
     },
     loaderContainer: {
         display: 'flex',
@@ -54,9 +67,17 @@ const styles = {
         animation: 'spin 1s linear infinite',
     },
     error: {
-        color: 'red',
+        color: '#d9534f',
         textAlign: 'center',
         fontSize: '18px',
+        padding: '20px',
+        backgroundColor: '#f8d7da',
+        borderRadius: '8px',
+    },
+    articleAuthor: {
+        fontSize: '14px',
+        color: '#555',
+        margin: '5px 0',
     },
 };
 
