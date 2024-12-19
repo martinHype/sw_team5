@@ -103,6 +103,102 @@ const styles = {
         fontSize: '16px',
         backgroundColor: '#fff',
     },
+    popupOverlay: {
+      position: "fixed",
+      top: 0,
+      left: 0,
+      width: "100%",
+      height: "100%",
+      backgroundColor: "rgba(0, 0, 0, 0.5)",
+      display: "flex",
+      justifyContent: "center",
+      alignItems: "center",
+      zIndex: 999,
+    },
+    popup: {
+      backgroundColor: "#fff",
+      padding: "20px",
+      borderRadius: "8px",
+      textAlign: "center",
+      boxShadow: "0px 0px 10px rgba(0,0,0,0.1)",
+    },
+    popupButtons: {
+      display: "flex",
+      justifyContent: "space-between",
+      marginTop: "15px",
+    },
+    popupButton: {
+      padding: "10px 15px",
+      border: "none",
+      borderRadius: "5px",
+      cursor: "pointer",
+      fontSize: "14px",
+      flex: "1", // Allow buttons to size proportionally
+      margin: "0 10px", // Add spacing between buttons
+      maxWidth: "150px", // Limit button width
+      textAlign: "center",
+    },
+    evaluationSection: {
+      border: "2px solid #4CAF50",
+      padding: "15px",
+      borderRadius: "8px",
+      backgroundColor: "#f9fdf9",
+      marginTop: "20px",
+    },
+  
+    evaluationSectionTitle: {
+      fontSize: "20px",
+      fontWeight: "bold",
+      color: "#4CAF50",
+      textAlign: "center",
+      marginBottom: "15px",
+    },
+  
+    evaluationLabel: {
+      display: "block",
+      fontSize: "16px",
+      fontWeight: "600",
+      marginBottom: "10px",
+      color: "#333",
+    },
+  
+    evaluationInput: {
+      width: "100%",
+      padding: "10px",
+      fontSize: "16px",
+      border: "2px solid #4CAF50",
+      borderRadius: "5px",
+      backgroundColor: "#ffffff",
+      boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
+      color: "#333",
+      outline: "none",
+      cursor: "pointer",
+    },
+  
+    checkboxContainer: {
+      display: "flex",
+      flexDirection: "column",
+      gap: "8px",
+      marginBottom: "15px",
+    },
+  
+    checkboxLabel: {
+      fontSize: "14px",
+      fontWeight: "500",
+      color: "#555",
+    },
+
+    evaluationtextarea: {
+      width: '98%',
+        padding: '10px',
+        marginBottom: '15px',
+        borderRadius: '5px',
+        border: '1px solid #ccc',
+        fontSize: '16px',
+        backgroundColor: '#fff',
+    },
+    
+  
   };
   
 export default styles;
