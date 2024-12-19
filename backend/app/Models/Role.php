@@ -12,12 +12,12 @@ use Illuminate\Database\Eloquent\Model;
 
 /**
  * Class Role
- * 
+ *
  * @property int $idrole
  * @property string $role_name
  * @property Carbon $created_on
  * @property Carbon $modified_on
- * 
+ *
  * @property Collection|User[] $users
  *
  * @package App\Models
@@ -40,9 +40,4 @@ class Role extends Model
 		'created_on',
 		'modified_on'
 	];
-
-	public function users()
-	{
-		return $this->belongsToMany(User::class, 'user_has_role', 'role_idrole', 'user_iduser');
-	}
 }

@@ -33,6 +33,46 @@ class ArticleController extends Controller
             'article_id' => $article->idarticle,
         ], 201);
     }
+    public function getArticles($id)
+    {
+        try {
+            // Fetch articles associated with the given conference ID
+            $articles = Article::where('event_idevent', $id)
+                ->with('user:iduser,firstname,lastname') // Include user details
+                ->get();
 
-    
+            return response()->json($articles, 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'An error occurred while fetching articles.',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
+    }
+    public function addArticleReviewer(Request $request, $articleId)
+    {
+        try {
+            // Validate the input
+            $request->validate([
+                'reviewer_id' => 'required|exists:user,iduser', // Ensure reviewer_id exists in users table
+            ]);
+
+            // Find the article by its ID
+            $article = Article::findOrFail($articleId);
+
+            // Assign the reviewer_id to the article
+            $article->idreviewer = $request->input('reviewer_id');
+            $article->save();
+
+            return response()->json([
+                'message' => 'Reviewer successfully assigned to the article.',
+                'article' => $article,
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'An error occurred while assigning the reviewer.',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
+    }
 }
