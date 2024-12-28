@@ -5,7 +5,7 @@ import MainScreen from './screens/MainScreen/MainScreen';
 import UploadArticle from './screens/UploadArticleScreen/UploadArticle';
 import PrivateRoute from './components/Routes/PrivateRoute';
 import PublicRoute from './components/Routes/PublicRoute';
-import NewConferencePage from "./screens/NewConferenceScreen/NewConferencePage.js";
+import ConferenceFormPage from "./screens/ConferenceFormScreen/ConferenceFormPage.js";
 import ShowAllConferencesScreen from "./screens/ShowAllConferencesScreen/ShowAllConferencesScreen";
 import AdminDetailConferenceScreen from "./screens/AdminDetailConferenceScreen/AdminDetailConferenceScreen";
 import ConferenceUsersScreen from "./screens/AdminConferenceUsersScreen/ConferenceUsersScreen.js";
@@ -45,10 +45,18 @@ const App = () => {
                 />
 
                 <Route
-                    path="admin/create-conference"
+                    path="admin/conferences/create"
                     element={
                         <AdminRoute>
-                            <NewConferencePage />
+                            <ConferenceFormPage isEditMode={false}/>
+                        </AdminRoute>
+                    }
+                />
+                <Route
+                    path="admin/conferences/edit/:id"
+                    element={
+                        <AdminRoute>
+                            <ConferenceFormPage isEditMode={true}/>
                         </AdminRoute>
                     }
                 />

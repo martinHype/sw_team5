@@ -9,7 +9,7 @@ services:
       context: .
       dockerfile: config/db/Dockerfile
     image: sw-ing-db
-    platform: 'linux/amd64'
+    platform: 'linux/arm64'
     container_name: SW-ING-DB
     restart: unless-stopped
     volumes:

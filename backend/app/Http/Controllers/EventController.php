@@ -10,6 +10,7 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 
 class EventController extends Controller
 {
@@ -63,6 +64,35 @@ class EventController extends Controller
         return response()->json($events);
     }
 
+    public function update(Request $request, $id)
+    {
+        // Validate incoming data
+        $validatedData = $request->validate([
+            'event_name' => 'required|string|max:255',
+            'event_date' => 'required|date',
+            'event_upload_EndDate' => 'required|date',
+            'description' => 'nullable|string',
+            'password' => 'nullable|string',
+        ]);
+
+        // Find the event by ID
+        $event = Event::find($id);
+
+        if (!$event) {
+            return response()->json(['message' => 'Event not found'], 404);
+        }
+
+        // Update event details
+        $event->update([
+            'event_name' => $validatedData['event_name'],
+            'event_date' => $validatedData['event_date'],
+            'event_upload_EndDate' => $validatedData['event_upload_EndDate'],
+            'description' => $validatedData['description'] ?? null,
+            'password' => $validatedData['password'], // Null if not private
+        ]);
+
+        return response()->json(['message' => 'Event updated successfully', 'event' => $event]);
+    }
 
     public function showArticles($id){
         $event = Event::find($id);
@@ -80,9 +110,7 @@ class EventController extends Controller
             'event_name' => 'required|string|max:255',
             'event_date' => 'required|date',
             'event_upload_EndDate' => 'required|date',
-            'categories' => 'nullable|array', // Validate categories as an array
-            'categories.*' => 'required|string|max:255', // Validate each category as a string
-            'password' => 'string',
+            'password' => 'nullable|string',
             'description' => 'nullable|string',
         ]);
 
@@ -98,56 +126,55 @@ class EventController extends Controller
                 'description' => $validatedData['description'],
             ]);
 
-            // Vytvorenie kategórií pre udalosť
-            if (!empty($validatedData['categories'])) {
-                foreach ($validatedData['categories'] as $categoryName) {
-                    Category::create([
-                        'category_name' => $categoryName,
-                        'event_id' => $event->idevent, // Associate category with the created event
-                        'created_on' => Carbon::now(),
-                        'modified_on' => Carbon::now()
-                    ]);
-                }
-            }
-
             return response()->json([
-                'message' => 'Udalosť a kategórie boli úspešne vytvorené.',
-                'event' => $event,
-            ], 201);
+                'message' => 'Konferencia bola vytvorená!',
+                'event' => $event, // Celý objekt udalosti
+            ]);
 
         } catch (\Exception $e) {
+            Log::error($e->getMessage());
             return response()->json([
                 'message' => 'Pri vytváraní udalosti došlo k chybe.',
                 'error' => $e->getMessage(),
             ], 500);
         }
     }
-
+    //nemýliť si s getAdminEvents
+    public function getAdminEvent($id){
+        $event = Event::find($id);
+        return response()->json($event);
+    }
     public function getAdminEvents(Request $request)
     {
         try {
-            // Start building the query
+            // Získanie základného dotazu
             $query = Event::query();
 
-            // Filter by the exact date if provided
-            if ($request->filled('date')) {
-                $query->whereDate('event_date', $request->date);
+            if ($request->filled('date') || $request->filled('name')){
+                if ($request->filled('date')) {
+                    $query->whereDate('event_date', $request->date);
+                }
+
+                if ($request->filled('name')) {
+                    $query->where('event_name', 'like', '%' . $request->name . '%');
+                }
+            } else{
+                $threeDaysAgo = Carbon::now()->subDays(3)->startOfDay();
+                $query
+                    ->where('event_date', '>=', $threeDaysAgo)
+                    ->orderBy('created_on', 'desc');
             }
 
-            if ($request->filled('name')) {
-                $query->where('event_name', 'like', '%' . $request->name . '%');
-            }
-
-            // Execute the query and fetch the events
+            // Získanie výsledkov
             $events = $query->get();
 
-            // Return a successful JSON response
+            // Vrátenie odpovede
             return response()->json([
                 'success' => true,
                 'data' => $events,
             ], 200);
         } catch (\Throwable $e) {
-            // Handle exceptions and return an error response
+            // Spracovanie výnimiek
             return response()->json([
                 'success' => false,
                 'message' => 'Nepodarilo sa načítať udalosti.',
@@ -155,6 +182,7 @@ class EventController extends Controller
             ], 500);
         }
     }
+
     public function getAdminEventDetail($id)
     {
         try {

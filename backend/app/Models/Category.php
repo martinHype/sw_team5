@@ -37,11 +37,19 @@ class Category extends Model
 		'category_name',
 		'created_on',
 		'modified_on',
-        'event_id'
+        'event_id',
+        'is_active'
 	];
 
 	public function articles()
 	{
 		return $this->hasMany(Article::class, 'category_idcategory');
 	}
+    public function event()
+    {
+        return $this->belongsTo(Event::class, 'event_id', 'idevent'); // Foreign key: event_id, Local key: idevent
+    }
+
+
+
 }
