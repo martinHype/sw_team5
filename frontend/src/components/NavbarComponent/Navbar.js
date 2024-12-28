@@ -44,7 +44,7 @@ const Navbar = () => {
                 <a href="/admin/conferences" style={styles.link}>
                     Konferencie
                 </a>
-                <a href="/admin/create-conference" style={styles.link}>
+                <a href="/admin/conferences/create" style={styles.link}>
                     Nový
                 </a>
                 <a href="#" style={styles.link}>

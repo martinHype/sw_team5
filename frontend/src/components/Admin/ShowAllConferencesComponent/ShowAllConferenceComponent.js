@@ -22,16 +22,29 @@ const ShowAllConferenceComponent = () => {
         setError(null);
 
         try {
-            const response = await axios.get('http://localhost:8080/api/get-admin-events', {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-                params: {
-                    date: filters.date || undefined, // Include only if date is set
-                    name: filters.name || undefined, // Include only if name is set
-                },
-            });
+            let response;
 
+            if (filters.date || filters.name) {
+                // Ak sú zadané filtre, použijeme ich
+                response = await axios.get('http://localhost:8080/api/get-admin-events', {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                    params: {
+                        date: filters.date || undefined,
+                        name: filters.name || undefined,
+                    },
+                });
+            } else {
+                // Ak nie sú ani filtre, ani ID, načítame všetky konferencie
+                response = await axios.get('http://localhost:8080/api/get-admin-events', {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                });
+            }
+
+            // Nastavenie konferencií
             setConferences(response.data.data || []);
         } catch (error) {
             console.error('Error fetching conferences:', error.response?.data || error.message);
@@ -40,6 +53,7 @@ const ShowAllConferenceComponent = () => {
             setIsLoading(false);
         }
     };
+
 
     // Fetch conferences on component mount and when filters are applied
     useEffect(() => {

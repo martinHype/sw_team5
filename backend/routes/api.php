@@ -34,17 +34,20 @@ Route::get('/events/{id}/articles', [EventController::class, 'showArticles']);
 
 
 Route::middleware('auth:sanctum')->group(function () {
-    Route::post('/events', [EventController::class, 'store']);
-
     //admin
+    Route::post('/admin/events', [EventController::class, 'store']);
     Route::get('/get-admin-events', [EventController::class, 'getAdminEvents']);
-    Route::get('/categories', [CategoryController::class, 'fetchCategories']);
+    Route::get('/admin/categories', [CategoryController::class, 'fetchCategories']);
     Route::get('/admin/get-event-detail/{id}', [EventController::class, 'getAdminEventDetail']);
+    Route::get('/admin/conference/{id}', [EventController::class, 'getAdminEvent']);
     Route::get('/admin/conference/{id}/users', [EventController::class, 'getAdminEventUsers']) ->name('EventUsers');
     Route::get('/admin/roles/reviewers', [UserController::class, 'getReviewers']);
     Route::get('/admin/conference/{id}/articles', [ArticleController::class, 'getArticles']);
     Route::post('/admin/articles/{articleId}/assign-reviewer', [ArticleController::class, 'addArticleReviewer']) ->name('addArticleReviewer');
-
+    Route::get('/admin/events/{eventId}/categories', [CategoryController::class, 'getCategoriesByEventId']);
+    Route::put('/admin/events/{id}', [EventController::class, 'update']);
+    Route::patch('/admin/categories/{id}/deactivate', [CategoryController::class, 'deactivate']);
+    Route::post('/admin/categories', [CategoryController::class, 'store']);
 
     Route::post("/logout",[AuthController::class,'logout']);
 });

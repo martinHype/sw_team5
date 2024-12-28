@@ -68,7 +68,7 @@ const ConferenceDetailComponent = () => {
             <div style={styles.buttons}>
                 <button
                     style={styles.button}
-                    onClick={() => navigate(`/admin/conference/${id}/edit`)} // Navigate to edit page
+                    onClick={() => navigate(`/admin/conferences/edit/${id}`)} // Navigate to edit page
                 >
                     Editovať
                 </button>
