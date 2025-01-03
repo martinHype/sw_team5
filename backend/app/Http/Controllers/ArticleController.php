@@ -42,11 +42,6 @@ class ArticleController extends Controller
             $articles = Article::where('event_idevent', $id)
                 ->with('user:iduser,firstname,lastname') // Include user details
                 ->get();
-
-<<<<<<< HEAD
-
-=======
->>>>>>> 3e9c3757d2b2a1a43cb34bdad41e6d6e554cb7d5
             return response()->json($articles, 200);
         } catch (\Exception $e) {
             return response()->json([
