@@ -12,32 +12,47 @@ const UploadArticle = () => {
 
   const navigate = useNavigate();
   const location = useLocation();
-  const { conferenceName,formMode, articleid, title, description, category } = location.state || {};
-
+  const { conferenceName,formMode, articleid, title, description, category, reviewerId, ownerid } = location.state || {};
+  const [showPopup, setShowPopup] = useState(false);
   //console.log(conferenceName);
   const [ArticleData, setArticleData] = useState({
     title: "",
     Description: "",
     category:"",
+    reviewerId:0,
+    ownerid:0
+
+  });
+  const [evaluation, setEvaluation] = useState({
+    aktualnost: "",
+    zorientovanie: "",
+    vhodnost: "",
+    rozsah: "",
+    analyza: "",
+    prehladnost: "",
+    formalna_uroven: "",
+    sablona_sv: "",
+    nazov_chyba: false,
+    abstrakt_chyba: false,
+    abstrakt_rozsah: false,
+    uvod_vysledky: false,
+    zdroje_chyba: false,
+    bibliografia_chyba: false,
+    obrazky_chyba: false,
+    popis_chyba: false,
+    strong_points: "",
+    weak_points: "",
+    final_assessment:"",
   });
   useEffect(() => {
-    // Code to run only once when the form loads
-    console.log('Form loaded with state:', {
-      formMode,
-      articleid,
-      title,
-      description,
-      category,
-      conferenceName,
-    });
-  
-    if (formMode === "View") {
-      setArticleData((prev) => ({
-        ...prev,
+    if (formMode === "Edit" || formMode === "Review" || formMode === "View") {
+      setArticleData({
         title: title || "",
         description: description || "",
         category: category || "",
-      }));
+        reviewerId:reviewerId,
+        ownerid:ownerid,
+      });
     }
   }, [formMode, title, description, category]);
 
@@ -47,6 +62,13 @@ const UploadArticle = () => {
     setArticleData({
       ...ArticleData,
       [e.target.name]: e.target.value || "", // Ensure fallback for undefined
+    });
+  };
+  const handleEvaluationChange = (e) => {
+    const { name, type, checked, value } = e.target;
+    setEvaluation({
+      ...evaluation,
+      [name]: type === "checkbox" ? checked : value,
     });
   };
   const uploadFiles = async (id_article) =>{
@@ -76,6 +98,7 @@ const UploadArticle = () => {
               }
             );
             console.log(`File ${file.name} uploaded successfully:`, response.data);
+            navigate('/home');
           } catch (error){
             console.error(`Error uploading file ${file.name}:`, error.response?.data || error.message);
           }
@@ -91,9 +114,51 @@ const UploadArticle = () => {
         console.error('Error logging in:', error.response?.data || error.message);
       }
   };
+  const handleSubmit = (status) => {
+    console.log(articleid);
+    if(articleid){
+      let sendStatus = status;
+      if(formMode == "Review"){
+        console.log(evaluation.final_assessment);
+        sendStatus = (status === 4) ? 6 : parseInt(evaluation.final_assessment, 10) || status;
+      }
+      updateArticle(sendStatus);
+    }else{
+      createArticle(status);
+    }
+    navigate("/home");
+    
+    setShowPopup(false); // Close the popup
+  };
 
+  const updateArticle = async (actualStatus) => {
+    try {
+      const { conferenceName } = location.state || {};
+      const response = await axios.post(
+        'http://localhost:8080/api/article/update-status', {
+          articleid:articleid,
+          statusid:actualStatus,
+      },
+      {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: 'Bearer ' + sessionStorage.getItem('authToken'),
+        },
+      });
+      console.log(response);
+      //navigate('/home');
+      //const id_article = response.data.article_id;
+
+
+      
+      //sessionStorage.getItem("authToken");
+      
+  } catch (error) {
+      console.error('Error logging in:', error.response?.data || error.message);
+  }
+  };
   // function that will create a new article
-  const createArticle = async () => {
+  const createArticle = async (actualStatus) => {
     try {
       const { conferenceName } = location.state || {};
       const response = await axios.post(
@@ -101,7 +166,8 @@ const UploadArticle = () => {
           title: ArticleData.title,
           description: ArticleData.Description,
           category:parseInt(ArticleData.category,10),
-          event:conferenceName
+          event:conferenceName,
+          status:actualStatus,
       },
       {
         headers: {
@@ -166,14 +232,14 @@ const UploadArticle = () => {
             value={ArticleData.title}
             onChange={handleChange}
             style={styles.input}
-            readOnly={formMode === "View"} />
+            readOnly={formMode === "View" || formMode === "Review" || formMode === "Edit" && "locked"} />
           <label>Sekcia</label>
           <select 
           name="category"
           style={styles.select}
           onChange={handleChange}
           value={ArticleData.category}
-          readOnly={formMode === "View"}
+          disabled={formMode === "View" || formMode === "Review"}
           >
                 <option value="" hidden>Vyberte sekciu</option>
                 <option value="1">Biológia, ekológia a environmentalistika</option>
@@ -191,7 +257,7 @@ const UploadArticle = () => {
             placeholder="Popis práce" 
             rows="10"
             style={styles.textarea}
-            readOnly={formMode === "View"}/>
+            readOnly={formMode === "View" || formMode === "Review"}/>
           <label>Kľúčové slová</label>
           <input 
           name="keywords"
@@ -202,16 +268,187 @@ const UploadArticle = () => {
 
           <label>Dokumenty</label>
           <FileDropArea disabled={formMode === "View"}/>
+          {/* Reviewer Feedback (Only in Review or View Mode) */}
+          {/* Evaluation Section */}
+          {((formMode === "Review" && reviewerId === parseInt(sessionStorage.getItem("userId"),10)) || formMode === "View") && (
+            <div style={styles.evaluationSection}>
+              <h3 style={{ fontSize: "18px", fontWeight: "bold", color: "#333", marginBottom: "15px" }}>
+                Hodnotenie práce
+              </h3>
+
+              {/* Dropdown Fields */}
+              <label>Aktuálnosť a náročnosť práce</label>
+              <select
+                name="aktualnost"
+                value={evaluation.aktualnost}
+                onChange={handleEvaluationChange}
+                style={styles.select}
+                disabled={formMode === "View"}
+              >
+                <option value="">Vyberte hodnotenie</option>
+                <option value="A">A</option>
+                <option value="B">B</option>
+                <option value="C">C</option>
+                <option value="D">D</option>
+                <option value="E">E</option>
+                <option value="Fx">Fx</option>
+              </select>
+
+              <label>Zorientovanie sa študenta v danej problematike</label>
+              <select
+                name="zorientovanie"
+                value={evaluation.zorientovanie}
+                onChange={handleEvaluationChange}
+                style={styles.select}
+                disabled={formMode === "View"}
+              >
+                <option value="">Vyberte hodnotenie</option>
+                <option value="A">A</option>
+                <option value="B">B</option>
+                <option value="C">C</option>
+                <option value="D">D</option>
+                <option value="E">E</option>
+                <option value="Fx">Fx</option>
+              </select>
+
+              <label>Práca zodpovedá šablóne určenej pre ŠVK</label>
+              <select
+                name="sablona_sv"
+                value={evaluation.sablona_sv}
+                onChange={handleEvaluationChange}
+                style={styles.select}
+                disabled={formMode === "View"}
+              >
+                <option value="">Vyberte možnosť</option>
+                <option value="Áno">Áno</option>
+                <option value="Nie">Nie</option>
+              </select>
+
+              {/* Checkbox Fields */}
+              <div style={styles.checkboxContainer}>
+                <label style={styles.checkboxLabel}>
+                  <input
+                    type="checkbox"
+                    name="nazov_chyba"
+                    checked={evaluation.nazov_chyba}
+                    onChange={handleEvaluationChange}
+                    disabled={formMode === "View"}
+                  />
+                  Chýba názov práce v slovenskom alebo anglickom jazyku
+                </label>
+
+                <label style={styles.checkboxLabel}>
+                  <input
+                    type="checkbox"
+                    name="abstrakt_chyba"
+                    checked={evaluation.abstrakt_chyba}
+                    onChange={handleEvaluationChange}
+                    disabled={formMode === "View"}
+                  />
+                  Chýba abstrakt v slovenskom alebo anglickom jazyku
+                </label>
+
+                <label style={styles.checkboxLabel}>
+                  <input
+                    type="checkbox"
+                    name="abstrakt_rozsah"
+                    checked={evaluation.abstrakt_rozsah}
+                    onChange={handleEvaluationChange}
+                    disabled={formMode === "View"}
+                  />
+                  Abstrakt nesplňa rozsah 100 - 150 slov
+                </label>
+
+                <label style={styles.checkboxLabel}>
+                  <input
+                    type="checkbox"
+                    name="uvod_vysledky"
+                    checked={evaluation.uvod_vysledky}
+                    onChange={handleEvaluationChange}
+                    disabled={formMode === "View"}
+                  />
+                  Chýbajú "Úvod", "Výsledky a diskusia" alebo "Záver"
+                </label>
+              </div>
+
+              {/* Textarea Fields */}
+              <label style={styles.evaluationLabel}>Prínos (silné stránky) práce</label>
+              <textarea
+                name="strong_points"
+                value={evaluation.strong_points}
+                onChange={handleEvaluationChange}
+                rows="3"
+                style={styles.evaluationtextarea}
+                readOnly={formMode === "View"}
+              />
+
+              <label style={styles.evaluationLabel}>Nedostatky (slabé stránky) práce</label>
+              <textarea
+                name="weak_points"
+                value={evaluation.weak_points}
+                onChange={handleEvaluationChange}
+                rows="3"
+                style={styles.evaluationtextarea}
+                readOnly={formMode === "View"}
+              />
+              {/* Final Evaluation Field */}
+              <div style={styles.evaluationSection}>
+              <h3 style={styles.evaluationSectionTitle}>Záverečný posudok</h3>
+
+              <label style={styles.evaluationLabel}>Vyberte konečné rozhodnutie:</label>
+              <select
+                name="final_assessment"
+                value={evaluation.final_assessment}
+                onChange={handleEvaluationChange}
+                style={styles.evaluationInput}
+                disabled={formMode === "View"}
+              >
+                <option value="" disabled>Vyberte hodnotenie</option>
+                <option value="7">publikovať v predloženej forme</option>
+                <option value="8">publikovať po zapracovaní pripomienok</option>
+                <option value="9">neprijať pre publikovanie</option>
+              </select>
+            </div>
+            </div>
+          )}
+
           {/* Submit Button */}
-          <button type="submit" style={styles.submitButton} onClick={createArticle}>
-            Nahrať prácu
-          </button>
+          {(formMode === "New" || formMode === "Edit" || (formMode === "Review" && reviewerId === parseInt(sessionStorage.getItem("userId"), 10))) && (
+          <button type="submit" style={styles.submitButton} onClick={() => setShowPopup(true)}>
+              {formMode === "New" && "Nahrať prácu"}
+              {formMode === "Edit" && "Uložiť zmeny"}
+              {formMode === "Review" && "Uložiť hodnotenie"}
+          </button>)}
           
         </form>
         
         
       </main>
-
+      {/* Popup */}
+      {showPopup && (
+        <div style={styles.popupOverlay} onClick={() => setShowPopup(false)}>
+          <div style={styles.popup}>
+            <p>Chcete túto prácu odoslať na hodnotenie?</p>
+            <div style={styles.popupButtons}>
+              <button
+                style={{ ...styles.popupButton, backgroundColor: "#d3d3d3" }}
+                onClick={() => handleSubmit(4)}
+              >
+                Uložiť ako Koncept
+              </button>
+              <button
+                style={{ ...styles.popupButton, backgroundColor: "#4CAF50", color: "#fff" }}
+                onClick={() => handleSubmit(5)}
+              >
+                
+                {formMode === "New"  && "Poslať na hodnotenie"}
+              {formMode === "Edit" && "Poslať na hodnotenie"}
+              {formMode === "Review" && "Odoslat hodnotenie"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

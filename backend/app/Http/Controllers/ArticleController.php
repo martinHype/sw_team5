@@ -16,7 +16,8 @@ class ArticleController extends Controller
             'title' => 'required|max:255',
             'description' => 'required|max:500',
             'category' => 'required',
-            'event' => 'required'
+            'event' => 'required',
+            'status' => 'required',
         ]);
 
         $article = Article::create([
@@ -26,6 +27,7 @@ class ArticleController extends Controller
             'acticle_status_idacticle_status' => 1,
             'category_idcategory' => $fields['category'],
             'user_iduser' => auth()->id(),
+            'acticle_status_idacticle_status' => $fields['status'],
         ]);
 
         return response()->json([
@@ -74,5 +76,23 @@ class ArticleController extends Controller
                 'error' => $e->getMessage(),
             ], 500);
         }
+    }
+    public function updateStatus(Request $request)
+    {
+        $fields = $request->validate([
+            'articleid' => 'required|integer',
+            'statusid' => 'required|integer',
+        ]);
+
+        // Find the article and update the status
+        $article = Article::find($fields['articleid']);
+        $article->acticle_status_idacticle_status = $fields['statusid'];
+        $article->save();
+
+        return response()->json([
+            'message' => 'Article status updated successfully!',
+            'article_id' => $article->idarticle,
+            'new_status' => $article->acticle_status_idacticle_status,
+        ], 200);
     }
 }
