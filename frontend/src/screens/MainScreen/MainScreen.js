@@ -147,7 +147,8 @@ const MainScreen = () => {
                         {filteredEvents.map((event) => (
                             <li key={event.idevent} style={styles.listItem}>
                                 <div style={styles.listItemContent}>
-                                    {userRole.includes('student') && event.articles.some((article) => article.user_iduser === loggedInUserId) &&  <button 
+                                
+                                    {userRole.includes('student') && !event.articles.some((article) => article.user_iduser === loggedInUserId) && <button 
                                     style={styles.addButton}
                                     onClick={() => navigate('/uploadarticle', { state: { 
                                         formMode:"New",
