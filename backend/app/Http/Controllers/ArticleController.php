@@ -43,7 +43,7 @@ class ArticleController extends Controller
                 ->with('user:iduser,firstname,lastname') // Include user details
                 ->get();
 
-<<<<<<< HEAD
+
             return response()->json($articles, 200);
         } catch (\Exception $e) {
             return response()->json([
@@ -78,7 +78,6 @@ class ArticleController extends Controller
             ], 500);
         }
     }
-=======
     public function updateStatus(Request $request)
     {
         $fields = $request->validate([
@@ -97,7 +96,4 @@ class ArticleController extends Controller
             'new_status' => $article->acticle_status_idacticle_status,
         ], 200);
     }
-
-    
->>>>>>> feature/TU-46
 }
