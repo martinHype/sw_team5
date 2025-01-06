@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Article;
 use Illuminate\Http\Request;
+use App\Http\Controllers\DocumentController;
 
 class ArticleController extends Controller
 {
@@ -35,12 +36,41 @@ class ArticleController extends Controller
             'article_id' => $article->idarticle,
         ], 201);
     }
-    public function getArticles($id)
+    
+    public function getArticle($id){
+        try {
+            // Fetch articles associated with the given conference ID
+            $article = Article::where('idarticle', $id)
+                ->with('user:iduser,firstname,lastname') // Include user details
+                ->leftJoin('category', 'article.category_idcategory', '=', 'category.idcategory')
+                ->first();
+            if (!$article) {
+                return response()->json(['message' => 'Article not found.'], 404);
+            }
+            $documentController = new DocumentController();
+            $documentResponse = $documentController->getDocumentsByArticle($id);
+            // Add documents to the article response
+            if ($documentResponse->getStatusCode() === 200) {
+                $article->documents = $documentResponse->getData(); // Attach documents to article
+            } else {
+                $article->documents = []; // No documents found
+            }
+            return response()->json($article, 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Article not found',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    public function getArticles($event_id)
     {
         try {
             // Fetch articles associated with the given conference ID
-            $articles = Article::where('event_idevent', $id)
+            $articles = Article::where('event_idevent', $event_id)
                 ->with('user:iduser,firstname,lastname') // Include user details
+                ->leftJoin('category', 'article.category_idcategory', '=', 'category.idcategory')
                 ->get();
             return response()->json($articles, 200);
         } catch (\Exception $e) {
