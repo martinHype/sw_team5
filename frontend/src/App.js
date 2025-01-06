@@ -10,6 +10,7 @@ import ShowAllConferencesScreen from "./screens/ShowAllConferencesScreen/ShowAll
 import AdminDetailConferenceScreen from "./screens/AdminDetailConferenceScreen/AdminDetailConferenceScreen";
 import ConferenceUsersScreen from "./screens/AdminConferenceUsersScreen/ConferenceUsersScreen.js";
 import AdminRoute from "./components/Routes/AdminRoute";
+import ReviewArticleScreen from './screens/ReviewArticleScreen/ReviewArticleScreen.js';
 
 //pull bozo test
 //pull pato test2
@@ -40,6 +41,14 @@ const App = () => {
                     element={
                         <PrivateRoute>
                             <UploadArticle />
+                        </PrivateRoute>
+                    }
+                />
+                <Route
+                    path="/reviewarticle"
+                    element={
+                        <PrivateRoute>
+                            <ReviewArticleScreen />
                         </PrivateRoute>
                     }
                 />
