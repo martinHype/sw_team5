@@ -19,24 +19,15 @@ const ReviewArticleScreen = () => {
       files: [], // This will hold file information
     });
     const [evaluation, setEvaluation] = useState({
-        aktualnost: "",
-        zorientovanie: "",
-        vhodnost: "",
-        rozsah: "",
-        analyza: "",
-        prehladnost: "",
-        formalna_uroven: "",
-        sablona_sv: "",
-        nazov_chyba: false,
-        abstrakt_chyba: false,
-        abstrakt_rozsah: false,
-        uvod_vysledky: false,
-        zdroje_chyba: false,
-        bibliografia_chyba: false,
-        obrazky_chyba: false,
-        popis_chyba: false,
-        strong_points: "",
-        weak_points: "",
+        actuality_difficulty: "",
+        orientation_in_theme: "",
+        work_corresponding_template: "",
+        missing_slovak_or_english_title: false,
+        missing_slovak_or_english_abstract: false,
+        missing_abstract_length: false,
+        missing_part: false,
+        positive_review: "",
+        negative_review: "",
         final_assessment:"",
       });
 
@@ -53,6 +44,7 @@ const ReviewArticleScreen = () => {
           });
           console.log(response.data);
           setArticleData(response.data); // Assuming the response is an array with one object
+          setEvaluation(response.data);
         } catch (error) {
           console.error("Error fetching article data:", error.response?.data || error.message);
         }
@@ -61,8 +53,39 @@ const ReviewArticleScreen = () => {
       if (article_id) fetchArticleData();
     }, [article_id]);
 
-    const handleSubmit = (status) => {
+    const handleSubmit = async (status) => {
       console.log(article_id);
+      console.log(status);
+      try {
+        const response = await axios.post(
+          "http://localhost:8080/api/evaluateArticle", // Replace with your actual endpoint
+          {
+            articleid:article_id,
+            statusid:status,
+            actuality_difficulty: evaluation.actuality_difficulty,
+            orientation_in_theme: evaluation.orientation_in_theme,
+            work_corresponding_template: evaluation.work_corresponding_template,
+            missing_slovak_or_english_title: evaluation.missing_slovak_or_english_title,
+            missing_slovak_or_english_abstract: evaluation.missing_slovak_or_english_abstract,
+            missing_abstract_length: evaluation.missing_abstract_length,
+            missing_part: evaluation.missing_part,
+            positive_review:evaluation.positive_review,
+            negative_review:evaluation.negative_review
+          },
+          {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${sessionStorage.getItem("authToken")}`, // Replace with your auth token logic
+            },
+          }
+        );
+    
+        console.log("Article evaluated successfully:", response.data);
+        return response.data;
+      } catch (error) {
+        console.error("Error evaluating article:", error.response?.data || error.message);
+        throw error; // Re-throw the error for further handling
+      }
       setShowPopup(false); // Close the popup
     };
       const handleEvaluationChange = (e) => {
@@ -155,8 +178,8 @@ const ReviewArticleScreen = () => {
               {/* Dropdown Fields */}
               <label>Aktuálnosť a náročnosť práce</label>
               <select
-                name="aktualnost"
-                value={evaluation.aktualnost}
+                name="actuality_difficulty"
+                value={evaluation.actuality_difficulty}
                 onChange={handleEvaluationChange}
                 style={styles.select}
               >
@@ -171,8 +194,8 @@ const ReviewArticleScreen = () => {
 
               <label>Zorientovanie sa študenta v danej problematike</label>
               <select
-                name="zorientovanie"
-                value={evaluation.zorientovanie}
+                name="orientation_in_theme"
+                value={evaluation.orientation_in_theme}
                 onChange={handleEvaluationChange}
                 style={styles.select}
               >
@@ -187,8 +210,8 @@ const ReviewArticleScreen = () => {
 
               <label>Práca zodpovedá šablóne určenej pre ŠVK</label>
               <select
-                name="sablona_sv"
-                value={evaluation.sablona_sv}
+                name="work_corresponding_template"
+                value={evaluation.work_corresponding_template}
                 onChange={handleEvaluationChange}
                 style={styles.select}
               >
@@ -202,8 +225,8 @@ const ReviewArticleScreen = () => {
                 <label style={styles.checkboxLabel}>
                   <input
                     type="checkbox"
-                    name="nazov_chyba"
-                    checked={evaluation.nazov_chyba}
+                    name="missing_slovak_or_english_title"
+                    checked={evaluation.missing_slovak_or_english_title}
                     onChange={handleEvaluationChange}
                   />
                   Chýba názov práce v slovenskom alebo anglickom jazyku
@@ -212,8 +235,8 @@ const ReviewArticleScreen = () => {
                 <label style={styles.checkboxLabel}>
                   <input
                     type="checkbox"
-                    name="abstrakt_chyba"
-                    checked={evaluation.abstrakt_chyba}
+                    name="missing_slovak_or_english_abstract"
+                    checked={evaluation.missing_slovak_or_english_abstract}
                     onChange={handleEvaluationChange}
                   />
                   Chýba abstrakt v slovenskom alebo anglickom jazyku
@@ -222,8 +245,8 @@ const ReviewArticleScreen = () => {
                 <label style={styles.checkboxLabel}>
                   <input
                     type="checkbox"
-                    name="abstrakt_rozsah"
-                    checked={evaluation.abstrakt_rozsah}
+                    name="missing_abstract_length"
+                    checked={evaluation.missing_abstract_length}
                     onChange={handleEvaluationChange}
                   />
                   Abstrakt nesplňa rozsah 100 - 150 slov
@@ -232,8 +255,8 @@ const ReviewArticleScreen = () => {
                 <label style={styles.checkboxLabel}>
                   <input
                     type="checkbox"
-                    name="uvod_vysledky"
-                    checked={evaluation.uvod_vysledky}
+                    name="missing_part"
+                    checked={evaluation.missing_part}
                     onChange={handleEvaluationChange}
                   />
                   Chýbajú "Úvod", "Výsledky a diskusia" alebo "Záver"
@@ -243,8 +266,8 @@ const ReviewArticleScreen = () => {
               {/* Textarea Fields */}
               <label style={styles.evaluationLabel}>Prínos (silné stránky) práce</label>
               <textarea
-                name="strong_points"
-                value={evaluation.strong_points}
+                name="positive_review"
+                value={evaluation.positive_review}
                 onChange={handleEvaluationChange}
                 rows="3"
                 style={styles.evaluationtextarea}
@@ -252,8 +275,8 @@ const ReviewArticleScreen = () => {
 
               <label style={styles.evaluationLabel}>Nedostatky (slabé stránky) práce</label>
               <textarea
-                name="weak_points"
-                value={evaluation.weak_points}
+                name="negative_review"
+                value={evaluation.negative_review}
                 onChange={handleEvaluationChange}
                 rows="3"
                 style={styles.evaluationtextarea}
@@ -270,9 +293,9 @@ const ReviewArticleScreen = () => {
                 style={styles.evaluationInput}
               >
                 <option value="" disabled>Vyberte hodnotenie</option>
-                <option value="7">publikovať v predloženej forme</option>
-                <option value="8">publikovať po zapracovaní pripomienok</option>
-                <option value="9">neprijať pre publikovanie</option>
+                <option value="4">publikovať v predloženej forme</option>
+                <option value="5">publikovať po zapracovaní pripomienok</option>
+                <option value="6">neprijať pre publikovanie</option>
               </select>
             </div>
             </div>
@@ -291,13 +314,13 @@ const ReviewArticleScreen = () => {
                   <div style={styles.popupButtons}>
                     <button
                       style={{ ...styles.popupButton, backgroundColor: "#d3d3d3" }}
-                      onClick={() => handleSubmit(1)}
+                      onClick={() => handleSubmit(3)}
                     >
                       Uložiť ako Koncept
                     </button>
                     <button
                       style={{ ...styles.popupButton, backgroundColor: "#4CAF50", color: "#fff" }}
-                      onClick={() => handleSubmit(2)}
+                      onClick={() => handleSubmit(parseInt(evaluation.final_assessment,10))}
                     >
                     Odoslat hodnotenie
                     </button>

@@ -31,10 +31,14 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('article',[ArticleController::class, 'index']);
     Route::post('article',[ArticleController::class, 'store']);
     Route::post('upload', [FileUploadController::class, 'upload']);
+    Route::post('evaluateArticle', [ArticleController::class, 'evaluateArticle']);
+
 });
 
+
+
 // Route to get all documents for a specific article
-Route::get('/document/{article_id}', [DocumentController::class, 'getDocumentsByArticle']);
+//Route::get('/document/{article_id}', [DocumentController::class, 'getDocumentsByArticle']);
 
 // Route to download a specific document
 Route::get('/document/download/{path}', [DocumentController::class, 'downloadDocument'])
