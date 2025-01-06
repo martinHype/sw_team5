@@ -152,11 +152,11 @@ const MainScreen = () => {
                                     style={styles.addButton}
                                     onClick={() => navigate('/uploadarticle', { state: { 
                                         formMode:"New",
-                                        conferenceName: event.idevent
+                                        conferenceId: event.idevent
                                      } })}
                                     >Pridať prácu</button>}
                                     <span style={styles.listItemText}>{event.event_name}</span>
-                                    <p style={styles.conferenceDescription}>This is the event description</p>
+                                    <p style={styles.conferenceDescription}>{event.description}</p>
                                     <div style={styles.datesContainer}>
                                         <div style={styles.dateField}>
                                             <label style={styles.dateLabel}>Event Date:</label>
