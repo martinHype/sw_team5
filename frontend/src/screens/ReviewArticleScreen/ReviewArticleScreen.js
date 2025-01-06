@@ -11,10 +11,10 @@ import { useParams } from "react-router-dom";
 const ReviewArticleScreen = () => {
     const { article_id } = useParams();
     const [articleData, setArticleData] = useState({
-      title: "",
-      category: "",
-      Description: "",
-      keywords: "",
+      title: "something",
+      category: "category",
+      Description: "afaf",
+      keywords: "adfa",
       files: [], // This will hold file information
     });
     const [evaluation, setEvaluation] = useState({
@@ -41,15 +41,17 @@ const ReviewArticleScreen = () => {
 
       // Fetch article data on screen load
     useEffect(() => {
+      console.log(article_id);
       const fetchArticleData = async () => {
         try {
-          const response = await axios.get(`http://localhost:8080/api/article/${article_id}`, {
+          const response = await axios.get(`http://localhost:8080/api/article/1`, {
             headers: {
               "Content-Type": "application/json",
               Authorization: `Bearer ${sessionStorage.getItem("authToken")}`,
             },
           });
-          setArticleData(response.data[0]); // Assuming the response is an array with one object
+          console.log(response.data);
+          setArticleData(response.data); // Assuming the response is an array with one object
         } catch (error) {
           console.error("Error fetching article data:", error.response?.data || error.message);
         }
@@ -107,28 +109,37 @@ const ReviewArticleScreen = () => {
                 {/* Files Section */}
                 <h3>Stiahnuť súbory</h3>
                 <div style={styles.fileList}>
-                {[].map((file, index) => (
-                <div
-                    key={index}
-                    style={styles.fileCard}
-                    onMouseOver={(e) => {
-                    e.currentTarget.style.opacity = "0.6";
-                    }}
-                    onMouseOut={(e) => {
-                    e.currentTarget.style.opacity = "1";
-                    }}
-                >
-                    <img
-                  src={file.type === "application/pdf" ? image_pdf : image_doc } // Replace with actual file icon path
-                  alt="file icon"
-                  style={styles.fileImage}
-                />
-                    <a href={file.url} download style={styles.fileName}>
-                    {file.name}
+                {articleData?.documents?.length > 0 ? (
+                  articleData.documents.map((file, index) => (
+                    <a
+                      key={index}
+                      href={file.url}
+                      download
+                      style={{ textDecoration: "none" }} // Ensure no underline on the link
+                    >
+                      <div
+                        style={styles.fileCard}
+                        onMouseOver={(e) => {
+                          e.currentTarget.style.opacity = "0.6";
+                        }}
+                        onMouseOut={(e) => {
+                          e.currentTarget.style.opacity = "1";
+                        }}
+                      >
+                        <img
+                          src={file.name.endsWith(".pdf") ? image_pdf : image_doc} // Check file type for icon
+                          alt="file icon"
+                          style={styles.fileImage}
+                        />
+                        <p style={styles.fileName}>{file.name}</p>
+                      </div>
                     </a>
-                </div>
-                ))}
-                </div>
+                  ))
+                ) : (
+                  <p>No files available for download.</p>
+                )}
+              </div>
+
                 </div>
             
             <div style={styles.evaluationSection}>

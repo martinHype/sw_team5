@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\FileUploadController;
+use App\Http\Controllers\DocumentController;
 
 
 
@@ -26,11 +27,19 @@ Route::middleware('auth:sanctum')->group(function () {
 
 Route::middleware('auth:sanctum')->group(function () {
     //articles
-    Route::get('article/{id}',[ArticleController::class, 'getArticles']);
+    Route::get('article/{id}',[ArticleController::class, 'getArticle']);
     Route::get('article',[ArticleController::class, 'index']);
     Route::post('article',[ArticleController::class, 'store']);
     Route::post('upload', [FileUploadController::class, 'upload']);
 });
+
+// Route to get all documents for a specific article
+Route::get('/document/{article_id}', [DocumentController::class, 'getDocumentsByArticle']);
+
+// Route to download a specific document
+Route::get('/document/download/{path}', [DocumentController::class, 'downloadDocument'])
+    ->where('path', '.*') // Allow paths with slashes
+    ->name('document.download');
 
 
 
