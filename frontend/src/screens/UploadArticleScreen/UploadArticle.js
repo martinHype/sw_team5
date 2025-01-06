@@ -276,12 +276,11 @@ const UploadArticle = () => {
           <label>Dokumenty</label>
           <FileDropArea disabled={formMode === "View"}/>
           {/* Submit Button */}
-          {(formMode === "New" || formMode === "Edit" || (formMode === "Review" && reviewerId === parseInt(sessionStorage.getItem("userId"), 10))) && (
           <button type="submit" style={styles.submitButton} onClick={() => setShowPopup(true)}>
               {formMode === "New" && "Nahrať prácu"}
               {formMode === "Edit" && "Uložiť zmeny"}
               {formMode === "Review" && "Uložiť hodnotenie"}
-          </button>)}
+          </button>
           
         </form>
         

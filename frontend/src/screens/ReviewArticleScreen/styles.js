@@ -49,9 +49,11 @@ const styles = {
       cursor: "pointer",
     },
     main: {  
+        display:"flex",
+        flexDirection: 'column',
         maxWidth: "1000px",
         margin: "0 auto", 
-      padding: "20px",
+        padding: "20px",
     },
     articleDetails: {
         marginBottom: "20px",
@@ -152,6 +154,7 @@ const styles = {
       backgroundColor: "green",
       color: "white",
       border: "none",
+      marginTop:"10px",
       borderRadius: "5px",
       cursor: "pointer",
       alignSelf: "flex-end",
@@ -212,7 +215,7 @@ const styles = {
       padding: "15px",
       borderRadius: "8px",
       backgroundColor: "#f9fdf9",
-      marginTop: "20px",
+      marginTop: "10px",
     },
   
     evaluationSectionTitle: {

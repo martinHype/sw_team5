@@ -10,6 +10,7 @@ import { useParams } from "react-router-dom";
 
 const ReviewArticleScreen = () => {
     const { article_id } = useParams();
+    const [showPopup, setShowPopup] = useState(false);
     const [articleData, setArticleData] = useState({
       title: "something",
       category: "category",
@@ -60,6 +61,10 @@ const ReviewArticleScreen = () => {
       if (article_id) fetchArticleData();
     }, [article_id]);
 
+    const handleSubmit = (status) => {
+      console.log(article_id);
+      setShowPopup(false); // Close the popup
+    };
       const handleEvaluationChange = (e) => {
         const { name, type, checked, value } = e.target;
         setEvaluation({
@@ -271,10 +276,35 @@ const ReviewArticleScreen = () => {
               </select>
             </div>
             </div>
+            <button type="submit" style={styles.submitButton} onClick={() => setShowPopup(true)}>
+              Uložiť hodnotenie
+            </button>
             </main>
             <footer style={styles.footer}>
                 <p style={styles.footerText}>© 2024 Študentská vedecká konferencia. Všetky práva vyhradené.</p>
             </footer>
+            {/* Popup */}
+            {showPopup && (
+              <div style={styles.popupOverlay} onClick={() => setShowPopup(false)}>
+                <div style={styles.popup}>
+                  <p>Chcete hodnotenie uzavriet?</p>
+                  <div style={styles.popupButtons}>
+                    <button
+                      style={{ ...styles.popupButton, backgroundColor: "#d3d3d3" }}
+                      onClick={() => handleSubmit(1)}
+                    >
+                      Uložiť ako Koncept
+                    </button>
+                    <button
+                      style={{ ...styles.popupButton, backgroundColor: "#4CAF50", color: "#fff" }}
+                      onClick={() => handleSubmit(2)}
+                    >
+                    Odoslat hodnotenie
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
         </div>
     );
 };
