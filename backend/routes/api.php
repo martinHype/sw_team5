@@ -17,10 +17,21 @@ Route::post('/check_table', function (Request $request) {
 })->middleware('auth:sanctum');;
 
 
-Route::apiResource('article',ArticleController::class)->middleware('auth:sanctum');
+//Route::apiResource('article',ArticleController::class)->middleware('auth:sanctum');
 
+Route::middleware('auth:sanctum')->group(function () {
+    //articles
+    
+});
 
-Route::post('upload', [FileUploadController::class, 'upload'])->middleware('auth:sanctum');
+Route::middleware('auth:sanctum')->group(function () {
+    //articles
+    Route::get('article/{id}',[ArticleController::class, 'getArticles']);
+    Route::get('article',[ArticleController::class, 'index']);
+    Route::post('article',[ArticleController::class, 'store']);
+    Route::post('upload', [FileUploadController::class, 'upload']);
+});
+
 
 
 Route::post('/register',[AuthController::class,'register']);

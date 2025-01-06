@@ -1,12 +1,22 @@
 import React, { useState,useEffect } from "react";
 import styles from "./styles.js";
+import axios from "axios";
 import graduation_hat from "../../images/graduation_hat.png";
 import user from "../../images/user.png";
 import logout from "../../images/logout.png";
 import image_pdf from "../../images/pdf.png";
 import image_doc from "../../images/doc.png";
+import { useParams } from "react-router-dom";
 
 const ReviewArticleScreen = () => {
+    const { article_id } = useParams();
+    const [articleData, setArticleData] = useState({
+      title: "",
+      category: "",
+      Description: "",
+      keywords: "",
+      files: [], // This will hold file information
+    });
     const [evaluation, setEvaluation] = useState({
         aktualnost: "",
         zorientovanie: "",
@@ -28,25 +38,25 @@ const ReviewArticleScreen = () => {
         weak_points: "",
         final_assessment:"",
       });
-      const [articleData, setArticleData] = useState({
-        title: "Sample Article Title",
-        category: "Informatika",
-        description: "This is a detailed description of the article.",
-        keywords: "AI, Machine Learning, Data Science",
-        files: [], // This will hold file information
-      });
 
-      // Fetch files (mock example, replace with API call if needed)
+      // Fetch article data on screen load
     useEffect(() => {
-        // Replace this with a real API call to fetch article details and files
-        setArticleData((prev) => ({
-        ...prev,
-        files: [
-            { name: "document1.pdf", url: "/downloads/document1.pdf" },
-            { name: "presentation.pptx", url: "/downloads/presentation.pptx" },
-        ],
-        }));
-    }, []);
+      const fetchArticleData = async () => {
+        try {
+          const response = await axios.get(`http://localhost:8080/api/article/${article_id}`, {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${sessionStorage.getItem("authToken")}`,
+            },
+          });
+          setArticleData(response.data[0]); // Assuming the response is an array with one object
+        } catch (error) {
+          console.error("Error fetching article data:", error.response?.data || error.message);
+        }
+      };
+
+      if (article_id) fetchArticleData();
+    }, [article_id]);
 
       const handleEvaluationChange = (e) => {
         const { name, type, checked, value } = e.target;
@@ -90,14 +100,14 @@ const ReviewArticleScreen = () => {
                 {/* Article Details */}
                 <div style={styles.articleDetails}>
                 <h1 style={styles.articleTitle}>{articleData.title}</h1>
-                <p><strong>{articleData.category}</strong></p>
-                <p>{articleData.description}</p>
-                <p><span style={styles.keywords}>{articleData.keywords}</span></p>
+                <p><strong>{articleData.category_name}</strong></p>
+                <p>{articleData.Description}</p>
+                <p><span style={styles.keywords}>Key words</span></p>
 
                 {/* Files Section */}
                 <h3>Stiahnuť súbory</h3>
                 <div style={styles.fileList}>
-                {articleData.files.map((file, index) => (
+                {[].map((file, index) => (
                 <div
                     key={index}
                     style={styles.fileCard}

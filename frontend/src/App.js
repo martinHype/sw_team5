@@ -45,7 +45,7 @@ const App = () => {
                     }
                 />
                 <Route
-                    path="/reviewarticle"
+                    path="/reviewarticle/:article_id"
                     element={
                         <PrivateRoute>
                             <ReviewArticleScreen />

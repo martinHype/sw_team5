@@ -41,6 +41,7 @@ class ArticleController extends Controller
             // Fetch articles associated with the given conference ID
             $articles = Article::where('event_idevent', $id)
                 ->with('user:iduser,firstname,lastname') // Include user details
+                ->leftJoin('category', 'article.category_idcategory', '=', 'category.idcategory')
                 ->get();
             return response()->json($articles, 200);
         } catch (\Exception $e) {
