@@ -124,4 +124,39 @@ class ArticleController extends Controller
             'new_status' => $article->acticle_status_idacticle_status,
         ], 200);
     }
+
+    public function evaluateArticle(Request $request){
+        $fields = $request->validate([
+            'articleid' => 'required|integer',
+            'statusid' => 'required|integer',
+            'actuality_difficulty' => 'nullable|string',
+            'orientation_in_theme' => 'nullable|string',
+            'work_corresponding_template' => 'nullable|string',
+            'missing_slovak_or_english_title' => 'nullable|boolean',
+            'missing_slovak_or_english_abstract' => 'nullable|boolean',
+            'missing_abstract_length' => 'nullable|boolean',
+            'missing_part' => 'nullable|boolean',
+            'positive_review' => 'nullable|string',
+            'negative_review' => 'nullable|string',
+        ]);
+
+        // Find the article by its ID
+        $article = Article::find($fields['articleid']);
+
+        // Update the article with the provided fields
+        $article->update([
+            'acticle_status_idacticle_status' => $fields['statusid'],
+            'actuality_difficulty' => $fields['actuality_difficulty'],
+            'orientation_in_theme' => $fields['orientation_in_theme'],
+            'work_corresponding_template' => $fields['work_corresponding_template'],
+            'missing_slovak_or_english_title' => $fields['missing_slovak_or_english_title'],
+            'missing_slovak_or_english_abstract' => $fields['missing_slovak_or_english_abstract'],
+            'missing_abstract_length' => $fields['missing_abstract_length'],
+            'missing_part' => $fields['missing_part'],
+            'positive_review' => $fields['positive_review'],
+            'negative_review' => $fields['negative_review'],
+        ]);
+
+        return response()->json(['message' => 'Article updated successfully.', 'article' => $article], 200);
+    }
 }

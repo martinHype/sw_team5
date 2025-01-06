@@ -58,6 +58,13 @@ class Article extends Model
 		'acticle_status_idacticle_status',
 		'category_idcategory',
 		'idreviewer',
+		'actuality_difficulty',
+		'orientation_in_theme',
+		'work_corresponding_template',
+		'missing_slovak_or_english_title',
+		'missing_slovak_or_english_abstract',
+		'missing_abstract_length',
+		'missing_part',
 		'positive_review',
 		'negative_review',
 	];
