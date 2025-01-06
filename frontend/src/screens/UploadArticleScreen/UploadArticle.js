@@ -12,16 +12,16 @@ const UploadArticle = () => {
 
   const navigate = useNavigate();
   const location = useLocation();
-  const { conferenceName,formMode, articleid, title, description, category, reviewerId, ownerid } = location.state || {};
+  const { conferenceId,formMode, articleid, title, description, category, reviewerId, ownerid } = location.state || {};
   const [showPopup, setShowPopup] = useState(false);
-  //console.log(conferenceName);
+  const [categories, setCategories] = useState([]);
+  //console.log(conferenceId);
   const [ArticleData, setArticleData] = useState({
     title: "",
     Description: "",
     category:"",
     reviewerId:0,
     ownerid:0
-
   });
   const [evaluation, setEvaluation] = useState({
     aktualnost: "",
@@ -45,6 +45,20 @@ const UploadArticle = () => {
     final_assessment:"",
   });
   useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const { conferenceName } = location.state || {};
+        const response = await axios.get(`http://localhost:8080/api/admin/events/${conferenceId}/categories`, {
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: 'Bearer ' + sessionStorage.getItem('authToken'),
+          },
+        });
+        setCategories(response.data);
+      } catch (error) {
+        console.error('Error fetching categories:', error.response?.data || error.message);
+      }
+    };
     if (formMode === "Edit" || formMode === "Review" || formMode === "View") {
       setArticleData({
         title: title || "",
@@ -53,7 +67,8 @@ const UploadArticle = () => {
         reviewerId:reviewerId,
         ownerid:ownerid,
       });
-    }
+    };
+    fetchCategories();
   }, [formMode, title, description, category]);
 
   
@@ -133,7 +148,7 @@ const UploadArticle = () => {
 
   const updateArticle = async (actualStatus) => {
     try {
-      const { conferenceName } = location.state || {};
+      const { conferenceId } = location.state || {};
       const response = await axios.post(
         'http://localhost:8080/api/article/update-status', {
           articleid:articleid,
@@ -160,13 +175,13 @@ const UploadArticle = () => {
   // function that will create a new article
   const createArticle = async (actualStatus) => {
     try {
-      const { conferenceName } = location.state || {};
+      const { conferenceId } = location.state || {};
       const response = await axios.post(
         'http://localhost:8080/api/article', {
           title: ArticleData.title,
           description: ArticleData.Description,
           category:parseInt(ArticleData.category,10),
-          event:conferenceName,
+          event:conferenceId,
           status:actualStatus,
       },
       {
@@ -242,12 +257,11 @@ const UploadArticle = () => {
           disabled={formMode === "View" || formMode === "Review"}
           >
                 <option value="" hidden>Vyberte sekciu</option>
-                <option value="1">Biológia, ekológia a environmentalistika</option>
-                <option value="2">Geografia a regionálny rozvoj a Geológia</option>
-                <option value="3">Informatika</option>
-                <option value="4">Chémia, Fyzika a matematika</option>
-                <option value="5">Odborová didaktika</option>
-                <option value="6">PhD</option>
+                {categories.map((category) => (
+                <option key={category.idcategory} value={category.idcategory}>
+                  {category.category_name}
+                </option>
+              ))}
             </select>
           <label>Popis práce</label>
           <textarea 
@@ -432,13 +446,13 @@ const UploadArticle = () => {
             <div style={styles.popupButtons}>
               <button
                 style={{ ...styles.popupButton, backgroundColor: "#d3d3d3" }}
-                onClick={() => handleSubmit(4)}
+                onClick={() => handleSubmit(1)}
               >
                 Uložiť ako Koncept
               </button>
               <button
                 style={{ ...styles.popupButton, backgroundColor: "#4CAF50", color: "#fff" }}
-                onClick={() => handleSubmit(5)}
+                onClick={() => handleSubmit(2)}
               >
                 
                 {formMode === "New"  && "Poslať na hodnotenie"}
