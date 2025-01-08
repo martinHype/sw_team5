@@ -12,33 +12,63 @@ const UploadArticle = () => {
 
   const navigate = useNavigate();
   const location = useLocation();
-  const { conferenceName,formMode, articleid, title, description, category } = location.state || {};
-
-  //console.log(conferenceName);
+  const { conferenceId,formMode, articleid, title, description, category, reviewerId, ownerid } = location.state || {};
+  const [showPopup, setShowPopup] = useState(false);
+  const [categories, setCategories] = useState([]);
+  //console.log(conferenceId);
   const [ArticleData, setArticleData] = useState({
     title: "",
     Description: "",
     category:"",
+    reviewerId:0,
+    ownerid:0
+  });
+  const [evaluation, setEvaluation] = useState({
+    aktualnost: "",
+    zorientovanie: "",
+    vhodnost: "",
+    rozsah: "",
+    analyza: "",
+    prehladnost: "",
+    formalna_uroven: "",
+    sablona_sv: "",
+    nazov_chyba: false,
+    abstrakt_chyba: false,
+    abstrakt_rozsah: false,
+    uvod_vysledky: false,
+    zdroje_chyba: false,
+    bibliografia_chyba: false,
+    obrazky_chyba: false,
+    popis_chyba: false,
+    strong_points: "",
+    weak_points: "",
+    final_assessment:"",
   });
   useEffect(() => {
-    // Code to run only once when the form loads
-    console.log('Form loaded with state:', {
-      formMode,
-      articleid,
-      title,
-      description,
-      category,
-      conferenceName,
-    });
-  
-    if (formMode === "View") {
-      setArticleData((prev) => ({
-        ...prev,
+    const fetchCategories = async () => {
+      try {
+        const { conferenceName } = location.state || {};
+        const response = await axios.get(`http://localhost:8080/api/admin/events/${conferenceId}/categories`, {
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: 'Bearer ' + sessionStorage.getItem('authToken'),
+          },
+        });
+        setCategories(response.data);
+      } catch (error) {
+        console.error('Error fetching categories:', error.response?.data || error.message);
+      }
+    };
+    if (formMode === "Edit" || formMode === "Review" || formMode === "View") {
+      setArticleData({
         title: title || "",
         description: description || "",
         category: category || "",
-      }));
-    }
+        reviewerId:reviewerId,
+        ownerid:ownerid,
+      });
+    };
+    fetchCategories();
   }, [formMode, title, description, category]);
 
   
@@ -48,7 +78,7 @@ const UploadArticle = () => {
       ...ArticleData,
       [e.target.name]: e.target.value || "", // Ensure fallback for undefined
     });
-  };
+  }
   const uploadFiles = async (id_article) =>{
       try{
         const filesData = localStorage.getItem('files');
@@ -76,6 +106,7 @@ const UploadArticle = () => {
               }
             );
             console.log(`File ${file.name} uploaded successfully:`, response.data);
+            navigate('/home');
           } catch (error){
             console.error(`Error uploading file ${file.name}:`, error.response?.data || error.message);
           }
@@ -91,17 +122,60 @@ const UploadArticle = () => {
         console.error('Error logging in:', error.response?.data || error.message);
       }
   };
+  const handleSubmit = (status) => {
+    console.log(articleid);
+    if(articleid){
+      let sendStatus = status;
+      if(formMode == "Review"){
+        console.log(evaluation.final_assessment);
+        sendStatus = (status === 4) ? 6 : parseInt(evaluation.final_assessment, 10) || status;
+      }
+      updateArticle(sendStatus);
+    }else{
+      createArticle(status);
+    }
+    navigate("/home");
+    
+    setShowPopup(false); // Close the popup
+  };
 
-  // function that will create a new article
-  const createArticle = async () => {
+  const updateArticle = async (actualStatus) => {
     try {
-      const { conferenceName } = location.state || {};
+      const { conferenceId } = location.state || {};
+      const response = await axios.post(
+        'http://localhost:8080/api/article/update-status', {
+          articleid:articleid,
+          statusid:actualStatus,
+      },
+      {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: 'Bearer ' + sessionStorage.getItem('authToken'),
+        },
+      });
+      console.log(response);
+      //navigate('/home');
+      //const id_article = response.data.article_id;
+
+
+      
+      //sessionStorage.getItem("authToken");
+      
+  } catch (error) {
+      console.error('Error logging in:', error.response?.data || error.message);
+  }
+  };
+  // function that will create a new article
+  const createArticle = async (actualStatus) => {
+    try {
+      const { conferenceId } = location.state || {};
       const response = await axios.post(
         'http://localhost:8080/api/article', {
           title: ArticleData.title,
           description: ArticleData.Description,
           category:parseInt(ArticleData.category,10),
-          event:conferenceName
+          event:conferenceId,
+          status:actualStatus,
       },
       {
         headers: {
@@ -166,22 +240,21 @@ const UploadArticle = () => {
             value={ArticleData.title}
             onChange={handleChange}
             style={styles.input}
-            readOnly={formMode === "View"} />
+            readOnly={formMode === "View" || formMode === "Review" || formMode === "Edit" && "locked"} />
           <label>Sekcia</label>
           <select 
           name="category"
           style={styles.select}
           onChange={handleChange}
           value={ArticleData.category}
-          readOnly={formMode === "View"}
+          disabled={formMode === "View" || formMode === "Review"}
           >
                 <option value="" hidden>Vyberte sekciu</option>
-                <option value="1">Biológia, ekológia a environmentalistika</option>
-                <option value="2">Geografia a regionálny rozvoj a Geológia</option>
-                <option value="3">Informatika</option>
-                <option value="4">Chémia, Fyzika a matematika</option>
-                <option value="5">Odborová didaktika</option>
-                <option value="6">PhD</option>
+                {categories.map((category) => (
+                <option key={category.idcategory} value={category.idcategory}>
+                  {category.category_name}
+                </option>
+              ))}
             </select>
           <label>Popis práce</label>
           <textarea 
@@ -191,7 +264,7 @@ const UploadArticle = () => {
             placeholder="Popis práce" 
             rows="10"
             style={styles.textarea}
-            readOnly={formMode === "View"}/>
+            readOnly={formMode === "View" || formMode === "Review"}/>
           <label>Kľúčové slová</label>
           <input 
           name="keywords"
@@ -203,15 +276,41 @@ const UploadArticle = () => {
           <label>Dokumenty</label>
           <FileDropArea disabled={formMode === "View"}/>
           {/* Submit Button */}
-          <button type="submit" style={styles.submitButton} onClick={createArticle}>
-            Nahrať prácu
+          <button type="submit" style={styles.submitButton} onClick={() => setShowPopup(true)}>
+              {formMode === "New" && "Nahrať prácu"}
+              {formMode === "Edit" && "Uložiť zmeny"}
+              {formMode === "Review" && "Uložiť hodnotenie"}
           </button>
           
         </form>
         
         
       </main>
-
+      {/* Popup */}
+      {showPopup && (
+        <div style={styles.popupOverlay} onClick={() => setShowPopup(false)}>
+          <div style={styles.popup}>
+            <p>Chcete túto prácu odoslať na hodnotenie?</p>
+            <div style={styles.popupButtons}>
+              <button
+                style={{ ...styles.popupButton, backgroundColor: "#d3d3d3" }}
+                onClick={() => handleSubmit(1)}
+              >
+                Uložiť ako Koncept
+              </button>
+              <button
+                style={{ ...styles.popupButton, backgroundColor: "#4CAF50", color: "#fff" }}
+                onClick={() => handleSubmit(2)}
+              >
+                
+                {formMode === "New"  && "Poslať na hodnotenie"}
+              {formMode === "Edit" && "Poslať na hodnotenie"}
+              {formMode === "Review" && "Odoslat hodnotenie"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
