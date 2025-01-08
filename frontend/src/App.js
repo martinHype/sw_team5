@@ -11,9 +11,8 @@ import AdminDetailConferenceScreen from "./screens/AdminDetailConferenceScreen/A
 import ConferenceUsersScreen from "./screens/AdminConferenceUsersScreen/ConferenceUsersScreen.js";
 import AdminRoute from "./components/Routes/AdminRoute";
 import UserRoleManagerScreen from "./screens/AddRolesScreen/UserRoleManagerScreen";
+import ReviewArticleScreen from './screens/ReviewArticleScreen/ReviewArticleScreen.js';
 
-//pull bozo test
-//pull pato test2
 const App = () => {
   return (
       <Router>
