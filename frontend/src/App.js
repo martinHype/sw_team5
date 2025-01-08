@@ -12,6 +12,7 @@ import ConferenceUsersScreen from "./screens/AdminConferenceUsersScreen/Conferen
 import AdminRoute from "./components/Routes/AdminRoute";
 import UserRoleManagerScreen from "./screens/AddRolesScreen/UserRoleManagerScreen";
 import ReviewArticleScreen from './screens/ReviewArticleScreen/ReviewArticleScreen.js';
+import ReviewArticleScreen from './screens/ReviewArticleScreen/ReviewArticleScreen.js';
 
 const App = () => {
   return (
