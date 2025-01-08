@@ -74,6 +74,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('/admin/events/{id}', [EventController::class, 'update']);
     Route::patch('/admin/categories/{id}/deactivate', [CategoryController::class, 'deactivate']);
     Route::post('/admin/categories', [CategoryController::class, 'store']);
+    Route::get('/admin/all-users', [UserController::class, 'getAllUsers']);
+    Route::patch('/admin/users/{userId}/roles', [UserController::class, 'updateUserRole']);
 
     Route::post("/logout",[AuthController::class,'logout']);
 });

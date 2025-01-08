@@ -40,4 +40,8 @@ class Role extends Model
 		'created_on',
 		'modified_on'
 	];
+    public function users()
+    {
+        return $this->belongsToMany(User::class, 'user_has_roles', 'role_idrole', 'user_iduser');
+    }
 }
