@@ -10,6 +10,7 @@ import ShowAllConferencesScreen from "./screens/ShowAllConferencesScreen/ShowAll
 import AdminDetailConferenceScreen from "./screens/AdminDetailConferenceScreen/AdminDetailConferenceScreen";
 import ConferenceUsersScreen from "./screens/AdminConferenceUsersScreen/ConferenceUsersScreen.js";
 import AdminRoute from "./components/Routes/AdminRoute";
+import UserRoleManagerScreen from "./screens/AddRolesScreen/UserRoleManagerScreen";
 
 //pull bozo test
 //pull pato test2
@@ -81,6 +82,14 @@ const App = () => {
                     element={
                         <AdminRoute>
                             <ConferenceUsersScreen />
+                        </AdminRoute>
+                    }
+                />
+                <Route
+                    path="/admin/conference/role-manager"
+                    element={
+                        <AdminRoute>
+                            <UserRoleManagerScreen />
                         </AdminRoute>
                     }
                 />
