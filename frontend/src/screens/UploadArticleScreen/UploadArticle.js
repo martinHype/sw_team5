@@ -34,6 +34,7 @@ const UploadArticle = ({ formMode = "New" }) => {
         setCategories(response.data);
       } catch (error) {
         console.error('Error fetching categories:', error.response?.data || error.message);
+        alert("Chyba pri načítaní kategorii zo systému");
       }
     };
     const fetchArticleData = async () => {
@@ -51,6 +52,7 @@ const UploadArticle = ({ formMode = "New" }) => {
           console.log(ArticleData);
         } catch (error) {
           console.error("Error fetching article data:", error.response?.data || error.message);
+          alert("Chyba pri načítaní práce zo systému");
         }
       };
     
@@ -95,7 +97,6 @@ const UploadArticle = ({ formMode = "New" }) => {
               }
             );
             console.log(`File ${file.name} uploaded successfully:`, response.data);
-            navigate('/home');
           } catch (error){
             console.error(`Error uploading file ${file.name}:`, error.response?.data || error.message);
           }
@@ -103,12 +104,14 @@ const UploadArticle = ({ formMode = "New" }) => {
         
 
         localStorage.removeItem('files');
+        alert("Práca bola úspešne pridaná do systému.");
         navigate("/home");
 
 
 
       } catch(error){
         console.error('Error logging in:', error.response?.data || error.message);
+        alert("Chyba pri nahrávaní súborov do systému");
       }
   };
   const handleSubmit = (status) => {
@@ -139,7 +142,8 @@ const UploadArticle = ({ formMode = "New" }) => {
         },
       });
       console.log(response);
-      //navigate('/home');
+      alert("Práca bola úspešne zmenena.");
+      navigate('/home');
       //const id_article = response.data.article_id;
 
 
@@ -148,6 +152,7 @@ const UploadArticle = ({ formMode = "New" }) => {
       
   } catch (error) {
       console.error('Error logging in:', error.response?.data || error.message);
+      alert("Chyba uloženia úprav práce");
   }
   };
   // function that will create a new article
@@ -158,7 +163,7 @@ const UploadArticle = ({ formMode = "New" }) => {
         'http://localhost:8080/api/article', {
           title: ArticleData.title,
           description: ArticleData.Description,
-          category:parseInt(ArticleData.category,10),
+          category:parseInt(ArticleData.category_idcategory,10),
           event:conferenceId,
           status:actualStatus,
       },
@@ -170,8 +175,6 @@ const UploadArticle = ({ formMode = "New" }) => {
       });
       console.log(response);
       const id_article = response.data.article_id;
-
-
       uploadFiles(id_article);
 
       
@@ -179,6 +182,7 @@ const UploadArticle = ({ formMode = "New" }) => {
       
   } catch (error) {
       console.error('Error logging in:', error.response?.data || error.message);
+      alert("Chyba pri nahrávaní práce, prosím skúste to ešte raz.");
   }
   };
 
@@ -228,7 +232,7 @@ const UploadArticle = ({ formMode = "New" }) => {
             readOnly={formMode === "View" && "locked"} />
           <label>Sekcia</label>
           <select 
-          name="category"
+          name="category_idcategory"
           style={styles.select}
           onChange={handleChange}
           value={ArticleData.category_idcategory}

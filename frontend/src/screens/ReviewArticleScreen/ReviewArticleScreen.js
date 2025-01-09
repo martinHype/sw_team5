@@ -47,6 +47,7 @@ const ReviewArticleScreen = () => {
           setEvaluation(response.data);
         } catch (error) {
           console.error("Error fetching article data:", error.response?.data || error.message);
+          alert("Chyba pri načítaní praáce");
         }
       };
 
@@ -84,6 +85,7 @@ const ReviewArticleScreen = () => {
         return response.data;
       } catch (error) {
         console.error("Error evaluating article:", error.response?.data || error.message);
+        alert("Chyba pri ukladaní hodnotenia");
         throw error; // Re-throw the error for further handling
       }
       setShowPopup(false); // Close the popup
