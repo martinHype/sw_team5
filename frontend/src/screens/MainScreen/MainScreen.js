@@ -195,6 +195,16 @@ const MainScreen = () => {
                                                         onClick={() => {
                                                             if (String(article.idreviewer) === sessionStorage.getItem("userId")) {
                                                               navigate(`/reviewarticle/${article.idarticle}`);
+                                                            }else if(String(article.user_iduser) === sessionStorage.getItem("userId")){
+                                                                if(article.acticle_status_idacticle_status === 1){
+                                                                    navigate(`/editarticle/${article.idarticle}`,{ state: {
+                                                                        conferenceId: event.idevent
+                                                                     } });
+                                                                }else{
+                                                                    navigate(`/viewarticle/${article.idarticle}`,{ state: {
+                                                                        conferenceId: event.idevent
+                                                                     } });
+                                                                }   
                                                             }
                                                           }}
                                                     >

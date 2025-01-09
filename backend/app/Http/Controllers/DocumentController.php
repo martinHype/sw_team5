@@ -26,6 +26,7 @@ class DocumentController extends Controller
         // Map the documents to include secure download URLs
         $documentsWithUrls = $documents->map(function ($document) {
             return [
+                'id' => $document->iddocument,
                 'name' => basename($document->document_path), // Extract filename
                 'url' => route('document.download', ['path' => urlencode($document->document_path)]), // Generate download URL
             ];
