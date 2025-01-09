@@ -14,6 +14,7 @@ const MainScreen = () => {
     const navigate = useNavigate();
     const [userRole, setUserRole] = useState([]);
     const [loggedInUserId, setLoggedInUserId] = useState(null);
+    const today = new Date();
 
 
     const statusColors = {
@@ -23,6 +24,7 @@ const MainScreen = () => {
         "Publikovať v predloženej forme": "#4CAF50", // Green
         "Publikovať po zapracovaní pripomienok": "#FF9800", // Orange
         "Neprijať pre publikovanie": "#F44336", // Red
+        "Práca ohodnotená":"#708090",
     };
     //const [loading, setLoading] = useState(true);
     //const [error, setError] = useState(null);
@@ -218,11 +220,11 @@ const MainScreen = () => {
                                                             style={{
                                                                 ...styles.statusLabel,
                                                                 backgroundColor:
-                                                                    statusColors[article.acticle_status_name] ||
+                                                                    statusColors[(article.acticle_status_idacticle_status > 3 && today.getTime() <= new Date(event.event_upload_EndDate).getTime() && article.user_iduser === loggedInUserId)  ? "Práca ohodnotená": article.acticle_status_name] ||
                                                                     "#000000", // Default fallback color
                                                             }}
                                                         >
-                                                            {article.acticle_status_name}
+                                                            {(article.acticle_status_idacticle_status > 3 && today.getTime() <= new Date(event.event_upload_EndDate).getTime() && article.user_iduser === loggedInUserId)  ? "Práca ohodnotená": article.acticle_status_name}
                                                         </div>
                                                     </li>
                                                 ))}

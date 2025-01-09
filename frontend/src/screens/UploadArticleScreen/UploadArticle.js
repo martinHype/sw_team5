@@ -129,7 +129,6 @@ const UploadArticle = ({ formMode = "New" }) => {
 
   const updateArticle = async (actualStatus) => {
     try {
-      const { conferenceId } = location.state || {};
       const response = await axios.post(
         'http://localhost:8080/api/article/update-status', {
           articleid:article_id,
