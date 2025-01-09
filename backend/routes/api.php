@@ -30,9 +30,11 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('article/{id}',[ArticleController::class, 'getArticle']);
     Route::get('article',[ArticleController::class, 'index']);
     Route::post('article',[ArticleController::class, 'store']);
-    Route::post('upload', [FileUploadController::class, 'upload']);
-    Route::post('evaluateArticle', [ArticleController::class, 'evaluateArticle']);
+    Route::post('/article/{id}/upload', [DocumentController::class, 'upload']);
+    Route::put('evaluateArticle/{id}', [ArticleController::class, 'evaluateArticle']);
     Route::get('document/{id}',[DocumentController::class,'getDocumentsByArticle']);
+    Route::put('/article/{id}/updateArticle', [ArticleController::class, 'updateArticle']);
+    Route::delete('/document/{id}', [DocumentController::class, 'deleteDocument']);
 
 });
 
@@ -55,7 +57,7 @@ Route::post('/login',[AuthController::class,'login']);
 Route::get('/events', [EventController::class, 'index']);
 Route::get('/studentevents', [EventController::class, 'getEvents'])->middleware('auth:sanctum');
 
-Route::post('/article/update-status', [ArticleController::class, 'updateStatus']);
+Route::post('/article/updateArticle/{id}', [ArticleController::class, 'updateArticle']);
 
 Route::get('/events/{id}/articles', [EventController::class, 'showArticles']);
 

@@ -23,6 +23,8 @@ const UploadArticle = ({ formMode = "New" }) => {
   });
   
   useEffect(() => {
+    localStorage.removeItem('files');
+    localStorage.removeItem('filesToDelete');
     const fetchCategories = async () => {
       try {
         const response = await axios.get(`http://localhost:8080/api/admin/events/${conferenceId}/categories`, {
@@ -82,7 +84,7 @@ const UploadArticle = ({ formMode = "New" }) => {
         files.forEach(async (file) => {
           try{
             const response = await axios.post(
-              'http://localhost:8080/api/upload',
+              `http://localhost:8080/api/article/${id_article}/upload`,
               {
                 file_content: file.content,
                 file_name: file.name,
@@ -104,7 +106,12 @@ const UploadArticle = ({ formMode = "New" }) => {
         
 
         localStorage.removeItem('files');
-        alert("Práca bola úspešne pridaná do systému.");
+        if(formMode === "New"){
+          alert("Práca bola úspešne pridaná do systému.")
+        }else{
+          alert("Práca bola úspešne zmenena.");
+        }
+        
         navigate("/home");
 
 
@@ -114,6 +121,32 @@ const UploadArticle = ({ formMode = "New" }) => {
         alert("Chyba pri nahrávaní súborov do systému");
       }
   };
+  const deleteFiles = async () => {
+    const filesToDelete = localStorage.getItem('filesToDelete');
+    if(!filesToDelete){
+      console.error(`No files to delete`);
+          return;
+    }
+    const deleteFiles = JSON.parse(filesToDelete);
+    deleteFiles.forEach(async (file) => {
+      try {
+      
+        const response = await axios.delete(
+          `http://localhost:8080/api/document/${file.documentid}`,
+          {
+            headers: {
+              Authorization: `Bearer ${sessionStorage.getItem("authToken")}`,
+            },
+          }
+        );
+
+      } catch (error) {
+        console.error("Error fetching files:", error.response?.data || error.message);
+        alert("Chyba pri mazani suboru");
+      }
+    })
+    
+  }
   const handleSubmit = (status) => {
     console.log(article_id);
     if(article_id){
@@ -129,10 +162,13 @@ const UploadArticle = ({ formMode = "New" }) => {
 
   const updateArticle = async (actualStatus) => {
     try {
-      const response = await axios.post(
-        'http://localhost:8080/api/article/update-status', {
+      const response = await axios.put(
+        `http://localhost:8080/api/article/${article_id}/updateArticle`, {
           articleid:article_id,
           statusid:actualStatus,
+          title: ArticleData.title,
+          description: ArticleData.Description,
+          category:parseInt(ArticleData.category_idcategory,10),
       },
       {
         headers: {
@@ -141,13 +177,8 @@ const UploadArticle = ({ formMode = "New" }) => {
         },
       });
       console.log(response);
-      alert("Práca bola úspešne zmenena.");
-      navigate('/home');
-      //const id_article = response.data.article_id;
-
-
-      
-      //sessionStorage.getItem("authToken");
+      deleteFiles();
+      uploadFiles(article_id);
       
   } catch (error) {
       console.error('Error logging in:', error.response?.data || error.message);

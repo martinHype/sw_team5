@@ -7,8 +7,8 @@ import axios from "axios";
 
 const FileDropArea = ({fieldMode = "New", articleId = 0}) => {
   const [files, setFiles] = useState([]);
-  const [fetchedFiles, setFetchedFiles] = useState([]);
   const fileInputRef = useRef(null);
+  //const [filesToDelete, setFilesToDelete] = useState([]);
 
   const [isHovered, setIsHovered] = useState(false);
 
@@ -30,6 +30,7 @@ const FileDropArea = ({fieldMode = "New", articleId = 0}) => {
           );
            // Initialize the `files` state with fetched files
           const fetchedFiles = response.data.map((file) => ({
+            id: file.id,
             name: file.name,
             type: file.name.endsWith(".pdf") ? "application/pdf" : "application/msword",
             size: null, // Backend doesn't provide size, so set it as null or a default value
@@ -47,7 +48,7 @@ const FileDropArea = ({fieldMode = "New", articleId = 0}) => {
     }
   }, [fieldMode, articleId]);
 
-
+  
   const saveFileToLocalStorage = (file) => {
     const reader = new FileReader();
 
@@ -96,10 +97,17 @@ const FileDropArea = ({fieldMode = "New", articleId = 0}) => {
     event.preventDefault();
   };
 
-  const handleRemoveFile = (indexToRemove) => {
+  const handleRemoveFile = async (indexToRemove,documentid) => {
     if (fieldMode !== "View") {
+      if(documentid){
+        const filesToDelete = JSON.parse(localStorage.getItem("filesToDelete") || "[]");
+        filesToDelete.push({documentid: documentid});
+        localStorage.setItem("filesToDelete", JSON.stringify(filesToDelete));
+      }
       setFiles((prevFiles) => prevFiles.filter((_, index) => index !== indexToRemove));
     }
+
+
   };
 
   return (
@@ -158,7 +166,7 @@ const FileDropArea = ({fieldMode = "New", articleId = 0}) => {
                 style={styles.deleteButton}
                 onClick={(event) => {
                     event.stopPropagation(); // Prevent triggering the parent click event
-                    handleRemoveFile(index);
+                    handleRemoveFile(index,file.id);
                   }}
               >
                 ✖

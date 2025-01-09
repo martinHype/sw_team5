@@ -25,7 +25,6 @@ class ArticleController extends Controller
             'title' => $fields['title'],
             'Description' => $fields['description'],
             'event_idevent' => $fields['event'],
-            'acticle_status_idacticle_status' => 1,
             'category_idcategory' => $fields['category'],
             'user_iduser' => auth()->id(),
             'acticle_status_idacticle_status' => $fields['status'],
@@ -106,17 +105,24 @@ class ArticleController extends Controller
             ], 500);
         }
     }
-    public function updateStatus(Request $request)
+    public function updateArticle(Request $request, $id)
     {
         $fields = $request->validate([
-            'articleid' => 'required|integer',
             'statusid' => 'required|integer',
+            'title' => 'required|string',
+            'description' => 'required|string',
+            'category' => 'required|integer',
         ]);
 
         // Find the article and update the status
-        $article = Article::find($fields['articleid']);
-        $article->acticle_status_idacticle_status = $fields['statusid'];
-        $article->save();
+        $article = Article::find($id);
+        // Update the article with the provided fields
+        $article->update([
+            'acticle_status_idacticle_status' => $fields['statusid'],
+            'title' => $fields['title'],
+            'Description' => $fields['description'],
+            'category_idcategory' => $fields['category'],
+        ]);
 
         return response()->json([
             'message' => 'Article status updated successfully!',
@@ -125,9 +131,8 @@ class ArticleController extends Controller
         ], 200);
     }
 
-    public function evaluateArticle(Request $request){
+    public function evaluateArticle(Request $request, $id){
         $fields = $request->validate([
-            'articleid' => 'required|integer',
             'statusid' => 'required|integer',
             'actuality_difficulty' => 'nullable|string',
             'orientation_in_theme' => 'nullable|string',
@@ -141,7 +146,7 @@ class ArticleController extends Controller
         ]);
 
         // Find the article by its ID
-        $article = Article::find($fields['articleid']);
+        $article = Article::find($id);
 
         // Update the article with the provided fields
         $article->update([

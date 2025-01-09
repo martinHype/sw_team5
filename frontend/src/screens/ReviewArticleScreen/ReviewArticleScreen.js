@@ -59,7 +59,7 @@ const ReviewArticleScreen = () => {
       console.log(status);
       try {
         const response = await axios.post(
-          "http://localhost:8080/api/evaluateArticle", // Replace with your actual endpoint
+          `http://localhost:8080/api/evaluateArticle/${article_id}`, // Replace with your actual endpoint
           {
             articleid:article_id,
             statusid:status,
