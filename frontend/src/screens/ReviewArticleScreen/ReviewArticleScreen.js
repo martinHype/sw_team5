@@ -36,7 +36,7 @@ const ReviewArticleScreen = () => {
       console.log(article_id);
       const fetchArticleData = async () => {
         try {
-          const response = await axios.get(`http://localhost:8080/api/article/1`, {
+          const response = await axios.get(`http://localhost:8080/api/article/${article_id}`, {
             headers: {
               "Content-Type": "application/json",
               Authorization: `Bearer ${sessionStorage.getItem("authToken")}`,

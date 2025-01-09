@@ -32,6 +32,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('article',[ArticleController::class, 'store']);
     Route::post('upload', [FileUploadController::class, 'upload']);
     Route::post('evaluateArticle', [ArticleController::class, 'evaluateArticle']);
+    Route::get('document/{id}',[DocumentController::class,'getDocumentsByArticle']);
 
 });
 

@@ -39,10 +39,27 @@ const App = () => {
                     path="/uploadarticle"
                     element={
                         <PrivateRoute>
-                            <UploadArticle />
+                            <UploadArticle formMode='New' />
                         </PrivateRoute>
                     }
                 />
+                <Route
+                    path="/editarticle/:article_id"
+                    element={
+                        <PrivateRoute>
+                            <UploadArticle formMode='Edit' />
+                        </PrivateRoute>
+                    }
+                />
+                <Route
+                    path="/viewarticle/:article_id"
+                    element={
+                        <PrivateRoute>
+                            <UploadArticle formMode='View' />
+                        </PrivateRoute>
+                    }
+                />
+
                 <Route
                     path="/reviewarticle/:article_id"
                     element={

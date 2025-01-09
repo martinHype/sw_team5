@@ -6,48 +6,25 @@ import logout from "../../images/logout.png";
 import FileDropArea from "../../components/FileUploadComponent/FileUpload.js";
 import { useLocation } from 'react-router-dom';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
-const UploadArticle = () => {
-
-  const navigate = useNavigate();
+const UploadArticle = ({ formMode = "New" }) => {
+  const { article_id } = useParams();
   const location = useLocation();
-  const { conferenceId,formMode, articleid, title, description, category, reviewerId, ownerid } = location.state || {};
+  const { conferenceId } = location.state || {};
+  const navigate = useNavigate();
+  
   const [showPopup, setShowPopup] = useState(false);
   const [categories, setCategories] = useState([]);
-  //console.log(conferenceId);
   const [ArticleData, setArticleData] = useState({
     title: "",
     Description: "",
-    category:"",
-    reviewerId:0,
-    ownerid:0
+    category_idcategory:0,
   });
-  const [evaluation, setEvaluation] = useState({
-    aktualnost: "",
-    zorientovanie: "",
-    vhodnost: "",
-    rozsah: "",
-    analyza: "",
-    prehladnost: "",
-    formalna_uroven: "",
-    sablona_sv: "",
-    nazov_chyba: false,
-    abstrakt_chyba: false,
-    abstrakt_rozsah: false,
-    uvod_vysledky: false,
-    zdroje_chyba: false,
-    bibliografia_chyba: false,
-    obrazky_chyba: false,
-    popis_chyba: false,
-    strong_points: "",
-    weak_points: "",
-    final_assessment:"",
-  });
+  
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const { conferenceName } = location.state || {};
         const response = await axios.get(`http://localhost:8080/api/admin/events/${conferenceId}/categories`, {
           headers: {
             'Content-Type': 'application/json',
@@ -59,17 +36,29 @@ const UploadArticle = () => {
         console.error('Error fetching categories:', error.response?.data || error.message);
       }
     };
-    if (formMode === "Edit" || formMode === "Review" || formMode === "View") {
-      setArticleData({
-        title: title || "",
-        description: description || "",
-        category: category || "",
-        reviewerId:reviewerId,
-        ownerid:ownerid,
-      });
-    };
+    const fetchArticleData = async () => {
+        try {
+          const response = await axios.get(`http://localhost:8080/api/article/${article_id}`, {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${sessionStorage.getItem("authToken")}`,
+            },
+          });
+          console.log(response.data);
+          setArticleData(response.data); // Assuming the response is an array with one object
+          ArticleData.category_idcategory = response.data.category_idcategory;
+          //setEvaluation(response.data);
+          console.log(ArticleData);
+        } catch (error) {
+          console.error("Error fetching article data:", error.response?.data || error.message);
+        }
+      };
+    
     fetchCategories();
-  }, [formMode, title, description, category]);
+    if (article_id) 
+      fetchArticleData();
+    console.log(categories);
+  }, [article_id]);
 
   
 
@@ -123,13 +112,9 @@ const UploadArticle = () => {
       }
   };
   const handleSubmit = (status) => {
-    console.log(articleid);
-    if(articleid){
+    console.log(article_id);
+    if(article_id){
       let sendStatus = status;
-      if(formMode == "Review"){
-        console.log(evaluation.final_assessment);
-        sendStatus = (status === 4) ? 6 : parseInt(evaluation.final_assessment, 10) || status;
-      }
       updateArticle(sendStatus);
     }else{
       createArticle(status);
@@ -144,7 +129,7 @@ const UploadArticle = () => {
       const { conferenceId } = location.state || {};
       const response = await axios.post(
         'http://localhost:8080/api/article/update-status', {
-          articleid:articleid,
+          articleid:article_id,
           statusid:actualStatus,
       },
       {
@@ -240,14 +225,14 @@ const UploadArticle = () => {
             value={ArticleData.title}
             onChange={handleChange}
             style={styles.input}
-            readOnly={formMode === "View" || formMode === "Review" || formMode === "Edit" && "locked"} />
+            readOnly={formMode === "View" && "locked"} />
           <label>Sekcia</label>
           <select 
           name="category"
           style={styles.select}
           onChange={handleChange}
-          value={ArticleData.category}
-          disabled={formMode === "View" || formMode === "Review"}
+          value={ArticleData.category_idcategory}
+          disabled={formMode === "View"}
           >
                 <option value="" hidden>Vyberte sekciu</option>
                 {categories.map((category) => (
@@ -259,7 +244,7 @@ const UploadArticle = () => {
           <label>Popis práce</label>
           <textarea 
             name="Description"
-            value={ArticleData.description}
+            value={ArticleData.Description}
             onChange={handleChange}
             placeholder="Popis práce" 
             rows="10"
@@ -274,13 +259,12 @@ const UploadArticle = () => {
           readOnly={formMode === "View"} />
 
           <label>Dokumenty</label>
-          <FileDropArea disabled={formMode === "View"}/>
+          <FileDropArea fieldMode={formMode} articleId={article_id}/>
           {/* Submit Button */}
-          <button type="submit" style={styles.submitButton} onClick={() => setShowPopup(true)}>
+          {formMode !== "View" && <button type="submit" style={styles.submitButton} onClick={() => setShowPopup(true)}>
               {formMode === "New" && "Nahrať prácu"}
               {formMode === "Edit" && "Uložiť zmeny"}
-              {formMode === "Review" && "Uložiť hodnotenie"}
-          </button>
+          </button>}
           
         </form>
         
@@ -305,7 +289,6 @@ const UploadArticle = () => {
                 
                 {formMode === "New"  && "Poslať na hodnotenie"}
               {formMode === "Edit" && "Poslať na hodnotenie"}
-              {formMode === "Review" && "Odoslat hodnotenie"}
               </button>
             </div>
           </div>

@@ -192,16 +192,21 @@ const MainScreen = () => {
                                                         }}
                                                         onMouseEnter={() => setHoveredArticle(article.idarticle)}
                                                         onMouseLeave={() => setHoveredArticle(null)}
-                                                        onClick={() => navigate('/uploadarticle', 
-                                                            { state: {
-                                                                formMode: getFormMode(article.acticle_status_name), 
-                                                                articleid: article.idarticle,
-                                                                title:article.title,
-                                                                description:article.Description,
-                                                                category:article.category_idcategory,
-                                                                reviewerId:article.idreviewer,
-                                                                ownerid:article.user_iduser,
-                                                            } })}
+                                                        onClick={() => {
+                                                            if (String(article.idreviewer) === sessionStorage.getItem("userId")) {
+                                                              navigate(`/reviewarticle/${article.idarticle}`);
+                                                            }else if(String(article.user_iduser) === sessionStorage.getItem("userId")){
+                                                                if(article.acticle_status_idacticle_status === 1){
+                                                                    navigate(`/editarticle/${article.idarticle}`,{ state: {
+                                                                        conferenceId: event.idevent
+                                                                     } });
+                                                                }else{
+                                                                    navigate(`/viewarticle/${article.idarticle}`,{ state: {
+                                                                        conferenceId: event.idevent
+                                                                     } });
+                                                                }   
+                                                            }
+                                                          }}
                                                     >
                                                         <h3 style={styles.articleTitle}>{article.title}</h3>
                                                         <p style={styles.articleText}>{article.Description}</p>
