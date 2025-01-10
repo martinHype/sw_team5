@@ -10,7 +10,6 @@ const styles = {
     justifyContent: "center", // Center content vertically
      // Center content horizontally
     gap: "10px",
-    cursor: "pointer",
     position: "relative",
     height: "150px",
     alignItems: filesLength > 0 ? "flex-start":"center",

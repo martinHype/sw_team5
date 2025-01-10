@@ -66,7 +66,7 @@ const AuthForm = () => {
             setErrorMessage("Heslo musi byt dlhsie ako 6 znakov");
             return;
         }
-        if(formData.password.trim() != formData.confirmPassword.trim()){
+        if(formData.password.trim() !== formData.confirmPassword.trim()){
             setError(true);
             setErrorMessage("Hesla sa nezhodnuju");
             return;
@@ -136,7 +136,7 @@ const AuthForm = () => {
         <div style={styles.container}>
             <div style={{ ...styles.formWrapper, ...(isRegister ? styles.register : styles.login) }}>
                 <div style={styles.logo}>
-                    <img src={graduationHat} style={styles.img}/>
+                    <img src={graduationHat} style={styles.img} alt="Page logo"/>
                     <p style={styles.text}> ŠTUDENTSKÁ VEDECKÁ KONFERENCIA</p>
                 </div>
                 <form style={styles.form} onSubmit={(e) => e.preventDefault()}>
@@ -175,10 +175,10 @@ const AuthForm = () => {
                                     placeholder="Heslo"
                                     value={formData.password}
                                     onChange={handleChange}
-                                    style={(error && (!formData.password|| formData.confirmPassword != formData.password || formData.password.length < 6))?styles.input_error : styles.input}
+                                    style={(error && (!formData.password|| formData.confirmPassword !== formData.password || formData.password.length < 6))?styles.input_error : styles.input}
                                     required
                                 />
-                            <img src={showPassword ? iconEye:iconEyeClosed} style={styles.eyeIcon} onClick={togglePasswordVisibility}/>
+                            <img src={showPassword ? iconEye:iconEyeClosed} style={styles.eyeIcon} onClick={togglePasswordVisibility} alt="Hide password icon"/>
                                 
                             </div>
                             <div style={styles.inputContainer}>
@@ -188,10 +188,10 @@ const AuthForm = () => {
                                     placeholder="Zopakujte heslo"
                                     value={formData.confirmPassword}
                                     onChange={handleChange}
-                                    style={(error && (!formData.confirmPassword || formData.confirmPassword != formData.password))?styles.input_error : styles.input}
+                                    style={(error && (!formData.confirmPassword || formData.confirmPassword !== formData.password))?styles.input_error : styles.input}
                                     required
                                 />
-                            <img src={showConfirmPassword ? iconEye:iconEyeClosed} style={styles.eyeIcon} onClick={toggleConfirmPasswordVisibility}/>
+                            <img src={showConfirmPassword ? iconEye:iconEyeClosed} style={styles.eyeIcon} onClick={toggleConfirmPasswordVisibility} alt="Show password icon"/>
                                 
                             </div>
                             <select
@@ -235,7 +235,7 @@ const AuthForm = () => {
                                     style={error?styles.input_error : styles.input}
                                     required
                                 />
-                            <img src={showPassword ? iconEye:iconEyeClosed} style={styles.eyeIcon} onClick={togglePasswordVisibility}/>
+                            <img src={showPassword ? iconEye:iconEyeClosed} style={styles.eyeIcon} onClick={togglePasswordVisibility} alt="Show password icon"/>
                                 
                             </div>
                             

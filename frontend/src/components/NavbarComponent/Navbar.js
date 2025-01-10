@@ -47,10 +47,10 @@ const Navbar = () => {
                 <a href="/admin/conferences/create" style={styles.link}>
                     Nový
                 </a>
-                <a href="#" style={styles.link}>
+                <a href="/history" style={styles.link}>
                     História
                 </a>
-                <a href="#" style={styles.link}>
+                <a href="/myarticles" style={styles.link}>
                     Moje práce
                 </a>
             </div>
