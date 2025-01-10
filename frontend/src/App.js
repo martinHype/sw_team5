@@ -64,10 +64,20 @@ const App = () => {
                     path="/reviewarticle/:article_id"
                     element={
                         <PrivateRoute>
-                            <ReviewArticleScreen />
+                            <ReviewArticleScreen editMode={true}/>
                         </PrivateRoute>
                     }
                 />
+                <Route
+                    path="/viewreviewarticle/:article_id"
+                    element={
+                        <PrivateRoute>
+                            <ReviewArticleScreen editMode={false}/>
+                        </PrivateRoute>
+                    }
+                />
+
+
 
                 <Route
                     path="admin/conferences/create"
