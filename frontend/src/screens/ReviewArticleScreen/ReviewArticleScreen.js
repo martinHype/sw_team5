@@ -6,10 +6,12 @@ import user from "../../images/user.png";
 import logout from "../../images/logout.png";
 import image_pdf from "../../images/pdf.png";
 import image_doc from "../../images/doc.png";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
+import ViewModeEvaluation from "../../components/Reviewer/ViewModeEvaluation/ViewModeEvaluation.js";
 
-const ReviewArticleScreen = () => {
+const ReviewArticleScreen = ({editMode = true}) => {
     const { article_id } = useParams();
+    const navigate = useNavigate();
     const [showPopup, setShowPopup] = useState(false);
     const [articleData, setArticleData] = useState({
       title: "something",
@@ -58,7 +60,7 @@ const ReviewArticleScreen = () => {
       console.log(article_id);
       console.log(status);
       try {
-        const response = await axios.post(
+        const response = await axios.put(
           `http://localhost:8080/api/evaluateArticle/${article_id}`, // Replace with your actual endpoint
           {
             articleid:article_id,
@@ -82,8 +84,9 @@ const ReviewArticleScreen = () => {
         );
     
         console.log("Article evaluated successfully:", response.data);
+        alert("Hodnotenie bolo úspešne uložené");
+        navigate("/home");
         setShowPopup(false); // Close the popup
-        return response.data;
       } catch (error) {
         console.error("Error evaluating article:", error.response?.data || error.message);
         alert("Chyba pri ukladaní hodnotenia");
@@ -172,8 +175,10 @@ const ReviewArticleScreen = () => {
               </div>
 
                 </div>
-            
-            <div style={styles.evaluationSection}>
+              {!editMode && <ViewModeEvaluation data={evaluation}/>}   
+              {editMode && 
+                <div>
+                  <div style={styles.evaluationSection}>
               <h3 style={{ fontSize: "18px", fontWeight: "bold", color: "#333", marginBottom: "15px" }}>
                 Hodnotenie práce
               </h3>
@@ -301,10 +306,12 @@ const ReviewArticleScreen = () => {
                 <option value="6">neprijať pre publikovanie</option>
               </select>
             </div>
-            </div>
-            <button type="submit" style={styles.submitButton} onClick={() => setShowPopup(true)}>
+                  </div>
+                  <button type="submit" style={styles.submitButton} onClick={() => setShowPopup(true)}>
               Uložiť hodnotenie
-            </button>
+                  </button>
+                </div>
+            }
             </main>
             <footer style={styles.footer}>
                 <p style={styles.footerText}>© 2024 Študentská vedecká konferencia. Všetky práva vyhradené.</p>

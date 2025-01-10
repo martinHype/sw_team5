@@ -97,6 +97,27 @@ const MainScreen = () => {
         }));
     };
 
+    const handlenavigation = (article,event) => {
+        if (String(article.idreviewer) === sessionStorage.getItem("userId")) {
+            if(article.acticle_status_idacticle_status > 3)
+                navigate(`/viewreviewarticle/${article.idarticle}`);
+            else
+                navigate(`/reviewarticle/${article.idarticle}`);
+        }else{
+            if(article.acticle_status_idacticle_status === 1){
+                navigate(`/editarticle/${article.idarticle}`,{ state: {
+                    conferenceId: event.idevent
+                 } });
+            }else if(today.getTime() <= new Date(event.event_upload_EndDate).getTime()){
+                navigate(`/viewarticle/${article.idarticle}`,{ state: {
+                    conferenceId: event.idevent
+                 } });
+            }else{
+                navigate(`/viewreviewarticle/${article.idarticle}`);
+            }
+        }
+      };
+
     
 
     return (
@@ -194,21 +215,7 @@ const MainScreen = () => {
                                                         }}
                                                         onMouseEnter={() => setHoveredArticle(article.idarticle)}
                                                         onMouseLeave={() => setHoveredArticle(null)}
-                                                        onClick={() => {
-                                                            if (String(article.idreviewer) === sessionStorage.getItem("userId")) {
-                                                              navigate(`/reviewarticle/${article.idarticle}`);
-                                                            }else if(String(article.user_iduser) === sessionStorage.getItem("userId")){
-                                                                if(article.acticle_status_idacticle_status === 1){
-                                                                    navigate(`/editarticle/${article.idarticle}`,{ state: {
-                                                                        conferenceId: event.idevent
-                                                                     } });
-                                                                }else{
-                                                                    navigate(`/viewarticle/${article.idarticle}`,{ state: {
-                                                                        conferenceId: event.idevent
-                                                                     } });
-                                                                }   
-                                                            }
-                                                          }}
+                                                        onClick={() => handlenavigation(article,event)}
                                                     >
                                                         <h3 style={styles.articleTitle}>{article.title}</h3>
                                                         <p style={styles.articleText}>{article.Description}</p>

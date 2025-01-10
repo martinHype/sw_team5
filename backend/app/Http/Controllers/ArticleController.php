@@ -42,6 +42,7 @@ class ArticleController extends Controller
             $article = Article::where('idarticle', $id)
                 ->with('user:iduser,firstname,lastname') // Include user details
                 ->leftJoin('category', 'article.category_idcategory', '=', 'category.idcategory')
+                ->leftJoin('acticle_status', 'article.acticle_status_idacticle_status', '=', 'acticle_status.idacticle_status')
                 ->first();
             if (!$article) {
                 return response()->json(['message' => 'Article not found.'], 404);
