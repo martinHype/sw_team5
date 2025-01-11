@@ -12,6 +12,7 @@ import ViewModeEvaluation from "../../components/Reviewer/ViewModeEvaluation/Vie
 const ReviewArticleScreen = ({editMode = true}) => {
     const { article_id } = useParams();
     const navigate = useNavigate();
+    const [errors, setErrors] = useState({});
     const [showPopup, setShowPopup] = useState(false);
     const [articleData, setArticleData] = useState({
       title: "something",
@@ -59,6 +60,10 @@ const ReviewArticleScreen = ({editMode = true}) => {
     const handleSubmit = async (status) => {
       console.log(article_id);
       console.log(status);
+      if (!validateForm()) {
+        return; // Prevent submission if validation fails
+      }
+      
       try {
         const response = await axios.put(
           `http://localhost:8080/api/evaluateArticle/${article_id}`, // Replace with your actual endpoint
@@ -94,13 +99,52 @@ const ReviewArticleScreen = ({editMode = true}) => {
       }
       
     };
-      const handleEvaluationChange = (e) => {
-        const { name, type, checked, value } = e.target;
-        setEvaluation({
-          ...evaluation,
-          [name]: type === "checkbox" ? checked : value,
-        });
-      };
+    const handleEvaluationChange = (e) => {
+      const { name, type, checked, value } = e.target;
+      setEvaluation({
+        ...evaluation,
+        [name]: type === "checkbox" ? checked : value,
+      });
+    };
+
+    const validateForm = () => {
+      const newErrors = {};
+    
+      // Validation for "Aktuálnosť a náročnosť práce"
+      if (!evaluation.actuality_difficulty) {
+        newErrors.actuality_difficulty = "Pole musí byť vyplnené.";
+      }
+    
+      // Validation for "Zorientovanie sa študenta v danej problematike"
+      if (!evaluation.orientation_in_theme) {
+        newErrors.orientation_in_theme = "Pole musí byť vyplnené.";
+      }
+    
+      // Validation for "Práca zodpovedá šablóne"
+      if (!evaluation.work_corresponding_template) {
+        newErrors.work_corresponding_template = "Pole musí byť vyplnené.";
+      }
+    
+      // Validation for "Prínos (silné stránky) práce"
+      if (!(evaluation.positive_review?.trim() || "").length) {
+        newErrors.positive_review = "Pole musí byť vyplnené.";
+      } else if ((evaluation.positive_review || "").length > 500) {
+        newErrors.positive_review = "Text nesmie presahovať 500 znakov.";
+      }
+
+      // Validation for "Nedostatky (slabé stránky) práce"
+      if (!(evaluation.negative_review?.trim() || "").length) {
+        newErrors.negative_review = "Pole musí byť vyplnené.";
+      } else if ((evaluation.negative_review || "").length > 500) {
+        newErrors.negative_review = "Text nesmie presahovať 500 znakov.";
+      }
+    
+      setErrors(newErrors);
+      return Object.keys(newErrors).length === 0; // Return true if no errors
+    };
+    
+
+
     return (
         <div style={styles.container}>
              {/* Header */}
@@ -178,57 +222,80 @@ const ReviewArticleScreen = ({editMode = true}) => {
               {!editMode && <ViewModeEvaluation data={evaluation}/>}   
               {editMode && 
                 <div>
-                  <div style={styles.evaluationSection}>
+                  <div style={{...styles.evaluationSection}}>
               <h3 style={{ fontSize: "18px", fontWeight: "bold", color: "#333", marginBottom: "15px" }}>
                 Hodnotenie práce
               </h3>
 
               {/* Dropdown Fields */}
-              <label>Aktuálnosť a náročnosť práce</label>
-              <select
-                name="actuality_difficulty"
-                value={evaluation.actuality_difficulty}
-                onChange={handleEvaluationChange}
-                style={styles.select}
-              >
-                <option value="">Vyberte hodnotenie</option>
-                <option value="A">A</option>
-                <option value="B">B</option>
-                <option value="C">C</option>
-                <option value="D">D</option>
-                <option value="E">E</option>
-                <option value="Fx">Fx</option>
-              </select>
-
-              <label>Zorientovanie sa študenta v danej problematike</label>
-              <select
-                name="orientation_in_theme"
-                value={evaluation.orientation_in_theme}
-                onChange={handleEvaluationChange}
-                style={styles.select}
-              >
-                <option value="">Vyberte hodnotenie</option>
-                <option value="A">A</option>
-                <option value="B">B</option>
-                <option value="C">C</option>
-                <option value="D">D</option>
-                <option value="E">E</option>
-                <option value="Fx">Fx</option>
-              </select>
-
+              <label style={styles.label}>Aktuálnosť a náročnosť práce</label>
+              <div>
+                <select
+                  name="actuality_difficulty"
+                  value={evaluation.actuality_difficulty}
+                  onChange={handleEvaluationChange}
+                  style={{
+                    ...styles.select,
+                    borderColor: errors.actuality_difficulty ? "red" : "#ccc",
+                  }}
+                >
+                  <option value="">Vyberte hodnotenie</option>
+                  <option value="A">A</option>
+                  <option value="B">B</option>
+                  <option value="C">C</option>
+                  <option value="D">D</option>
+                  <option value="E">E</option>
+                  <option value="Fx">Fx</option>
+                </select>
+                {errors.actuality_difficulty && (<p style={styles.errorMessage}>{errors.actuality_difficulty}</p>)}
+              </div>
+              
+              <div>
+              <label style={styles.label}>Zorientovanie sa študenta v danej problematike</label>
+              
+                <select
+                  name="orientation_in_theme"
+                  value={evaluation.orientation_in_theme}
+                  onChange={handleEvaluationChange}
+                  style={{
+                    ...styles.select,
+                    borderColor: errors.orientation_in_theme ? "red" : "#ccc",
+                  }}
+                >
+                  <option value="">Vyberte hodnotenie</option>
+                  <option value="A">A</option>
+                  <option value="B">B</option>
+                  <option value="C">C</option>
+                  <option value="D">D</option>
+                  <option value="E">E</option>
+                  <option value="Fx">Fx</option>
+                </select>
+                {errors.orientation_in_theme && (<p style={styles.errorMessage}>{errors.orientation_in_theme}</p>)}
+              </div>
+              
+              <div>
               <label>Práca zodpovedá šablóne určenej pre ŠVK</label>
+              
               <select
                 name="work_corresponding_template"
                 value={evaluation.work_corresponding_template}
                 onChange={handleEvaluationChange}
-                style={styles.select}
+                style={{
+                  ...styles.select,
+                  borderColor: errors.work_corresponding_template ? "red" : "#ccc",
+                }}
               >
                 <option value="">Vyberte možnosť</option>
                 <option value="Áno">Áno</option>
                 <option value="Nie">Nie</option>
               </select>
+              {errors.work_corresponding_template && (<p style={styles.errorMessage}>{errors.work_corresponding_template}</p>)}
+              </div>
+              
+              
 
               {/* Checkbox Fields */}
+              <label style={styles.evaluationLabel}>Chyby práce</label>
               <div style={styles.checkboxContainer}>
                 <label style={styles.checkboxLabel}>
                   <input
@@ -273,22 +340,45 @@ const ReviewArticleScreen = ({editMode = true}) => {
 
               {/* Textarea Fields */}
               <label style={styles.evaluationLabel}>Prínos (silné stránky) práce</label>
-              <textarea
-                name="positive_review"
-                value={evaluation.positive_review}
-                onChange={handleEvaluationChange}
-                rows="3"
-                style={styles.evaluationtextarea}
-              />
+              <div>
+                <textarea
+                  name="positive_review"
+                  value={evaluation.positive_review}
+                  onChange={handleEvaluationChange}
+                  rows="3"
+                  style={{
+                    ...styles.evaluationtextarea,
+                    borderColor: errors.positive_review ? "red" : "#ccc",
+                  }}
+                />
+                {errors.positive_review && (
+                <p style={styles.errorMessage}>{errors.positive_review}</p>
+                )}
+                
+              </div>
+              
 
               <label style={styles.evaluationLabel}>Nedostatky (slabé stránky) práce</label>
-              <textarea
-                name="negative_review"
-                value={evaluation.negative_review}
-                onChange={handleEvaluationChange}
-                rows="3"
-                style={styles.evaluationtextarea}
-              />
+              <div>
+                <textarea
+                  name="negative_review"
+                  value={evaluation.negative_review}
+                  onChange={handleEvaluationChange}
+                  rows="3"
+                  style={{
+                    ...styles.evaluationtextarea,
+                    borderColor: errors.negative_review ? "red" : "#ccc",
+                  }}
+                />
+                <p style={styles.charCount}>
+                  {500 - (evaluation.negative_review?.length || 0)} znakov zostáva.
+                </p>
+                {errors.negative_review && (
+                <p style={styles.errorMessage}>{errors.negative_review}</p>
+                )}
+                
+              </div>
+              
               {/* Final Evaluation Field */}
               <div style={styles.evaluationSection}>
               <h3 style={styles.evaluationSectionTitle}>Záverečný posudok</h3>
