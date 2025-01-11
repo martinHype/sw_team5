@@ -279,6 +279,20 @@ const UploadArticle = ({ formMode = "New" }) => {
       }
     }
 
+    // Validation for uploaded files
+    const files = JSON.parse(localStorage.getItem("files") || "[]");
+    if (files.length !== 2) {
+      newErrors.files = "Musíte nahrať presne 2 súbory.";
+    } else {
+      const fileTypes = files.map(file => file.type);
+      if (!fileTypes.includes("application/pdf")) {
+        newErrors.files = "Jeden zo súborov musí byť typu PDF.";
+      }
+      if (!fileTypes.includes("application/vnd.openxmlformats-officedocument.wordprocessingml.document")) {
+        newErrors.files = "Jeden zo súborov musí byť typu DOCX.";
+      }
+    }
+
   
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0; // Return true if no errors
@@ -399,7 +413,14 @@ const UploadArticle = ({ formMode = "New" }) => {
           
 
           <label>Dokumenty</label>
+          <div>
           <FileDropArea fieldMode={formMode} articleId={article_id}/>
+          <p style={styles.hint}>
+            Nahrajte presne 2 súbory: jeden vo formáte <strong>PDF</strong> a druhý vo formáte <strong>DOCX</strong>.
+          </p>
+          {errors.files && <p style={styles.errorMessage}>{errors.files}</p>}
+          </div>
+          
           {/* Submit Button */}
           {formMode !== "View" && <button type="submit" style={styles.submitButton} onClick={() => setShowPopup(true)}>
               {formMode === "New" && "Nahrať prácu"}
