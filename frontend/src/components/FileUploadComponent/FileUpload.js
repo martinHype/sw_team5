@@ -76,12 +76,31 @@ const FileDropArea = ({fieldMode = "New", articleId = 0}) => {
   };
 
   const handleFileSelect = (event) => {
-    if (fieldMode !== "View" && files.length + event.target.files.length <= 2) {
-        setFiles((prevFiles) => [...prevFiles, ...Array.from(event.target.files)]);
-        const file = event.target.files[0];
-        saveFileToLocalStorage(file);
-      }
-    
+    if (fieldMode === "View") return; // Disable uploads in View mode
+  
+    const newFiles = Array.from(event.target.files);
+  
+    // Check if total files exceed the limit of 2
+    if (files.length + newFiles.length > 2) {
+      alert("Môžete nahrať maximálne 2 súbory.");
+      return;
+    }
+  
+    // Check if the files are of valid types
+    const validFileTypes = [
+      "application/pdf",
+      "application/vnd.openxmlformats-officedocument.wordprocessingml.document", // .docx MIME type
+    ];
+  
+    const invalidFiles = newFiles.filter((file) => !validFileTypes.includes(file.type));
+    if (invalidFiles.length > 0) {
+      alert("Môžete nahrať iba PDF alebo DOCX súbory.");
+      return;
+    }
+  
+    // Update state and save to localStorage
+    setFiles((prevFiles) => [...prevFiles, ...newFiles]);
+    newFiles.forEach((file) => saveFileToLocalStorage(file));
   };
 
 

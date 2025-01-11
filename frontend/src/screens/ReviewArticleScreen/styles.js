@@ -16,12 +16,13 @@ const styles = {
 
     },
     headerContainer: {
-        width: "1000px", // Match the form's maxWidth
-        margin: "0 auto",  // Center the content
-        display: "flex",
-        justifyContent: "space-between",
-        alignItems: "center",
-      },
+      maxWidth: "1000px", // Match the main's max width
+      margin: "0 auto",
+      display: "flex",
+      justifyContent: "space-between",
+      alignItems: "center",
+      width: "100%", // Allow for responsiveness
+    },
     logo: {
       backgroundColor: "white",
       color: "black",
@@ -48,20 +49,24 @@ const styles = {
       fontSize: "20px",
       cursor: "pointer",
     },
-    main: {  
-        display:"flex",
-        flexDirection: 'column',
-        maxWidth: "1000px",
-        margin: "0 auto", 
-        padding: "20px",
+    main: {
+      display: "flex",
+      flexDirection: "column",
+      maxWidth: "1000px", // Set the max width
+      margin: "0 auto",
+      padding:"15px",
+      width: "100%", // Use percentages for flexibility
+      boxSizing: "border-box", // Include padding in width calculation
     },
     articleDetails: {
-        marginBottom: "20px",
-        padding: "20px",
-        backgroundColor: "#fff",
-        borderRadius: "8px",
-        boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
-      },
+      marginBottom: "20px",
+      padding: "20px",
+      backgroundColor: "#fff",
+      borderRadius: "8px",
+      boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
+      width: "100%", // Fully responsive within the container
+      boxSizing: "border-box",
+    },
       articleTitle: {
         fontSize: "22px",
         fontWeight: "bold",
@@ -70,6 +75,7 @@ const styles = {
       },
       fileList: {
         display: "flex",
+        maxWidth:"1000px",
         flexWrap: "wrap",
         gap: "15px",
         marginTop: "10px",
@@ -166,14 +172,17 @@ const styles = {
         textAlign: "center",
         fontWeight: "bold",
       },
-      select: {
-        width: '100%',
-        padding: '10px',
-        marginBottom: '15px',
-        borderRadius: '5px',
-        border: '1px solid #ccc',
-        fontSize: '16px',
-        backgroundColor: '#fff',
+    label:{
+      marginTop:"20px",
+    },
+    select: {
+      width: "100%", // Default width fills the container
+      padding: "10px",
+      fontSize: "16px",
+      border: "1px solid #ccc",
+      borderRadius: "5px",
+      marginBottom: "10px",
+      boxSizing: "border-box", // Ensures padding doesn't affect width
     },
     popupOverlay: {
       position: "fixed",
@@ -216,6 +225,8 @@ const styles = {
       borderRadius: "8px",
       backgroundColor: "#f9fdf9",
       marginTop: "10px",
+      width: "100%", // Fully responsive
+      boxSizing: "border-box",
     },
   
     evaluationSectionTitle: {
@@ -230,6 +241,7 @@ const styles = {
       display: "block",
       fontSize: "16px",
       fontWeight: "600",
+      marginTop:"10px",
       marginBottom: "10px",
       color: "#333",
     },
@@ -263,7 +275,7 @@ const styles = {
     evaluationtextarea: {
       width: '98%',
         padding: '10px',
-        marginBottom: '15px',
+        marginBottom: '1px',
         borderRadius: '5px',
         border: '1px solid #ccc',
         fontSize: '16px',
@@ -283,6 +295,24 @@ const styles = {
         margin: 0,
         fontSize: '14px',
         fontWeight: '400',
+    },
+    charCount: {
+      fontSize: "12px",
+      color: "#666",
+      marginTop: "1px", // Reduce margin above the character count
+      marginBottom: "0", // Ensure no extra space below
+    },
+    errorMessage: {
+      color: "red",
+      fontSize: "14px",
+      marginTop: "1px", // Reduce margin above the error message
+      fontWeight: "bold",
+    },
+    hint: {
+      fontSize: "12px",
+      color: "#666", // Neutrálna farba pre hint
+      marginTop: "5px",
+      marginBottom: "5px", // Vytvor priestor medzi hintom a chybovou správou
     },
     
   

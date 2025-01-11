@@ -13,7 +13,7 @@ const UploadArticle = ({ formMode = "New" }) => {
   const location = useLocation();
   const { conferenceId } = location.state || {};
   const navigate = useNavigate();
-  
+  const [errors, setErrors] = useState({});
   const [showPopup, setShowPopup] = useState(false);
   const [categories, setCategories] = useState([]);
   const [ArticleData, setArticleData] = useState({
@@ -62,15 +62,38 @@ const UploadArticle = ({ formMode = "New" }) => {
     if (article_id) 
       fetchArticleData();
     console.log(categories);
-  }, [article_id,conferenceId,categories,ArticleData]);
+  }, [article_id,conferenceId]);
 
   
 
   const handleChange = (e) => {
+    const { name, value } = e.target;
+    // Dynamicky uprav ArticleData
     setArticleData({
       ...ArticleData,
-      [e.target.name]: e.target.value || "", // Ensure fallback for undefined
+      [name]: value || "",
     });
+
+    // Odstráň chybu, ak bolo pole opravené
+  if (errors[name]) {
+    const updatedErrors = { ...errors };
+
+    if (name === "title" && value.trim() && value.length <= 255) {
+      delete updatedErrors.title;
+    } else if (name === "Description" && value.trim() && value.length <= 500) {
+      delete updatedErrors.Description;
+    } else if (name === "category_idcategory" && value) {
+      delete updatedErrors.category_idcategory;
+    } else if (name === "keywords") {
+      // Rozdeľ hodnotu podľa čiarky a trimuj medzery
+      const keywordsArray = value.split(",").map(word => word.trim());
+      if (keywordsArray.length === 3 && keywordsArray.every(word => word)) {
+        // Ak sú presne tri slová a žiadne z nich nie je prázdne
+        delete updatedErrors.keywords;
+      }
+    }
+    setErrors(updatedErrors);
+  }
   }
   const uploadFiles = async (id_article) =>{
       try{
@@ -150,6 +173,9 @@ const UploadArticle = ({ formMode = "New" }) => {
   }
   const handleSubmit = (status) => {
     console.log(article_id);
+    if (!validateForm()) {
+      return; // Prevent submission if form is invalid
+    }
     if(article_id){
       let sendStatus = status;
       updateArticle(sendStatus);
@@ -217,6 +243,62 @@ const UploadArticle = ({ formMode = "New" }) => {
   }
   };
 
+  const validateForm = () => {
+    const newErrors = {};
+  
+    // Title validation
+    if (!ArticleData.title.trim()) {
+      newErrors.title = "Pole musí byť vyplnené.";
+    } else if (ArticleData.title.length > 255) {
+      newErrors.title = "Názov práce nesmie presahovať 255 znakov.";
+    }
+  
+    // Description validation
+    if (!ArticleData.Description.trim()) {
+      newErrors.Description = "Pole musí byť vyplnené.";
+    } else if (ArticleData.Description.length > 500) {
+      newErrors.Description = "Popis práce nesmie presahovať 500 znakov.";
+    }
+  
+    // Category validation
+    if (!ArticleData.category_idcategory) {
+      newErrors.category_idcategory = "Musíte vybrať sekciu.";
+    }
+  
+    // Validation for keywords
+    if (!ArticleData.keywords?.trim()) {
+      newErrors.keywords = "Pole musí byť vyplnené.";
+    } else {
+      const keywordsArray = ArticleData.keywords.split(",").map(word => word.trim());
+      if (keywordsArray.length !== 3) {
+        newErrors.keywords = "Musíte zadať presne tri slová oddelené čiarkou.";
+      }
+      // Optional: Check for empty words
+      if (keywordsArray.some(word => !word)) {
+        newErrors.keywords = "Každé slovo musí obsahovať znaky a byť oddelené čiarkou.";
+      }
+    }
+
+    // Validation for uploaded files
+    const files = JSON.parse(localStorage.getItem("files") || "[]");
+    if (files.length !== 2) {
+      newErrors.files = "Musíte nahrať presne 2 súbory.";
+    } else {
+      const fileTypes = files.map(file => file.type);
+      if (!fileTypes.includes("application/pdf")) {
+        newErrors.files = "Jeden zo súborov musí byť typu PDF.";
+      }
+      if (!fileTypes.includes("application/vnd.openxmlformats-officedocument.wordprocessingml.document")) {
+        newErrors.files = "Jeden zo súborov musí byť typu DOCX.";
+      }
+    }
+
+  
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0; // Return true if no errors
+  };
+  
+
   return (
     <div>
       {/* Header */}
@@ -253,18 +335,31 @@ const UploadArticle = ({ formMode = "New" }) => {
       <main style={styles.main}>
         <form style={styles.form} onSubmit={(e) => e.preventDefault()}>
           <label>Názov práce</label>
+          {/*Title */}
+          <div>
           <input 
             type="text" 
             name="title"
             placeholder="Názov práce" 
             value={ArticleData.title}
             onChange={handleChange}
-            style={styles.input}
+            style={{
+              ...styles.input,
+              borderColor: errors.title ? "red" : "#ccc",
+            }}
             readOnly={formMode === "View" && "locked"} />
+            <p style={styles.charCount}>{255 - ArticleData.title.length} znakov zostáva.</p>
+            {errors.title && <p style={styles.errorMessage}>{errors.title}</p>}
+          </div>
+          {/*Categoria */}
           <label>Sekcia</label>
+          <div>
           <select 
           name="category_idcategory"
-          style={styles.select}
+          style={{
+            ...styles.select,
+            borderColor: errors.category_idcategory ? "red" : "#ccc",
+          }}
           onChange={handleChange}
           value={ArticleData.category_idcategory}
           disabled={formMode === "View"}
@@ -276,25 +371,56 @@ const UploadArticle = ({ formMode = "New" }) => {
                 </option>
               ))}
             </select>
+            {errors.category_idcategory && <p style={styles.errorMessage}>{errors.category_idcategory}</p>}
+          </div>
+          
           <label>Popis práce</label>
+          {/*Description */}
+          <div>
           <textarea 
             name="Description"
             value={ArticleData.Description}
             onChange={handleChange}
             placeholder="Popis práce" 
             rows="10"
-            style={styles.textarea}
+            style={{
+              ...styles.textarea,
+              borderColor: errors.Description ? "red" : "#ccc",
+            }}
             readOnly={formMode === "View" || formMode === "Review"}/>
+            <p style={styles.charCount}>{500 - ArticleData.Description.length} znakov zostáva.</p>
+            {errors.Description && <p style={styles.errorMessage}>{errors.Description}</p>}
+          </div>
+          
+            
           <label>Kľúčové slová</label>
-          <input 
-          name="keywords"
-          type="text" 
-          placeholder="Kľúčové slová" 
-          style={styles.input}
-          readOnly={formMode === "View"} />
+          {/* Klucove slova */}
+          <div>
+            <input 
+            name="keywords"
+            type="text" 
+            placeholder="Zadajte tri slová oddelené čiarkou (napr. slovo1, slovo2, slovo3)"
+            value={ArticleData.keywords || ""}
+            onChange={handleChange}
+            style={{
+              ...styles.input,
+              borderColor: errors.keywords ? "red" : "#ccc",
+            }}
+            readOnly={formMode === "View"} />
+            <p style={styles.hint}>Zadajte presne tri slová oddelené čiarkou (napr. slovo1, slovo2, slovo3).</p>
+            {errors.keywords && <p style={styles.errorMessage}>{errors.keywords}</p>}
+          </div>
+          
 
           <label>Dokumenty</label>
+          <div>
           <FileDropArea fieldMode={formMode} articleId={article_id}/>
+          <p style={styles.hint}>
+            Nahrajte presne 2 súbory: jeden vo formáte <strong>PDF</strong> a druhý vo formáte <strong>DOCX</strong>.
+          </p>
+          {errors.files && <p style={styles.errorMessage}>{errors.files}</p>}
+          </div>
+          
           {/* Submit Button */}
           {formMode !== "View" && <button type="submit" style={styles.submitButton} onClick={() => setShowPopup(true)}>
               {formMode === "New" && "Nahrať prácu"}
