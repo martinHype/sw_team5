@@ -56,7 +56,7 @@ const ConferenceArticlesComponent = ({ conferenceId }) => {
         };
 
         fetchConferenceAndArticles();
-    }, [conferenceId]);
+    }, [conferenceId, id]);
 
     const handleReviewerChange = async (articleId, userId) => {
         const token = sessionStorage.getItem('authToken');

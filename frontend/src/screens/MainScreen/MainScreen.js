@@ -28,21 +28,6 @@ const MainScreen = () => {
     };
     //const [loading, setLoading] = useState(true);
     //const [error, setError] = useState(null);
-    const getFormMode = (articleStatus) => {
-        switch (articleStatus) {
-            case "Koncept":
-                return "Edit"; // Article is in draft, so form should be editable
-            case "Čaká na recenziu":
-            case "Prebieha kontrola":
-                return "Review";
-            case "Publikovať v predloženej forme":
-            case "Publikovať po zapracovaní pripomienok":
-            case "Neprijať pre publikovanie":
-                return "View"; // These statuses indicate read-only review mode
-            default:
-                return "New"; // Default to "New" mode if status is unknown
-        }
-    };
     useEffect(() => {
         const rolesString = sessionStorage.getItem("userRoles");
         const rolesArray = rolesString ? rolesString.split(",") : [];

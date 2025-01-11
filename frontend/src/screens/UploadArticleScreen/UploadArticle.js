@@ -62,7 +62,7 @@ const UploadArticle = ({ formMode = "New" }) => {
     if (article_id) 
       fetchArticleData();
     console.log(categories);
-  }, [article_id]);
+  }, [article_id,conferenceId,categories,ArticleData]);
 
   
 
@@ -139,6 +139,7 @@ const UploadArticle = ({ formMode = "New" }) => {
             },
           }
         );
+        console.log(response.data);
 
       } catch (error) {
         console.error("Error fetching files:", error.response?.data || error.message);

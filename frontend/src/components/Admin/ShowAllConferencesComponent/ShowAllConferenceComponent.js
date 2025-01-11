@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import styles from './styles'; // Import your styles
@@ -16,7 +16,7 @@ const ShowAllConferenceComponent = () => {
     const navigate = useNavigate();
 
     // Fetch conferences from the backend
-    const fetchConferences = async () => {
+    const fetchConferences = useCallback(async () => {
         const token = sessionStorage.getItem('authToken');
         setIsLoading(true);
         setError(null);
@@ -52,13 +52,13 @@ const ShowAllConferenceComponent = () => {
         } finally {
             setIsLoading(false);
         }
-    };
+    }, [filters.date, filters.name]);
 
 
     // Fetch conferences on component mount and when filters are applied
     useEffect(() => {
         fetchConferences();
-    }, [filters]);
+    }, [filters,fetchConferences]);
 
     // Handle date change
     const handleDateChange = (e) => {
