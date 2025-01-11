@@ -57,6 +57,7 @@ const ShowAllConferenceComponent = () => {
 
     // Fetch conferences on component mount and when filters are applied
     useEffect(() => {
+
         fetchConferences();
     }, [filters,fetchConferences]);
 

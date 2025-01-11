@@ -52,16 +52,22 @@ const styles = {
       gap: "15px",
     },
     input: {
+      width: "100%",
       padding: "10px",
       fontSize: "16px",
       border: "1px solid #ccc",
       borderRadius: "5px",
+      marginBottom: "1px", // Reduce the space between input and error message/char count
+      boxSizing: "border-box"
     },
     textarea: {
+      width: "100%",
       padding: "10px",
       fontSize: "16px",
       border: "1px solid #ccc",
       borderRadius: "5px",
+      marginBottom: "2px", // Reduce the space for textarea as well
+      boxSizing: "border-box"
     },
     fileUpload: {
       display: "flex",
@@ -196,6 +202,24 @@ const styles = {
         border: '1px solid #ccc',
         fontSize: '16px',
         backgroundColor: '#fff',
+    },
+    charCount: {
+      fontSize: "12px",
+      color: "#666",
+      marginTop: "1px", // Reduce margin above the character count
+      marginBottom: "0", // Ensure no extra space below
+    },
+    errorMessage: {
+      color: "red",
+      fontSize: "14px",
+      marginTop: "1px", // Reduce margin above the error message
+      fontWeight: "bold",
+    },
+    hint: {
+      fontSize: "12px",
+      color: "#666", // Neutrálna farba pre hint
+      marginTop: "5px",
+      marginBottom: "5px", // Vytvor priestor medzi hintom a chybovou správou
     },
     
   
