@@ -1,41 +1,10 @@
 const styles = {
-    header: {
-      backgroundColor: "#4caf50",
-      color: "white",
-      display: "flex",
-      alignItems: "center",
-      padding: "10px 20px",
-      height: "50px",
-
-    },
-    headerContainer: {
-        width: "1000px", // Match the form's maxWidth
-        margin: "0 auto",  // Center the content
-        display: "flex",
-        justifyContent: "space-between",
-        alignItems: "center",
-      },
-    logo: {
-      backgroundColor: "white",
-      color: "black",
-      padding: "10px",
-      fontWeight: "bold",
-      borderRadius: "5px",
-    },
-    nav: {
-      display: "flex",
-      gap: "20px",
-    },
-    navLink: {
-      color: "white",
-      textDecoration: "none",
-    },
-    activeLink: {
-      borderBottom: "2px solid white",
-    },
-    icons: {
-      display: "flex",
-      gap: "15px",
+    container: {
+      display: 'flex',
+      flexDirection: 'column',
+      minHeight: '100vh', // Ensures the container takes up the full viewport height
+      fontFamily: 'Arial, sans-serif',
+      backgroundColor: '#fff',
     },
     icon: {
       fontSize: "20px",

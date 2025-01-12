@@ -6,49 +6,6 @@ const styles = {
         fontFamily: 'Arial, sans-serif',
         backgroundColor: '#f5f5f5',
     },
-    header: {
-      backgroundColor: "#4caf50",
-      color: "white",
-      display: "flex",
-      alignItems: "center",
-      padding: "10px 20px",
-      height: "50px",
-
-    },
-    headerContainer: {
-      maxWidth: "1000px", // Match the main's max width
-      margin: "0 auto",
-      display: "flex",
-      justifyContent: "space-between",
-      alignItems: "center",
-      width: "100%", // Allow for responsiveness
-    },
-    logo: {
-      backgroundColor: "white",
-      color: "black",
-      padding: "10px",
-      fontWeight: "bold",
-      borderRadius: "5px",
-    },
-    nav: {
-      display: "flex",
-      gap: "20px",
-    },
-    navLink: {
-      color: "white",
-      textDecoration: "none",
-    },
-    activeLink: {
-      borderBottom: "2px solid white",
-    },
-    icons: {
-      display: "flex",
-      gap: "15px",
-    },
-    icon: {
-      fontSize: "20px",
-      cursor: "pointer",
-    },
     main: {
       display: "flex",
       flexDirection: "column",
@@ -280,21 +237,6 @@ const styles = {
         border: '1px solid #ccc',
         fontSize: '16px',
         backgroundColor: '#fff',
-    },
-    footer: {
-        backgroundColor: '#4CAF50',
-        color: '#ffffff',
-        textAlign: 'center',
-        padding: '10px 0',
-        fontSize: '14px',
-        borderTop: '1px solid #3e8e41',
-        marginTop: 'auto', // Ensures footer stays at the bottom
-    },
-    
-    footerText: {
-        margin: 0,
-        fontSize: '14px',
-        fontWeight: '400',
     },
     charCount: {
       fontSize: "12px",
