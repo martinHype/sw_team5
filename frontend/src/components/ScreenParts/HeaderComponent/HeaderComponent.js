@@ -1,8 +1,8 @@
 import React from "react";
 import styles from "./styles";
-import graduation_hat from "../../images/graduation_hat.png";
-import user from "../../images/user.png";
-import logout from "../../images/logout.png";
+import graduation_hat from "../../../images/graduation_hat.png";
+import user from "../../../images/user.png";
+import logout from "../../../images/logout.png";
 
 const HeaderComponent = () => {
   return (
