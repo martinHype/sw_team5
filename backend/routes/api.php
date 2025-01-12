@@ -22,7 +22,7 @@ Route::post('/check_table', function (Request $request) {
 
 Route::middleware('auth:sanctum')->group(function () {
     //articles
-    
+
 });
 
 Route::middleware('auth:sanctum')->group(function () {
@@ -76,6 +76,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/admin/categories', [CategoryController::class, 'store']);
     Route::get('/admin/all-users', [UserController::class, 'getAllUsers']);
     Route::patch('/admin/users/{userId}/roles', [UserController::class, 'updateUserRole']);
+
+
 
     Route::post("/logout",[AuthController::class,'logout']);
 });
