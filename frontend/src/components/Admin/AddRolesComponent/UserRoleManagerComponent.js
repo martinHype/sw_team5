@@ -77,8 +77,8 @@ const UserRoleManager = () => {
                         <label>
                             <input
                                 type="checkbox"
-                                checked={user.roles.includes("Admin")}
-                                onChange={(e) => handleCheckboxChange(user.id, "Admin", e)}
+                                checked={user.roles.includes("admin")}
+                                onChange={(e) => handleCheckboxChange(user.id, "admin", e)}
                             />
                             Admin
                         </label>
@@ -87,10 +87,20 @@ const UserRoleManager = () => {
                         <label>
                             <input
                                 type="checkbox"
-                                checked={user.roles.includes("Recenzent")}
-                                onChange={(e) => handleCheckboxChange(user.id, "Recenzent", e)}
+                                checked={user.roles.includes("reviewer")}
+                                onChange={(e) => handleCheckboxChange(user.id, "reviewer", e)}
                             />
                             Recenzent
+                        </label>
+                    </CheckboxContainer>
+                    <CheckboxContainer>
+                        <label>
+                            <input
+                                type="checkbox"
+                                checked={user.roles.includes("student")}
+                                onChange={(e) => handleCheckboxChange(user.id, "student", e)}
+                            />
+                            Študent
                         </label>
                     </CheckboxContainer>
                 </Card>

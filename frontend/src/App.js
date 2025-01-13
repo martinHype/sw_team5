@@ -120,7 +120,7 @@ const App = () => {
                     }
                 />
                 <Route
-                    path="/admin/conference/role-manager"
+                    path="/admin/role-manager"
                     element={
                         <AdminRoute>
                             <UserRoleManagerScreen />

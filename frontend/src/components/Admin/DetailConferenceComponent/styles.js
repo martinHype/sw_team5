@@ -31,6 +31,10 @@ const styles = {
         fontSize: '16px',
         transition: 'background-color 0.3s ease',
     },
+    disabledButton: {
+        backgroundColor: '#CCC',
+        cursor: 'not-allowed',
+    },
     buttonHover: {
         backgroundColor: '#002a17', // Darker blue for hover effect
     },
