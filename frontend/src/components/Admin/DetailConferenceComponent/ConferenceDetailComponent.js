@@ -4,7 +4,7 @@ import axios from 'axios';
 import styles from './styles'; // Import your styles
 
 const ConferenceDetailComponent = () => {
-    const { id } = useParams(); // Get the conference ID from the URL
+    const { id } = useParams();
     const [conference, setConference] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -24,7 +24,7 @@ const ConferenceDetailComponent = () => {
                     },
                 });
 
-                setConference(response.data.data); // Update state with the conference details
+                setConference(response.data.data);
             } catch (error) {
                 console.error('Error fetching conference details:', error.response?.data || error.message);
                 setError('Nepodarilo sa načítať detaily konferencie.');
@@ -35,6 +35,40 @@ const ConferenceDetailComponent = () => {
 
         fetchConference();
     }, [id]);
+
+    const isDownloadEnabled = () => {
+        if (!conference || !conference.event_upload_EndDate) return false;
+        const uploadEndDate = new Date(conference.event_upload_EndDate);
+        const currentDate = new Date();
+        return currentDate >= uploadEndDate;
+    };
+
+    const handleDownload = async () => {
+        try {
+            const token = sessionStorage.getItem('authToken');
+            const response = await axios.get(
+                `http://localhost:8080/api/admin/download-conference/${conference.event_name}`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                    responseType: 'blob', // Ensure the response is treated as a file
+                }
+            );
+
+            // Create a blob and trigger the download
+            const url = window.URL.createObjectURL(new Blob([response.data]));
+            const link = document.createElement('a');
+            link.href = url;
+            link.setAttribute('download', `${conference.event_name}_articles.zip`);
+            document.body.appendChild(link);
+            link.click();
+            link.remove();
+        } catch (error) {
+            console.error('Error downloading articles:', error.response?.data || error.message);
+            setError('Nepodarilo sa stiahnuť súbory.');
+        }
+    };
 
     if (isLoading) {
         return (
@@ -68,15 +102,25 @@ const ConferenceDetailComponent = () => {
             <div style={styles.buttons}>
                 <button
                     style={styles.button}
-                    onClick={() => navigate(`/admin/conferences/edit/${id}`)} // Navigate to edit page
+                    onClick={() => navigate(`/admin/conferences/edit/${id}`)}
                 >
                     Editovať
                 </button>
                 <button
                     style={styles.button}
-                    onClick={() => navigate(`/admin/conference/${id}/roles`)} // Navigate to add roles page
+                    onClick={() => navigate(`/admin/conference/${id}/roles`)}
                 >
                     Pridať roly
+                </button>
+                <button
+                    style={{
+                        ...styles.button,
+                        ...(isDownloadEnabled() ? {} : styles.disabledButton),
+                    }}
+                    onClick={handleDownload}
+                    disabled={!isDownloadEnabled()}
+                >
+                    Stiahnuť súbory
                 </button>
             </div>
         </div>

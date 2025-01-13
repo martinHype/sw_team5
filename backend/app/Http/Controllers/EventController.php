@@ -11,6 +11,9 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
+use RecursiveDirectoryIterator;
+use RecursiveIteratorIterator;
+use ZipArchive;
 
 class EventController extends Controller
 {
@@ -227,5 +230,35 @@ class EventController extends Controller
         // Vrátiť výsledky vo formáte JSON
         return response()->json($users, 200);
     }
+    public function downloadConference($conference_name){
+        $decodedConferenceName = urldecode($conference_name);
+        Log::info($decodedConferenceName);
+        $path = storage_path("/app/private/uploads/{$decodedConferenceName}");
 
+        Log::info($path);
+
+        if (!file_exists($path)) {
+            return response()->json(['message' => 'Conference not found'], 404);
+        }
+
+        $zipFileName = "{$decodedConferenceName}_articles.zip";
+        $zipPath = storage_path("app/private/{$zipFileName}");
+
+        $zip = new ZipArchive;
+        if ($zip->open($zipPath, ZipArchive::CREATE | ZipArchive::OVERWRITE) === TRUE) {
+            $files = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($path));
+            foreach ($files as $file) {
+                if (!$file->isDir()) {
+                    $filePath = $file->getRealPath();
+                    $relativePath = substr($filePath, strlen($path) + 1);
+                    $zip->addFile($filePath, $relativePath);
+                }
+            }
+            $zip->close();
+        } else {
+            return response()->json(['message' => 'Could not create zip file'], 500);
+        }
+
+        return response()->download($zipPath)->deleteFileAfterSend(true);
+    }
 }

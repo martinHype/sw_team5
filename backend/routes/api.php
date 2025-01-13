@@ -79,7 +79,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/admin/categories', [CategoryController::class, 'store']);
     Route::get('/admin/all-users', [UserController::class, 'getAllUsers']);
     Route::patch('/admin/users/{userId}/roles', [UserController::class, 'updateUserRole']);
-
+    Route::get('/admin/download-conference/{conferenceName}', [EventController::class, 'downloadConference']);
 
 
     Route::post("/logout",[AuthController::class,'logout']);
