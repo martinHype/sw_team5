@@ -10,7 +10,7 @@ const userHasAdminRole = () => {
 
         // Split roles into an array and trim whitespace
         const rolesArray = userRoles.split(",").map(role => role.trim());
-        return rolesArray.includes("Admin"); // Check if "Admin" is present
+        return rolesArray.includes("admin"); // Check if "Admin" is present
     } catch (error) {
         console.error("Error checking user roles:", error);
         return false; // Return false if an error occurs
