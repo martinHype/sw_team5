@@ -13,6 +13,7 @@ import AdminRoute from "./components/Routes/AdminRoute";
 import UserRoleManagerScreen from "./screens/AddRolesScreen/UserRoleManagerScreen";
 import ReviewArticleScreen from './screens/ReviewArticleScreen/ReviewArticleScreen.js';
 import NotPermissions from "./screens/NotPermissions/NotPermissions";
+import NotFoundScreen from "./screens/NotFoundScreen/NotFoundScreen";
 
 const App = () => {
   return (
