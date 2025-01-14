@@ -131,6 +131,12 @@ const AuthForm = () => {
         }
     };
 
+    const handleKeyDown = (e) => {
+        if (e.key === 'Enter') {
+            login();
+        }
+    };
+
 
     return (
         <div style={styles.container}>
@@ -233,7 +239,7 @@ const AuthForm = () => {
                                     value={formData.password}
                                     onChange={handleChange}
                                     style={error?styles.input_error : styles.input}
-                                    onKeyDown={login}
+                                    onKeyDown={handleKeyDown}
                                     required
                                 />
                             <img src={showPassword ? iconEye:iconEyeClosed} style={styles.eyeIcon} onClick={togglePasswordVisibility} alt="Show password icon"/>
@@ -249,7 +255,7 @@ const AuthForm = () => {
                         </>
                     )}
                 </form>
-                <a href="#!" onClick={toggleForm} style={styles.link}>
+                <a href="#" onClick={toggleForm} style={styles.link}>
                     {isRegister ? 'Prihlásiť sa' : 'Registrovať sa'}
                 </a>
             </div>
