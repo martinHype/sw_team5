@@ -14,6 +14,7 @@ import UserRoleManagerScreen from "./screens/AddRolesScreen/UserRoleManagerScree
 import ReviewArticleScreen from './screens/ReviewArticleScreen/ReviewArticleScreen.js';
 import NotPermissions from "./screens/NotPermissions/NotPermissions";
 import NotFoundScreen from "./screens/NotFoundScreen/NotFoundScreen";
+import ProfileScreen from "./screens/ProfileScreen/ProfileScreen";
 
 const App = () => {
   return (
@@ -79,6 +80,15 @@ const App = () => {
                     }
                 />
 
+                <Route
+                    path="/profile"
+                    element={
+                        <PrivateRoute>
+                            <ProfileScreen/>
+                        </PrivateRoute>
+                    }
+                />
+
 
 
                 <Route
@@ -130,9 +140,12 @@ const App = () => {
                     }
                 />
 
+
+
                 <Route path="*" element={<NotFoundScreen />} />
 
                 <Route path="/permission" element={<NotPermissions />} />
+
 
             </Routes>
       </Router>
