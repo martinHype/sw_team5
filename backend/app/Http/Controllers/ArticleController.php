@@ -165,4 +165,31 @@ class ArticleController extends Controller
 
         return response()->json(['message' => 'Article updated successfully.', 'article' => $article], 200);
     }
+
+    public function articleAccess($id){
+        try {
+            // Fetch the article associated with the given ID
+            $article = Article::where('idarticle', $id)
+                ->with('event')
+                ->first();
+        
+            if (!$article) {
+                return response()->json(['message' => 'Article not found.'], 404);
+            }
+        
+            // Return only the selected fields (user_iduser and idreviewer)
+            return response()->json([
+                'user_iduser' => $article->user_iduser,  // Assuming the field is named 'user_iduser'
+                'idreviewer' => $article->idreviewer,
+                'status' => $article->acticle_status_idacticle_status,     // This can be null, it will be included as null if no value is present
+                'event_upload_EndDate' => $article->event->event_upload_EndDate, // Event's upload end date
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Error fetching article',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
+        
+    }
 }
