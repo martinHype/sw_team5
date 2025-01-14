@@ -12,6 +12,7 @@ import ConferenceUsersScreen from "./screens/AdminConferenceUsersScreen/Conferen
 import AdminRoute from "./components/Routes/AdminRoute";
 import UserRoleManagerScreen from "./screens/AddRolesScreen/UserRoleManagerScreen";
 import ReviewArticleScreen from './screens/ReviewArticleScreen/ReviewArticleScreen.js';
+import AccessArticleRoute from './components/Routes/AccessArticleRoute.js';
 
 const App = () => {
   return (
@@ -46,34 +47,34 @@ const App = () => {
                 <Route
                     path="/editarticle/:article_id"
                     element={
-                        <PrivateRoute>
+                        <AccessArticleRoute>
                             <UploadArticle formMode='Edit' />
-                        </PrivateRoute>
+                        </AccessArticleRoute>
                     }
                 />
                 <Route
                     path="/viewarticle/:article_id"
                     element={
-                        <PrivateRoute>
+                        <AccessArticleRoute>
                             <UploadArticle formMode='View' />
-                        </PrivateRoute>
+                        </AccessArticleRoute>
                     }
                 />
 
                 <Route
                     path="/reviewarticle/:article_id"
                     element={
-                        <PrivateRoute>
+                        <AccessArticleRoute>
                             <ReviewArticleScreen editMode={true}/>
-                        </PrivateRoute>
+                        </AccessArticleRoute>
                     }
                 />
                 <Route
                     path="/viewreviewarticle/:article_id"
                     element={
-                        <PrivateRoute>
+                        <AccessArticleRoute>
                             <ReviewArticleScreen editMode={false}/>
-                        </PrivateRoute>
+                        </AccessArticleRoute>
                     }
                 />
 

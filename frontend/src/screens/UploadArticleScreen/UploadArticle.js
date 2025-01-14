@@ -8,6 +8,7 @@ import HeaderComponent from "../../components/ScreenParts/HeaderComponent/Header
 import FooterComponent from "../../components/ScreenParts/FooterComponent/FooterComponent.js";
 
 const UploadArticle = ({ formMode = "New" }) => {
+  const [userVerified,setUserVerified] = useState(false);
   const { article_id } = useParams();
   const location = useLocation();
   const { conferenceId } = location.state || {};
@@ -22,6 +23,7 @@ const UploadArticle = ({ formMode = "New" }) => {
   });
   
   useEffect(() => {
+    const userId = sessionStorage.getItem("userId");
     localStorage.removeItem('files');
     localStorage.removeItem('filesToDelete');
     const fetchCategories = async () => {
@@ -46,6 +48,7 @@ const UploadArticle = ({ formMode = "New" }) => {
               Authorization: `Bearer ${sessionStorage.getItem("authToken")}`,
             },
           });
+          
           console.log(response.data);
           setArticleData(response.data); // Assuming the response is an array with one object
           ArticleData.category_idcategory = response.data.category_idcategory;

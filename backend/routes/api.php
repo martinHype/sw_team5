@@ -35,6 +35,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('document/{id}',[DocumentController::class,'getDocumentsByArticle']);
     Route::put('/article/{id}/updateArticle', [ArticleController::class, 'updateArticle']);
     Route::delete('/document/{id}', [DocumentController::class, 'deleteDocument']);
+    Route::get('/article/{id}/access',[ArticleController::class,'articleAccess']);
 
 });
 
