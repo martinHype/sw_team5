@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
+import Select from 'react-select';
 import styles from './styles'; // Import your styles
 
 const ConferenceArticlesComponent = ({ conferenceId }) => {
@@ -58,7 +59,8 @@ const ConferenceArticlesComponent = ({ conferenceId }) => {
         fetchConferenceAndArticles();
     }, [conferenceId]);
 
-    const handleReviewerChange = async (articleId, userId) => {
+    const handleReviewerChange = async (articleId, selectedOption) => {
+        const userId = selectedOption?.value;
         const token = sessionStorage.getItem('authToken');
 
         try {
@@ -106,20 +108,35 @@ const ConferenceArticlesComponent = ({ conferenceId }) => {
                             <p style={styles.articleTitle}><strong>{article.title}</strong></p>
                             <p style={styles.articleAuthor}>Author: {article.user.firstname} {article.user.lastname}</p>
                             <p style={styles.articleDescription}>{article.Description}</p>
-                            <select
+                        </div>
+                        <div style={{ display: 'flex', alignItems: 'center', marginTop: '10px' }}> {/* Align dropdown properly */}
+                            <label htmlFor={`article-${article.idarticle}`} style={{ marginRight: '10px', fontWeight: 'bold' }}>Reviewer:</label>
+                            <Select
                                 id={`article-${article.idarticle}`}
-                                value={article.reviewer_id || ''} // Show reviewer_id or empty if none assigned
-                                onChange={(e) => handleReviewerChange(article.idarticle, e.target.value)}
-                                style={styles.dropdownSmall}
-                            >
-                                <option
-                                    value="">{article.idreviewer ? `Assigned: ${reviewers.find(reviewer => reviewer.iduser === article.idreviewer)?.firstname || ''} ${reviewers.find(reviewer => reviewer.iduser === article.idreviewer)?.lastname || ''}` : 'Prideliť recenzenta'}</option>
-                                {reviewers.map((reviewer) => (
-                                    <option key={reviewer.iduser} value={reviewer.iduser}>
-                                        {reviewer.firstname} {reviewer.lastname}
-                                    </option>
-                                ))}
-                            </select>
+                                options={reviewers.map((reviewer) => ({
+                                    value: reviewer.iduser,
+                                    label: `${reviewer.firstname} ${reviewer.lastname}`,
+                                }))}
+                                value={
+                                    article.idreviewer
+                                        ? {
+                                            value: article.idreviewer,
+                                            label: `${reviewers.find((r) => r.iduser === article.idreviewer)?.firstname || ''} ${
+                                                reviewers.find((r) => r.iduser === article.idreviewer)?.lastname || ''
+                                            }`,
+                                        }
+                                        : null
+                                }
+                                onChange={(selectedOption) => handleReviewerChange(article.idarticle, selectedOption)}
+                                placeholder="Prideliť recenzenta"
+                                isSearchable // Enables search functionality
+                                styles={{
+                                    container: (provided) => ({
+                                        ...provided,
+                                        width: '100%',
+                                    }),
+                                }}
+                            />
                         </div>
                     </div>
                 ))}

@@ -10,7 +10,7 @@ const userHasAdminRole = () => {
 
         // Split roles into an array and trim whitespace
         const rolesArray = userRoles.split(",").map(role => role.trim());
-        return rolesArray.includes("Admin"); // Check if "Admin" is present
+        return rolesArray.includes("admin"); // Check if "Admin" is present
     } catch (error) {
         console.error("Error checking user roles:", error);
         return false; // Return false if an error occurs
@@ -22,7 +22,8 @@ const AdminRoute = ({ children }) => {
 
     // Redirect if no token or the user does not have the "Admin" role
     if (!token || !userHasAdminRole()) {
-        return <Navigate to="/" />;
+
+        return <Navigate to="/permission" />;
     }
 
     return children; // Render the children if authenticated and authorized

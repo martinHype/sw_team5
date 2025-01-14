@@ -14,6 +14,9 @@ import UserRoleManagerScreen from "./screens/AddRolesScreen/UserRoleManagerScree
 import ReviewArticleScreen from './screens/ReviewArticleScreen/ReviewArticleScreen.js';
 import AccessArticleRoute from './components/Routes/AccessArticleRoute.js';
 import StudentRoute from './components/Routes/StudentRoute.js';
+import NotPermissions from "./screens/NotPermissions/NotPermissions";
+import NotFoundScreen from "./screens/NotFoundScreen/NotFoundScreen";
+
 
 const App = () => {
   return (
@@ -129,6 +132,11 @@ const App = () => {
                         </AdminRoute>
                     }
                 />
+
+                <Route path="*" element={<NotFoundScreen />} />
+
+                <Route path="/permission" element={<NotPermissions />} />
+
             </Routes>
       </Router>
   );

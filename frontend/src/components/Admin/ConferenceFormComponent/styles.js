@@ -33,6 +33,13 @@ const styles = {
         margin: '0 auto',
         display: 'block',
     },
+    dropdownContainer: {
+        marginTop: '10px',
+        padding: '5px 0',
+    },
+    dropdownSmall: {
+        width: '100%',
+    },
     categoryInputContainer: {
         display: 'flex',
         gap: '10px',
@@ -90,16 +97,15 @@ const styles = {
     },
     textarea: {
         width: '100%',
-        minHeight: '100px', // Minimum height for the textarea
+        minHeight: '100px',
         padding: '8px',
         marginBottom: '10px',
         border: '1px solid #ccc',
         borderRadius: '4px',
-        resize: 'vertical', // Allow the user to resize the height
-        fontFamily: 'inherit', // Match the font of the input fields
+        resize: 'vertical',
+        fontFamily: 'inherit',
         fontSize: '14px',
     },
-
 };
 
 export default styles;
