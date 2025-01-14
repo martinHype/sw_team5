@@ -233,6 +233,7 @@ const AuthForm = () => {
                                     value={formData.password}
                                     onChange={handleChange}
                                     style={error?styles.input_error : styles.input}
+                                    onKeyDown={login}
                                     required
                                 />
                             <img src={showPassword ? iconEye:iconEyeClosed} style={styles.eyeIcon} onClick={togglePasswordVisibility} alt="Show password icon"/>
