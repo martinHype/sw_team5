@@ -34,6 +34,10 @@ const Navbar = () => {
         }
     };
 
+    const reroute = () =>{
+        navigate('/profile')
+    }
+
     return (
         <div style={styles.navbar}>
             <div style={styles.logo}>
@@ -50,9 +54,10 @@ const Navbar = () => {
                 <a href="/admin/role-manager" style={styles.link}>
                     Priradenie rolí
                 </a>
+
             </div>
             <div style={styles.icons}>
-                <FontAwesomeIcon icon={faUser} style={styles.icon} title="Profil"/>
+                <FontAwesomeIcon icon={faUser} style={styles.icon} title="Profil" onClick={reroute}/>0
                 <FontAwesomeIcon
                     icon={faSignOutAlt}
                     style={styles.icon}

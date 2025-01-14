@@ -35,8 +35,10 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('document/{id}',[DocumentController::class,'getDocumentsByArticle']);
     Route::put('/article/{id}/updateArticle', [ArticleController::class, 'updateArticle']);
     Route::delete('/document/{id}', [DocumentController::class, 'deleteDocument']);
+    Route::get('/profile', [UserController::class, 'getProfile']);
+    Route::put('/profile', [UserController::class, 'updateProfile']);
+    Route::post('/profile/change-password', [UserController::class, 'changePassword']);
     Route::get('/article/{id}/access',[ArticleController::class,'articleAccess']);
-
 });
 
 

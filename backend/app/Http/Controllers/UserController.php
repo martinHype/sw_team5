@@ -5,8 +5,11 @@ namespace App\Http\Controllers;
 use App\Models\Role;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 
 class UserController extends Controller
 {
@@ -68,5 +71,87 @@ class UserController extends Controller
         }
 
         return response()->json(['message' => 'Role updated successfully.'], 200);
+    }
+
+    public function getProfile()
+    {
+        $user = Auth::user(); // Získa aktuálneho autentifikovaného používateľa
+
+        if (!$user) {
+            return response()->json(['error' => 'Unauthorized'], 401);
+        }
+
+        return response()->json([
+            'email' => $user->email,
+            'firstname' => $user->firstname,
+            'lastname' => $user->lastname,
+        ]);
+    }
+
+    public function updateProfile(Request $request)
+    {
+        $user = Auth::user(); // Získa aktuálneho autentifikovaného používateľa
+
+        if (!$user) {
+            return response()->json(['error' => 'Unauthorized'], 401);
+        }
+
+        // Validácia vstupných údajov
+        $validatedData = $request->validate([
+            'email' => [
+                'nullable',
+                'email',
+                Rule::unique('users', 'email')->ignore($user->getAttribute('iduser'), 'iduser'),
+            ],
+            'firstname' => 'nullable|string|max:255',
+            'lastname' => 'nullable|string|max:255',
+        ]);
+
+        if (isset($validatedData['email'])) {
+            $user->setAttribute('email', $validatedData['email']);
+        }
+
+        if (isset($validatedData['firstname'])) {
+            $user->setAttribute('firstname', $validatedData['firstname']);
+        }
+
+        if (isset($validatedData['lastname'])) {
+            $user->setAttribute('lastname' , $validatedData['lastname']);
+        }
+
+        $user->setAttribute('updated_at', now());
+
+        $user->save();
+
+        return response()->json([
+            'message' => 'Profile updated successfully!',
+            'user' => $user, // Vrátime aktuálne údaje používateľa
+        ]);
+    }
+
+    public function changePassword(Request $request)
+    {
+        $user = Auth::user(); // Získa aktuálneho autentifikovaného používateľa
+
+        if (!$user) {
+            return response()->json(['error' => 'Unauthorized'], 401);
+        }
+
+        // Validácia nového hesla
+        $validatedData = $request->validate([
+            'current_password' => 'required',
+            'new_password' => ['required', 'string', 'min:8', 'confirmed'],
+        ]);
+
+        // Overenie aktuálneho hesla
+        if (!Hash::check($validatedData['current_password'], $user->getAttribute('password'))) {
+            return response()->json(['error' => 'Current password is incorrect'], 400);
+        }
+
+        // Aktualizácia hesla
+        $user->setAttribute('password', Hash::make($validatedData['new_password']));
+        $user->save();
+
+        return response()->json(['message' => 'Password changed successfully!']);
     }
 }

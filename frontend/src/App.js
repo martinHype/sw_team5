@@ -16,6 +16,7 @@ import AccessArticleRoute from './components/Routes/AccessArticleRoute.js';
 import StudentRoute from './components/Routes/StudentRoute.js';
 import NotPermissions from "./screens/NotPermissions/NotPermissions";
 import NotFoundScreen from "./screens/NotFoundScreen/NotFoundScreen";
+import ProfileScreen from "./screens/ProfileScreen/ProfileScreen";
 
 
 const App = () => {
@@ -82,6 +83,15 @@ const App = () => {
                     }
                 />
 
+                <Route
+                    path="/profile"
+                    element={
+                        <PrivateRoute>
+                            <ProfileScreen/>
+                        </PrivateRoute>
+                    }
+                />
+
 
 
                 <Route
@@ -133,9 +143,12 @@ const App = () => {
                     }
                 />
 
+
+
                 <Route path="*" element={<NotFoundScreen />} />
 
                 <Route path="/permission" element={<NotPermissions />} />
+
 
             </Routes>
       </Router>

@@ -4,8 +4,10 @@ import axios from "axios";
 import graduation_hat from "../../../images/graduation_hat.png";
 import user from "../../../images/user.png";
 import logout from "../../../images/logout.png";
+import {useNavigate} from "react-router-dom";
 
 const HeaderComponent = () => {
+    const navigate = useNavigate();
   const [isHoveringLogout, setIsHoveringLogout] = useState(false);
   const handleLogout = async () => {
     try {
@@ -33,6 +35,9 @@ const HeaderComponent = () => {
       alert("Chyba pri odhlasovaní. Skúste to znova.");
     }
   };
+    const profile = () =>{
+        navigate('/profile')
+    }
 
   return (
     <header style={styles.header}>
@@ -53,6 +58,7 @@ const HeaderComponent = () => {
             src={user}
             alt="User profile"
             style={{ height: "30px", width: "auto" }}
+            onClick={profile}
           />
            <img
             src={logout}
