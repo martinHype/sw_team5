@@ -8,6 +8,7 @@ const AccessArticleRoute = ({ children }) => {
   const [loading, setLoading] = useState(true); // Loading state
   const [articleStatus, setArticleStatus] = useState(null); // Track article status
   const token = sessionStorage.getItem("authToken"); // Check if the auth token exists
+  const today = new Date();
 
   useEffect(() => {
     const verifyOwnershipAndStatus = async () => {
@@ -41,12 +42,23 @@ const AccessArticleRoute = ({ children }) => {
         // Access conditions for each route
         if (window.location.pathname.startsWith('/editarticle') && user_iduser === userId && status === 1) {
           authorized = true; // Access granted for owner and status 1 (edit mode)
-        } else if (window.location.pathname.startsWith('/viewarticle') && user_iduser === userId && (status === 2 || status === 3)) {
+        } else if (window.location.pathname.startsWith('/viewarticle') && user_iduser === userId && (status >= 2)) {
           authorized = true; // Access granted for owner and status 2 or 3 (view mode)
         } else if (window.location.pathname.startsWith('/reviewarticle') && idreviewer === userId && (status === 2 || status === 3)) {
           authorized = true; // Access granted for reviewer and status 2 or 3 (review mode)
         } else if (window.location.pathname.startsWith('/viewreviewarticle') && (user_iduser === userId || idreviewer === userId) && (status >= 4 && status <= 6)) {
-          authorized = true; // Access granted for both owner and reviewer, and status 4, 5, or 6 (view review mode)
+          authorized = true;
+          const today = new Date();
+          console.log(today);
+          console.log(new Date(response.data.event_upload_EndDate));
+          console.log(user_iduser === userId && today >= new Date(response.data.event_upload_EndDate));
+          if (user_iduser === userId && today >= new Date(response.data.event_upload_EndDate)) {
+            authorized = true; // If today's date is on or before the event's upload end date
+          }else if(idreviewer === userId){
+            authorized = true;
+          }else{
+            authorized = false;
+          }
         }
 
         setIsAuthorized(authorized);

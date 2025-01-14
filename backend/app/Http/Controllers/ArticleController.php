@@ -170,7 +170,7 @@ class ArticleController extends Controller
         try {
             // Fetch the article associated with the given ID
             $article = Article::where('idarticle', $id)
-                //->with('event')
+                ->with('event')
                 ->first();
         
             if (!$article) {
@@ -182,6 +182,7 @@ class ArticleController extends Controller
                 'user_iduser' => $article->user_iduser,  // Assuming the field is named 'user_iduser'
                 'idreviewer' => $article->idreviewer,
                 'status' => $article->acticle_status_idacticle_status,     // This can be null, it will be included as null if no value is present
+                'event_upload_EndDate' => $article->event->event_upload_EndDate, // Event's upload end date
             ], 200);
         } catch (\Exception $e) {
             return response()->json([
