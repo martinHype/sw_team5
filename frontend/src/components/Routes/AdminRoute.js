@@ -22,7 +22,8 @@ const AdminRoute = ({ children }) => {
 
     // Redirect if no token or the user does not have the "Admin" role
     if (!token || !userHasAdminRole()) {
-        return <Navigate to="/" />;
+
+        return <Navigate to="/permission" />;
     }
 
     return children; // Render the children if authenticated and authorized
