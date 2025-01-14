@@ -13,6 +13,7 @@ import AdminRoute from "./components/Routes/AdminRoute";
 import UserRoleManagerScreen from "./screens/AddRolesScreen/UserRoleManagerScreen";
 import ReviewArticleScreen from './screens/ReviewArticleScreen/ReviewArticleScreen.js';
 import AccessArticleRoute from './components/Routes/AccessArticleRoute.js';
+import StudentRoute from './components/Routes/StudentRoute.js';
 
 const App = () => {
   return (
@@ -39,9 +40,9 @@ const App = () => {
                 <Route
                     path="/uploadarticle"
                     element={
-                        <PrivateRoute>
+                        <StudentRoute>
                             <UploadArticle formMode='New' />
-                        </PrivateRoute>
+                        </StudentRoute>
                     }
                 />
                 <Route
