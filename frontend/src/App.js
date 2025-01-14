@@ -127,6 +127,8 @@ const App = () => {
                         </AdminRoute>
                     }
                 />
+
+                <Route path="*" element={<NotFoundScreen />} />
             </Routes>
       </Router>
   );
