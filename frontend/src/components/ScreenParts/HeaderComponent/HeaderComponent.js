@@ -26,6 +26,10 @@ const HeaderComponent = () => {
 
         // Remove the authToken from sessionStorage
         sessionStorage.removeItem("authToken");
+        sessionStorage.removeItem("userId");
+        sessionStorage.removeItem("userRoles");
+        localStorage.removeItem("files");
+        localStorage.removeItem("filesToDelete");
         
         // Redirect the user to the login screen or refresh the page
         window.location.href = "/"; // Update the URL based on your routing setup

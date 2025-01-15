@@ -17,6 +17,19 @@ const AccessArticleRoute = ({ children }) => {
         setLoading(false);
         return;
       }
+      const userRoles = sessionStorage.getItem("userRoles");
+      if (!userRoles){
+        setIsAuthorized(false); // No token, user can't access
+        setLoading(false);
+        return;
+      }
+      const rolesArray = userRoles.split(",").map(role => role.trim()); 
+      if(rolesArray.includes("admin")){
+        setIsAuthorized(true); // No token, user can't access
+        setLoading(false);
+        return;
+      }
+      
 
       try {
         // Fetch the article's access data
