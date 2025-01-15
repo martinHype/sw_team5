@@ -33,6 +33,13 @@ const styles = {
         margin: '0 auto',
         display: 'block',
     },
+    dropdownContainer: {
+        marginTop: '10px',
+        padding: '5px 0',
+    },
+    dropdownSmall: {
+        width: '100%',
+    },
     categoryInputContainer: {
         display: 'flex',
         gap: '10px',
@@ -87,6 +94,17 @@ const styles = {
     },
     suggestionItemHover: {
         backgroundColor: '#f0f0f0',
+    },
+    textarea: {
+        width: '100%',
+        minHeight: '100px',
+        padding: '8px',
+        marginBottom: '10px',
+        border: '1px solid #ccc',
+        borderRadius: '4px',
+        resize: 'vertical',
+        fontFamily: 'inherit',
+        fontSize: '14px',
     },
 };
 

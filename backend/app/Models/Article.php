@@ -12,7 +12,7 @@ use Illuminate\Database\Eloquent\Model;
 
 /**
  * Class Article
- * 
+ *
  * @property int $idarticle
  * @property int $user_iduser
  * @property string $title
@@ -26,7 +26,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property string|null $negative_review
  * @property Carbon $created_on
  * @property Carbon $modified_on
- * 
+ *
  * @property ActicleStatus $acticle_status
  * @property Category $category
  * @property Event $event
@@ -58,6 +58,13 @@ class Article extends Model
 		'acticle_status_idacticle_status',
 		'category_idcategory',
 		'idreviewer',
+		'actuality_difficulty',
+		'orientation_in_theme',
+		'work_corresponding_template',
+		'missing_slovak_or_english_title',
+		'missing_slovak_or_english_abstract',
+		'missing_abstract_length',
+		'missing_part',
 		'positive_review',
 		'negative_review',
 	];
@@ -90,4 +97,9 @@ class Article extends Model
 	{
 		return $this->hasMany(Document::class, 'article_idarticle');
 	}
+	public function keywords()
+    {
+        return $this->belongsToMany(Keyword::class, 'article_has_keywords', 'article_id', 'keyword_id')
+                    ->withTimestamps();
+    }
 }

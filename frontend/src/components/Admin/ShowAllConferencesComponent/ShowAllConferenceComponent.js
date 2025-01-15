@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import styles from './styles'; // Import your styles
@@ -11,26 +11,49 @@ const ShowAllConferenceComponent = () => {
     const [selectedDate, setSelectedDate] = useState(''); // For date filter
     const [searchQuery, setSearchQuery] = useState(''); // For name filter
 
-    const [filters, setFilters] = useState({ date: '', name: '' }); // Store applied filters
+    const [filters, setFilters] = useState({ date: '', name: '', isHistorical: false }); // Store applied filters
+
 
     const navigate = useNavigate();
 
     // Fetch conferences from the backend
-    const fetchConferences = async () => {
+    const fetchConferences = useCallback(async () => {
         const token = sessionStorage.getItem('authToken');
         setIsLoading(true);
         setError(null);
 
         try {
-            const response = await axios.get('http://localhost:8080/api/get-admin-events', {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-                params: {
-                    date: filters.date || undefined, // Include only if date is set
-                    name: filters.name || undefined, // Include only if name is set
-                },
-            });
+            let response;
+
+            if (filters.isHistorical) {
+                // Fetch historical conferences
+                response = await axios.get('http://localhost:8080/api/get-admin-events', {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                    params: {
+                        historical: true, // Parameter pre historické konferencie
+                    },
+                });
+            } else if (filters.date || filters.name) {
+                // Ak sú zadané iné filtre
+                response = await axios.get('http://localhost:8080/api/get-admin-events', {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                    params: {
+                        date: filters.date || undefined,
+                        name: filters.name || undefined,
+                    },
+                });
+            } else {
+                // Ak nie sú žiadne filtre, načítaj všetko
+                response = await axios.get('http://localhost:8080/api/get-admin-events', {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                });
+            }
 
             setConferences(response.data.data || []);
         } catch (error) {
@@ -39,16 +62,23 @@ const ShowAllConferenceComponent = () => {
         } finally {
             setIsLoading(false);
         }
-    };
+    }, [filters]);
+
+
 
     // Fetch conferences on component mount and when filters are applied
     useEffect(() => {
+
         fetchConferences();
-    }, [filters]);
+    }, [filters,fetchConferences]);
 
     // Handle date change
     const handleDateChange = (e) => {
         setSelectedDate(e.target.value); // Update local state only
+    };
+
+    const handleShowHistorical = () => {
+        setFilters({ date: '', name: '', isHistorical: true }); // Nastaví filter na historické konferencie
     };
 
     // Handle name change
@@ -105,13 +135,18 @@ const ShowAllConferenceComponent = () => {
 
                 {/* Apply Filters Button */}
                 <button onClick={handleApplyFilters} style={styles.button}>
-                    Použiť filtre
+                    Filtrovať
                 </button>
 
                 {/* Reload Button */}
                 <button onClick={handleReload} style={styles.button}>
-                    Načítať znovu
+                    Refresh
                 </button>
+
+                <button onClick={handleShowHistorical} style={styles.button}>
+                    Historické
+                </button>
+
             </div>
 
             {/* Conference List */}
@@ -123,7 +158,7 @@ const ShowAllConferenceComponent = () => {
                         <div
                             key={conference.idevent} // Ensure key is unique
                             style={styles.conferenceItem}
-                            onClick={() => navigate(`/conferences/${conference.idevent}`)}
+                            onClick={() => navigate(`/admin/conference/${conference.idevent}`)}
                         >
                             <h3>{conference.event_name}</h3>
                             <p>Dátum konferencie: {format(new Date(conference.event_date), 'dd.MM.yyyy')}</p>

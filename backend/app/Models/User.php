@@ -14,7 +14,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 
 /**
  * Class User
- * 
+ *
  * @property int $iduser
  * @property string $email
  * @property string $password
@@ -22,7 +22,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
  * @property string|null $lastname
  * @property Carbon $created_at
  * @property Carbon $modified_at
- * 
+ *
  * @property Collection|Article[] $articles
  * @property Collection|Role[] $roles
  *
@@ -44,7 +44,8 @@ class User extends Authenticatable
 		'email',
 		'password',
 		'firstname',
-		'lastname'
+		'lastname',
+		'university',
 	];
 
 	public function articles()
@@ -56,9 +57,8 @@ class User extends Authenticatable
 	{
 		return $this->hasMany(Article::class, 'idreviewer');
 	}
-
-	public function roles()
-	{
-		return $this->belongsToMany(Role::class, 'user_has_role', 'user_iduser', 'role_idrole');
-	}
+    public function roles()
+    {
+        return $this->belongsToMany(Role::class, 'user_has_role', 'user_iduser', 'role_idrole');
+    }
 }

@@ -34,6 +34,10 @@ const Navbar = () => {
         }
     };
 
+    const reroute = () =>{
+        navigate('/profile')
+    }
+
     return (
         <div style={styles.navbar}>
             <div style={styles.logo}>
@@ -41,21 +45,19 @@ const Navbar = () => {
                 <p style={styles.text}> ŠTUDENTSKÁ VEDECKÁ KONFERENCIA</p>
             </div>
             <div style={styles.navLinks}>
-                <a href="#" style={styles.link}>
-                    Vyhľadávanie
+                <a href="/admin/conferences" style={styles.link}>
+                    Konferencie
                 </a>
-                <a href="/create-conference" style={styles.link}>
+                <a href="/admin/conferences/create" style={styles.link}>
                     Nový
                 </a>
-                <a href="#" style={styles.link}>
-                    História
+                <a href="/admin/role-manager" style={styles.link}>
+                    Priradenie rolí
                 </a>
-                <a href="#" style={styles.link}>
-                    Moje práce
-                </a>
+
             </div>
             <div style={styles.icons}>
-                <FontAwesomeIcon icon={faUser} style={styles.icon} title="Profil"/>
+                <FontAwesomeIcon icon={faUser} style={styles.icon} title="Profil" onClick={reroute}/>
                 <FontAwesomeIcon
                     icon={faSignOutAlt}
                     style={styles.icon}

@@ -66,7 +66,7 @@ const AuthForm = () => {
             setErrorMessage("Heslo musi byt dlhsie ako 6 znakov");
             return;
         }
-        if(formData.password.trim() != formData.confirmPassword.trim()){
+        if(formData.password.trim() !== formData.confirmPassword.trim()){
             setError(true);
             setErrorMessage("Hesla sa nezhodnuju");
             return;
@@ -77,8 +77,8 @@ const AuthForm = () => {
                 lastname: formData.lastName,
                 email: formData.email,
                 password: formData.password,
-                password_confirmation: formData.confirmPassword
-                //university: formData.university,
+                password_confirmation: formData.confirmPassword,
+                university: formData.university,
             });
             const token = response.data.token;
             const roles = response.data.roles;
@@ -131,12 +131,18 @@ const AuthForm = () => {
         }
     };
 
+    const handleKeyDown = (e) => {
+        if (e.key === 'Enter') {
+            login();
+        }
+    };
+
 
     return (
         <div style={styles.container}>
             <div style={{ ...styles.formWrapper, ...(isRegister ? styles.register : styles.login) }}>
                 <div style={styles.logo}>
-                    <img src={graduationHat} style={styles.img}/>
+                    <img src={graduationHat} style={styles.img} alt="Page logo"/>
                     <p style={styles.text}> ŠTUDENTSKÁ VEDECKÁ KONFERENCIA</p>
                 </div>
                 <form style={styles.form} onSubmit={(e) => e.preventDefault()}>
@@ -175,10 +181,10 @@ const AuthForm = () => {
                                     placeholder="Heslo"
                                     value={formData.password}
                                     onChange={handleChange}
-                                    style={(error && (!formData.password|| formData.confirmPassword != formData.password || formData.password.length < 6))?styles.input_error : styles.input}
+                                    style={(error && (!formData.password|| formData.confirmPassword !== formData.password || formData.password.length < 6))?styles.input_error : styles.input}
                                     required
                                 />
-                            <img src={showPassword ? iconEye:iconEyeClosed} style={styles.eyeIcon} onClick={togglePasswordVisibility}/>
+                            <img src={showPassword ? iconEye:iconEyeClosed} style={styles.eyeIcon} onClick={togglePasswordVisibility} alt="Hide password icon"/>
                                 
                             </div>
                             <div style={styles.inputContainer}>
@@ -188,10 +194,10 @@ const AuthForm = () => {
                                     placeholder="Zopakujte heslo"
                                     value={formData.confirmPassword}
                                     onChange={handleChange}
-                                    style={(error && (!formData.confirmPassword || formData.confirmPassword != formData.password))?styles.input_error : styles.input}
+                                    style={(error && (!formData.confirmPassword || formData.confirmPassword !== formData.password))?styles.input_error : styles.input}
                                     required
                                 />
-                            <img src={showConfirmPassword ? iconEye:iconEyeClosed} style={styles.eyeIcon} onClick={toggleConfirmPasswordVisibility}/>
+                            <img src={showConfirmPassword ? iconEye:iconEyeClosed} style={styles.eyeIcon} onClick={toggleConfirmPasswordVisibility} alt="Show password icon"/>
                                 
                             </div>
                             <select
@@ -203,9 +209,9 @@ const AuthForm = () => {
                                 <option value="" disabled hidden>
                                     Vyberte univerzitu
                                 </option>
-                                <option value="value1">UKF FPVAI</option>
-                                <option value="value2">MB FPV</option>
-                                <option value="value3">UCM FPV</option>
+                                <option value="UKF FPVAI">UKF FPVAI</option>
+                                <option value="MB FPV">MB FPV</option>
+                                <option value="UCM FPV">UCM FPV</option>
                             </select>
                             {error && (
                                 <p style={styles.error_message}>{errorMessage}</p>
@@ -233,9 +239,10 @@ const AuthForm = () => {
                                     value={formData.password}
                                     onChange={handleChange}
                                     style={error?styles.input_error : styles.input}
+                                    onKeyDown={handleKeyDown}
                                     required
                                 />
-                            <img src={showPassword ? iconEye:iconEyeClosed} style={styles.eyeIcon} onClick={togglePasswordVisibility}/>
+                            <img src={showPassword ? iconEye:iconEyeClosed} style={styles.eyeIcon} onClick={togglePasswordVisibility} alt="Show password icon"/>
                                 
                             </div>
                             
@@ -248,7 +255,7 @@ const AuthForm = () => {
                         </>
                     )}
                 </form>
-                <a href="#!" onClick={toggleForm} style={styles.link}>
+                <a href="#" onClick={toggleForm} style={styles.link}>
                     {isRegister ? 'Prihlásiť sa' : 'Registrovať sa'}
                 </a>
             </div>

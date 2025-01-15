@@ -2,11 +2,10 @@
 
 import React, { useEffect, useState } from 'react';
 import { styles } from './styles';
-import graduation_hat from "../../images/graduation_hat.png";
-import user from "../../images/user.png";
-import logout from "../../images/logout.png";
 import { useNavigate } from 'react-router-dom';
 import { format } from "date-fns";
+import HeaderComponent from '../../components/ScreenParts/HeaderComponent/HeaderComponent';
+import FooterComponent from '../../components/ScreenParts/FooterComponent/FooterComponent';
 
 const MainScreen = () => {
     const [events, setEvents] = useState([]);
@@ -14,6 +13,13 @@ const MainScreen = () => {
     const navigate = useNavigate();
     const [userRole, setUserRole] = useState([]);
     const [loggedInUserId, setLoggedInUserId] = useState(null);
+    const [searchTerm, setSearchTerm] = useState('');
+
+    const [isPasswordPopupVisible, setPasswordPopupVisible] = useState(false);
+    const [passwordInput, setPasswordInput] = useState('');
+    const [passwordError, setPasswordError] = useState('');
+    const [selectedEvent, setSelectedEvent] = useState(null);
+    const today = new Date();
 
 
     const statusColors = {
@@ -23,24 +29,10 @@ const MainScreen = () => {
         "Publikovať v predloženej forme": "#4CAF50", // Green
         "Publikovať po zapracovaní pripomienok": "#FF9800", // Orange
         "Neprijať pre publikovanie": "#F44336", // Red
+        "Práca ohodnotená":"#708090",
     };
     //const [loading, setLoading] = useState(true);
     //const [error, setError] = useState(null);
-    const getFormMode = (articleStatus) => {
-        switch (articleStatus) {
-            case "Koncept":
-                return "Edit"; // Article is in draft, so form should be editable
-            case "Čaká na recenziu":
-            case "Prebieha kontrola":
-                return "Review";
-            case "Publikovať v predloženej forme":
-            case "Publikovať po zapracovaní pripomienok":
-            case "Neprijať pre publikovanie":
-                return "View"; // These statuses indicate read-only review mode
-            default:
-                return "New"; // Default to "New" mode if status is unknown
-        }
-    };
     useEffect(() => {
         const rolesString = sessionStorage.getItem("userRoles");
         const rolesArray = rolesString ? rolesString.split(",") : [];
@@ -78,11 +70,27 @@ const MainScreen = () => {
         fetchEvents();
     }, []);
 
-    const [searchTerm, setSearchTerm] = useState('');
 
-    const filteredEvents = events.filter((event) =>
-        event.event_name.toLowerCase().includes(searchTerm.toLowerCase())
-    );
+      const filteredEvents = events
+        .map((event) => {
+            const lowerCaseSearchTerm = searchTerm.toLowerCase();
+
+            // Filter articles within the event
+            const filteredArticles = event.articles.filter((article) => {
+            const titleMatch = article.title.toLowerCase().includes(lowerCaseSearchTerm);
+            const keywordMatch = article.keywords.map(keyword => keyword.word).join(', ')?.toLowerCase().includes(lowerCaseSearchTerm); // Assuming keywords is a comma-separated string
+            return titleMatch || keywordMatch;
+            });
+
+            // Return the event only if it matches the search term or has filtered articles
+            const eventNameMatch = event.event_name.toLowerCase().includes(lowerCaseSearchTerm);
+            if (eventNameMatch || filteredArticles.length > 0) {
+            return { ...event, articles: filteredArticles };
+            }
+
+            return null; // Exclude events with no matches
+        })
+        .filter(Boolean); // Remove null values
 
     const [hoveredArticle, setHoveredArticle] = useState(null);
     
@@ -95,38 +103,33 @@ const MainScreen = () => {
         }));
     };
 
+    const handlenavigation = (article,event) => {
+        
+        if (String(article.idreviewer) === sessionStorage.getItem("userId")) {
+            if(article.acticle_status_idacticle_status > 3)
+                navigate(`/viewreviewarticle/${article.idarticle}`);
+            else
+                navigate(`/reviewarticle/${article.idarticle}`);
+        }else{
+            if(article.acticle_status_idacticle_status === 1){
+                navigate(`/editarticle/${article.idarticle}`,{ state: {
+                    conferenceId: event.idevent
+                 } });
+            }else if(today.getTime() <= new Date(event.event_upload_EndDate).getTime()){
+                navigate(`/viewarticle/${article.idarticle}`,{ state: {
+                    conferenceId: event.idevent
+                 } });
+            }else{
+                navigate(`/viewreviewarticle/${article.idarticle}`);
+            }
+        }
+      };
+
     
 
     return (
         <div style={styles.container}>
-            <header style={styles.header}>
-            {/* Logo */}
-            <div style={styles.headerContainer}>
-                <img
-                    src={graduation_hat}
-                    alt="Logo"
-                    style={{ height: "50px", width: "auto" }}
-                />
-                {/* Navigation */}
-                <div style={styles.nav}>
-                    <h1 style={styles.navTitle}>Študentská vedecká konferencia</h1>
-                </div>
-                {/* Icons */}
-                <div style={styles.icons}>
-                <img
-                src={user}
-                alt="User profile"
-                style={{ height: "30px", width: "auto" }}
-                />
-                <img
-                    src={logout}
-                    alt="logout"
-                    style={{ height: "30px", width: "auto" }}
-                />
-                </div>
-            </div>
-            
-        </header>
+            <HeaderComponent/>
 
             <div style={styles.contentWrapper}>
                 
@@ -147,15 +150,27 @@ const MainScreen = () => {
                         {filteredEvents.map((event) => (
                             <li key={event.idevent} style={styles.listItem}>
                                 <div style={styles.listItemContent}>
-                                    {userRole.includes('student') && event.articles.some((article) => article.user_iduser === loggedInUserId) &&  <button 
-                                    style={styles.addButton}
-                                    onClick={() => navigate('/uploadarticle', { state: { 
-                                        formMode:"New",
-                                        conferenceName: event.idevent
-                                     } })}
-                                    >Pridať prácu</button>}
+                                
+                                {userRole.includes('student') && !event.articles.some((article) => article.user_iduser === loggedInUserId) && (
+                                    <button 
+                                        style={styles.addButton}
+                                        onClick={() => {
+                                            if (event.password) {
+                                                setSelectedEvent(event); // Store the selected event
+                                                setPasswordPopupVisible(true); // Show popup
+                                            } else {
+                                                navigate('/uploadarticle', { state: { 
+                                                    formMode: "New",
+                                                    conferenceId: event.idevent
+                                                } });
+                                            }
+                                        }}
+                                    >
+                                        Pridať prácu
+                                    </button>
+                                )}
                                     <span style={styles.listItemText}>{event.event_name}</span>
-                                    <p style={styles.conferenceDescription}>This is the event description</p>
+                                    <p style={styles.conferenceDescription}>{event.description}</p>
                                     <div style={styles.datesContainer}>
                                         <div style={styles.dateField}>
                                             <label style={styles.dateLabel}>Event Date:</label>
@@ -191,32 +206,23 @@ const MainScreen = () => {
                                                         }}
                                                         onMouseEnter={() => setHoveredArticle(article.idarticle)}
                                                         onMouseLeave={() => setHoveredArticle(null)}
-                                                        onClick={() => navigate('/uploadarticle', 
-                                                            { state: {
-                                                                formMode: getFormMode(article.acticle_status_name), 
-                                                                articleid: article.idarticle,
-                                                                title:article.title,
-                                                                description:article.Description,
-                                                                category:article.category_idcategory,
-                                                                reviewerId:article.idreviewer,
-                                                                ownerid:article.user_iduser,
-                                                            } })}
+                                                        onClick={() => handlenavigation(article,event)}
                                                     >
                                                         <h3 style={styles.articleTitle}>{article.title}</h3>
                                                         <p style={styles.articleText}>{article.Description}</p>
                                                         <p style={styles.articleText}><strong>{article.category_name}</strong></p>
-                                                        <p style={styles.articleText}>Key words</p>
+                                                        <p style={styles.articleText}>{article.keywords.map(keyword => keyword.word).join(', ')}</p>
                                                         <span style={styles.articleDate}>{format(new Date(article.created_at), 'dd.MM.yyyy')}</span>
                                                         {/* Status Label */}
                                                         <div
                                                             style={{
                                                                 ...styles.statusLabel,
                                                                 backgroundColor:
-                                                                    statusColors[article.acticle_status_name] ||
+                                                                    statusColors[(article.acticle_status_idacticle_status > 3 && today.getTime() <= new Date(event.event_upload_EndDate).getTime() && article.user_iduser === loggedInUserId)  ? "Práca ohodnotená": article.acticle_status_name] ||
                                                                     "#000000", // Default fallback color
                                                             }}
                                                         >
-                                                            {article.acticle_status_name}
+                                                            {(article.acticle_status_idacticle_status > 3 && today.getTime() <= new Date(event.event_upload_EndDate).getTime() && article.user_iduser === loggedInUserId)  ? "Práca ohodnotená": article.acticle_status_name}
                                                         </div>
                                                     </li>
                                                 ))}
@@ -229,11 +235,56 @@ const MainScreen = () => {
                         ))}
                     </ul>
                 </main>
+                {isPasswordPopupVisible && (
+                <div style={styles.popupOverlay}>
+                    <div style={styles.popupContainer}>
+                        <h3>Konferencia je súkromná, zadajte heslo</h3>
+                        <input 
+                            type="password" 
+                            placeholder="Zadajte heslo" 
+                            value={passwordInput} 
+                            onChange={(e) => setPasswordInput(e.target.value)} 
+                            style={styles.inputField}
+                        />
+                        {passwordError && <p style={styles.errorText}>{passwordError}</p>}
+                        <div style={styles.buttonGroup}>
+                            <button 
+                                style={styles.cancelButton} 
+                                onClick={() => {
+                                    setPasswordPopupVisible(false);
+                                    setPasswordInput('');
+                                    setPasswordError('');
+                                }}
+                            >
+                                Zrušiť
+                            </button>
+                            <button 
+                                style={styles.submitButton} 
+                                onClick={() => {
+                                    if (passwordInput === selectedEvent.password) {
+                                        // Correct password, navigate to uploadarticle
+                                        setPasswordPopupVisible(false);
+                                        setPasswordInput('');
+                                        setPasswordError('');
+                                        navigate('/uploadarticle', { state: { 
+                                            formMode: "New",
+                                            conferenceId: selectedEvent.idevent
+                                        } });
+                                    } else {
+                                        // Incorrect password, show error
+                                        setPasswordError('Nesprávne heslo. Skúste to znova.');
+                                    }
+                                }}
+                            >
+                                Potvrdiť
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
             </div>
 
-            <footer style={styles.footer}>
-                <p style={styles.footerText}>© 2024 Študentská vedecká konferencia. Všetky práva vyhradené.</p>
-            </footer>
+            <FooterComponent/>
         </div>
     );
 };

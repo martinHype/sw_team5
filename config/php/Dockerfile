@@ -6,6 +6,20 @@ RUN apk update && \
     apk add --update linux-headers && \
     apk add --no-cache git libzip-dev zip unzip autoconf gcc g++ make openssh-client
 
+
+# Install required packages for zip extension
+RUN apk update && apk add --no-cache \
+    libzip-dev \
+    zip \
+    unzip \
+    gcc \
+    g++ \
+    make \
+    autoconf
+
+# Install PHP zip extension
+RUN docker-php-ext-configure zip && docker-php-ext-install zip
+
 RUN pecl install redis && \
     docker-php-ext-enable redis
 

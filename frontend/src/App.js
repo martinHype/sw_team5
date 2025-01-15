@@ -5,12 +5,20 @@ import MainScreen from './screens/MainScreen/MainScreen';
 import UploadArticle from './screens/UploadArticleScreen/UploadArticle';
 import PrivateRoute from './components/Routes/PrivateRoute';
 import PublicRoute from './components/Routes/PublicRoute';
-import NewConferencePage from "./screens/NewConferenceScreen/NewConferencePage.js";
+import ConferenceFormPage from "./screens/ConferenceFormScreen/ConferenceFormPage.js";
 import ShowAllConferencesScreen from "./screens/ShowAllConferencesScreen/ShowAllConferencesScreen";
+import AdminDetailConferenceScreen from "./screens/AdminDetailConferenceScreen/AdminDetailConferenceScreen";
+import ConferenceUsersScreen from "./screens/AdminConferenceUsersScreen/ConferenceUsersScreen.js";
 import AdminRoute from "./components/Routes/AdminRoute";
+import UserRoleManagerScreen from "./screens/AddRolesScreen/UserRoleManagerScreen";
+import ReviewArticleScreen from './screens/ReviewArticleScreen/ReviewArticleScreen.js';
+import AccessArticleRoute from './components/Routes/AccessArticleRoute.js';
+import StudentRoute from './components/Routes/StudentRoute.js';
+import NotPermissions from "./screens/NotPermissions/NotPermissions";
+import NotFoundScreen from "./screens/NotFoundScreen/NotFoundScreen";
+import ProfileScreen from "./screens/ProfileScreen/ProfileScreen";
 
-//pull bozo test
-//pull pato test2
+
 const App = () => {
   return (
       <Router>
@@ -36,17 +44,69 @@ const App = () => {
                 <Route
                     path="/uploadarticle"
                     element={
-                        <PrivateRoute>
-                            <UploadArticle />
-                        </PrivateRoute>
+                        <StudentRoute>
+                            <UploadArticle formMode='New' />
+                        </StudentRoute>
+                    }
+                />
+                <Route
+                    path="/editarticle/:article_id"
+                    element={
+                        <AccessArticleRoute>
+                            <UploadArticle formMode='Edit' />
+                        </AccessArticleRoute>
+                    }
+                />
+                <Route
+                    path="/viewarticle/:article_id"
+                    element={
+                        <AccessArticleRoute>
+                            <UploadArticle formMode='View' />
+                        </AccessArticleRoute>
                     }
                 />
 
                 <Route
-                    path="admin/create-conference"
+                    path="/reviewarticle/:article_id"
+                    element={
+                        <AccessArticleRoute>
+                            <ReviewArticleScreen editMode={true}/>
+                        </AccessArticleRoute>
+                    }
+                />
+                <Route
+                    path="/viewreviewarticle/:article_id"
+                    element={
+                        <AccessArticleRoute>
+                            <ReviewArticleScreen editMode={false}/>
+                        </AccessArticleRoute>
+                    }
+                />
+
+                <Route
+                    path="/profile"
+                    element={
+                        <PrivateRoute>
+                            <ProfileScreen/>
+                        </PrivateRoute>
+                    }
+                />
+
+
+
+                <Route
+                    path="admin/conferences/create"
                     element={
                         <AdminRoute>
-                            <NewConferencePage />
+                            <ConferenceFormPage isEditMode={false}/>
+                        </AdminRoute>
+                    }
+                />
+                <Route
+                    path="admin/conferences/edit/:id"
+                    element={
+                        <AdminRoute>
+                            <ConferenceFormPage isEditMode={true}/>
                         </AdminRoute>
                     }
                 />
@@ -58,6 +118,38 @@ const App = () => {
                         </AdminRoute>
                     }
                 />
+                <Route
+                    path="admin/conference/:id"
+                    element={
+                        <AdminRoute>
+                            <AdminDetailConferenceScreen />
+                        </AdminRoute>
+                    }
+                />
+                <Route
+                    path="/admin/conference/:id/roles"
+                    element={
+                        <AdminRoute>
+                            <ConferenceUsersScreen />
+                        </AdminRoute>
+                    }
+                />
+                <Route
+                    path="/admin/role-manager"
+                    element={
+                        <AdminRoute>
+                            <UserRoleManagerScreen />
+                        </AdminRoute>
+                    }
+                />
+
+
+
+                <Route path="*" element={<NotFoundScreen />} />
+
+                <Route path="/permission" element={<NotPermissions />} />
+
+
             </Routes>
       </Router>
   );

@@ -1,6 +1,6 @@
 const styles = {
-  dropZone: (filesLength,isHoverd) => ({
-    border: "2px dashed #4CAF50",
+  dropZone: (filesLength,isHoverd,formView) => ({
+    border: (filesLength >= 2 || formView) ? "2px dashed rgba(128, 128, 128, 0.5)" : "2px dashed #4CAF50",
     borderRadius: "10px",
     padding: "20px",
     textAlign: "center",
@@ -10,11 +10,10 @@ const styles = {
     justifyContent: "center", // Center content vertically
      // Center content horizontally
     gap: "10px",
-    cursor: "pointer",
     position: "relative",
     height: "150px",
     alignItems: filesLength > 0 ? "flex-start":"center",
-    backgroundColor: filesLength >= 2 ? "rgba(128, 128, 128, 0.3)" : isHoverd ? "rgba(76, 175, 80, 0.3)" : "rgba(76, 175, 80, 0.1)" , // Gray out if 2 files
+    backgroundColor: (filesLength >= 2 || formView) ? "rgba(128, 128, 128, 0.1)" : isHoverd ? "rgba(76, 175, 80, 0.3)" : "rgba(76, 175, 80, 0.1)" , // Gray out if 2 files
     cursor: filesLength >= 2 ? "not-allowed" : "pointer",
   }),
   filePreviewContainer: {
@@ -46,13 +45,10 @@ const styles = {
   },
   fileName: {
     fontSize: "14px",
-    color: "#007bff",
-    textDecoration: "underline",
-    textAlign: "center",
-    maxWidth: "80px",
-    whiteSpace: "nowrap",
-    overflow: "hidden",
-    textOverflow: "ellipsis",
+    color: "#333",
+    fontWeight: "bold",
+    textDecoration: "none",
+    wordWrap: "break-word",
   },
   deleteButton: {
     position: "absolute",

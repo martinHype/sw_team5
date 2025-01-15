@@ -14,6 +14,8 @@ RUN npm install react-router-dom
 RUN npm install date-fns
 
 RUN npm install @fortawesome/react-fontawesome @fortawesome/free-solid-svg-icons @fortawesome/fontawesome-svg-core
+RUN npm install styled-components
+RUN npm install react-select
 
 
 FROM node:18.14.2-alpine3.17
