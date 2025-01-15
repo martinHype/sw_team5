@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Article;
+use App\Models\Keyword;
 use Illuminate\Http\Request;
 use App\Http\Controllers\DocumentController;
 
@@ -19,6 +20,7 @@ class ArticleController extends Controller
             'category' => 'required',
             'event' => 'required',
             'status' => 'required',
+            'key_words' => 'required',
         ]);
 
         $article = Article::create([
@@ -29,6 +31,15 @@ class ArticleController extends Controller
             'user_iduser' => auth()->id(),
             'acticle_status_idacticle_status' => $fields['status'],
         ]);
+        $keyWordsArray = explode(',', $fields['key_words']);
+
+        foreach ($keyWordsArray as $word) {
+            // Trim spaces and find or create the keyword
+            $keyword = Keyword::firstOrCreate(['word' => trim($word)]);
+            
+            // Attach the keyword to the article
+            $article->keywords()->attach($keyword->id);
+        }
 
         return response()->json([
             'message' => 'Article created successfully!',
@@ -113,6 +124,7 @@ class ArticleController extends Controller
             'title' => 'required|string',
             'description' => 'required|string',
             'category' => 'required|integer',
+            'key_words' => 'required',
         ]);
 
         // Find the article and update the status
@@ -124,6 +136,19 @@ class ArticleController extends Controller
             'Description' => $fields['description'],
             'category_idcategory' => $fields['category'],
         ]);
+
+        // Split keywords and process them
+        $keyWordsArray = explode(',', $fields['key_words']);
+        $keywordIds = []; // To store the IDs of keywords to sync
+
+        foreach ($keyWordsArray as $word) {
+            // Trim spaces and find or create the keyword
+            $keyword = Keyword::firstOrCreate(['word' => trim($word)]);
+            $keywordIds[] = $keyword->id; // Add the ID to the array
+        }
+
+        // Sync the keywords with the article (add missing, remove unassigned)
+        $article->keywords()->sync($keywordIds);
 
         return response()->json([
             'message' => 'Article status updated successfully!',

@@ -20,6 +20,7 @@ const UploadArticle = ({ formMode = "New" }) => {
     title: "",
     Description: "",
     category_idcategory:0,
+    keywords:"",
   });
   
   useEffect(() => {
@@ -198,6 +199,7 @@ const UploadArticle = ({ formMode = "New" }) => {
           title: ArticleData.title,
           description: ArticleData.Description,
           category:parseInt(ArticleData.category_idcategory,10),
+          keywords:ArticleData.keywords,
       },
       {
         headers: {
@@ -225,6 +227,7 @@ const UploadArticle = ({ formMode = "New" }) => {
           category:parseInt(ArticleData.category_idcategory,10),
           event:conferenceId,
           status:actualStatus,
+          keywords:ArticleData.keywords,
       },
       {
         headers: {
