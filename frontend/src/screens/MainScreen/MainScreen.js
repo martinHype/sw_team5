@@ -13,6 +13,11 @@ const MainScreen = () => {
     const navigate = useNavigate();
     const [userRole, setUserRole] = useState([]);
     const [loggedInUserId, setLoggedInUserId] = useState(null);
+
+    const [isPasswordPopupVisible, setPasswordPopupVisible] = useState(false);
+    const [passwordInput, setPasswordInput] = useState('');
+    const [passwordError, setPasswordError] = useState('');
+    const [selectedEvent, setSelectedEvent] = useState(null);
     const today = new Date();
 
 
@@ -128,13 +133,24 @@ const MainScreen = () => {
                             <li key={event.idevent} style={styles.listItem}>
                                 <div style={styles.listItemContent}>
                                 
-                                    {userRole.includes('student') && !event.articles.some((article) => article.user_iduser === loggedInUserId) && <button 
-                                    style={styles.addButton}
-                                    onClick={() => navigate('/uploadarticle', { state: { 
-                                        formMode:"New",
-                                        conferenceId: event.idevent
-                                     } })}
-                                    >Pridať prácu</button>}
+                                {userRole.includes('student') && !event.articles.some((article) => article.user_iduser === loggedInUserId) && (
+                                    <button 
+                                        style={styles.addButton}
+                                        onClick={() => {
+                                            if (event.password) {
+                                                setSelectedEvent(event); // Store the selected event
+                                                setPasswordPopupVisible(true); // Show popup
+                                            } else {
+                                                navigate('/uploadarticle', { state: { 
+                                                    formMode: "New",
+                                                    conferenceId: event.idevent
+                                                } });
+                                            }
+                                        }}
+                                    >
+                                        Pridať prácu
+                                    </button>
+                                )}
                                     <span style={styles.listItemText}>{event.event_name}</span>
                                     <p style={styles.conferenceDescription}>{event.description}</p>
                                     <div style={styles.datesContainer}>
@@ -201,6 +217,53 @@ const MainScreen = () => {
                         ))}
                     </ul>
                 </main>
+                {isPasswordPopupVisible && (
+                <div style={styles.popupOverlay}>
+                    <div style={styles.popupContainer}>
+                        <h3>Konferencia je súkromná, zadajte heslo</h3>
+                        <input 
+                            type="password" 
+                            placeholder="Zadajte heslo" 
+                            value={passwordInput} 
+                            onChange={(e) => setPasswordInput(e.target.value)} 
+                            style={styles.inputField}
+                        />
+                        {passwordError && <p style={styles.errorText}>{passwordError}</p>}
+                        <div style={styles.buttonGroup}>
+                            <button 
+                                style={styles.cancelButton} 
+                                onClick={() => {
+                                    setPasswordPopupVisible(false);
+                                    setPasswordInput('');
+                                    setPasswordError('');
+                                }}
+                            >
+                                Zrušiť
+                            </button>
+                            <button 
+                                style={styles.submitButton} 
+                                onClick={() => {
+                                    if (passwordInput === selectedEvent.password) {
+                                        // Correct password, navigate to uploadarticle
+                                        setPasswordPopupVisible(false);
+                                        setPasswordInput('');
+                                        setPasswordError('');
+                                        navigate('/uploadarticle', { state: { 
+                                            formMode: "New",
+                                            conferenceId: selectedEvent.idevent
+                                        } });
+                                    } else {
+                                        // Incorrect password, show error
+                                        setPasswordError('Nesprávne heslo. Skúste to znova.');
+                                    }
+                                }}
+                            >
+                                Potvrdiť
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
             </div>
 
             <FooterComponent/>
