@@ -57,7 +57,7 @@ const Navbar = () => {
 
             </div>
             <div style={styles.icons}>
-                <FontAwesomeIcon icon={faUser} style={styles.icon} title="Profil" onClick={reroute}/>0
+                <FontAwesomeIcon icon={faUser} style={styles.icon} title="Profil" onClick={reroute}/>
                 <FontAwesomeIcon
                     icon={faSignOutAlt}
                     style={styles.icon}
