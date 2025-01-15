@@ -13,6 +13,7 @@ const MainScreen = () => {
     const navigate = useNavigate();
     const [userRole, setUserRole] = useState([]);
     const [loggedInUserId, setLoggedInUserId] = useState(null);
+    const [searchTerm, setSearchTerm] = useState('');
 
     const [isPasswordPopupVisible, setPasswordPopupVisible] = useState(false);
     const [passwordInput, setPasswordInput] = useState('');
@@ -69,11 +70,27 @@ const MainScreen = () => {
         fetchEvents();
     }, []);
 
-    const [searchTerm, setSearchTerm] = useState('');
 
-    const filteredEvents = events.filter((event) =>
-        event.event_name.toLowerCase().includes(searchTerm.toLowerCase())
-    );
+      const filteredEvents = events
+        .map((event) => {
+            const lowerCaseSearchTerm = searchTerm.toLowerCase();
+
+            // Filter articles within the event
+            const filteredArticles = event.articles.filter((article) => {
+            const titleMatch = article.title.toLowerCase().includes(lowerCaseSearchTerm);
+            const keywordMatch = article.keywords.map(keyword => keyword.word).join(', ')?.toLowerCase().includes(lowerCaseSearchTerm); // Assuming keywords is a comma-separated string
+            return titleMatch || keywordMatch;
+            });
+
+            // Return the event only if it matches the search term or has filtered articles
+            const eventNameMatch = event.event_name.toLowerCase().includes(lowerCaseSearchTerm);
+            if (eventNameMatch || filteredArticles.length > 0) {
+            return { ...event, articles: filteredArticles };
+            }
+
+            return null; // Exclude events with no matches
+        })
+        .filter(Boolean); // Remove null values
 
     const [hoveredArticle, setHoveredArticle] = useState(null);
     
