@@ -97,4 +97,9 @@ class Article extends Model
 	{
 		return $this->hasMany(Document::class, 'article_idarticle');
 	}
+	public function keywords()
+    {
+        return $this->belongsToMany(Keyword::class, 'article_has_keywords', 'article_id', 'keyword_id')
+                    ->withTimestamps();
+    }
 }
