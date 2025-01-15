@@ -16,6 +16,7 @@ class AuthController extends Controller
             'lastname' => 'required|max:255',
             'email' => 'required|email',
             'password' => 'required|min:6|confirmed',
+            'university' => 'required',
         ]);
 
         // Check if the email already exists
@@ -32,7 +33,8 @@ class AuthController extends Controller
             'firstname' => $request->firstname,
             'lastname' => $request->lastname,
             'email' => $request->email,
-            'password' => Hash::make($request->password)
+            'password' => Hash::make($request->password),
+            'university' => $request->university,
         ]);
 
          // Assign default role "student" in the user_has_role table
