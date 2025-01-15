@@ -58,16 +58,22 @@ const FileDropArea = ({fieldMode = "New", articleId = 0}) => {
 
     reader.onload = () => {
       const base64String = reader.result.split(",")[1];
-      const files = JSON.parse(localStorage.getItem("files") || "[]");
-
-      files.push({
+      const localFiles = JSON.parse(localStorage.getItem("files") || "[]");
+      if(localFiles.filter(item => item.name === file.name).length > 0){
+        
+        setFiles((prevFiles) => prevFiles.filter((_, index) => index !== files.length-1));
+        alert("Súbor je už nahratý");
+        return;
+      }
+      localFiles.push({
         name: file.name,
+        isFetched:false,
         type: file.type,
         size: file.size,
         content: base64String,
       });
 
-      localStorage.setItem("files", JSON.stringify(files));
+      localStorage.setItem("files", JSON.stringify(localFiles));
     };
 
     reader.readAsDataURL(file);
@@ -101,6 +107,9 @@ const FileDropArea = ({fieldMode = "New", articleId = 0}) => {
       alert("Môžete nahrať iba PDF alebo DOCX súbory.");
       return;
     }
+
+    
+    
   
     // Update state and save to localStorage
     setFiles((prevFiles) => [...prevFiles, ...newFiles]);
@@ -120,13 +129,17 @@ const FileDropArea = ({fieldMode = "New", articleId = 0}) => {
     event.preventDefault();
   };*/
 
-  const handleRemoveFile = async (indexToRemove,documentid) => {
+  const handleRemoveFile = async (indexToRemove,documentid,documentName) => {
     if (fieldMode !== "View") {
       if(documentid){
         const filesToDelete = JSON.parse(localStorage.getItem("filesToDelete") || "[]");
         filesToDelete.push({documentid: documentid});
         localStorage.setItem("filesToDelete", JSON.stringify(filesToDelete));
       }
+      const files = JSON.parse(localStorage.getItem("files") || "[]");
+      console.log(files);
+      localStorage.setItem("files", JSON.stringify(files.filter(item => item.name !== documentName)));
+
       setFiles((prevFiles) => prevFiles.filter((_, index) => index !== indexToRemove));
     }
 
@@ -189,7 +202,7 @@ const FileDropArea = ({fieldMode = "New", articleId = 0}) => {
                 style={styles.deleteButton}
                 onClick={(event) => {
                     event.stopPropagation(); // Prevent triggering the parent click event
-                    handleRemoveFile(index,file.id);
+                    handleRemoveFile(index,file.id,file.name);
                   }}
               >
                 ✖

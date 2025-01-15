@@ -58,10 +58,12 @@ const ReviewArticleScreen = ({editMode = true}) => {
 
     const handleSubmit = async (status) => {
       console.log(article_id);
-      console.log(status);
-      if (!validateForm()) {
-        return; // Prevent submission if validation fails
+      if(status > 3 || !status){
+        if (!validateForm()) {
+          return; // Prevent submission if validation fails
+        }
       }
+      
       
       try {
         const response = await axios.put(
@@ -136,6 +138,9 @@ const ReviewArticleScreen = ({editMode = true}) => {
         newErrors.negative_review = "Pole musí byť vyplnené.";
       } else if ((evaluation.negative_review || "").length > 500) {
         newErrors.negative_review = "Text nesmie presahovať 500 znakov.";
+      }
+      if(!evaluation.final_assessment){
+        newErrors.final_assessment = "Na moznost ulozenia, musi byt vybrate konecne hodnotenie";
       }
     
       setErrors(newErrors);
@@ -360,7 +365,10 @@ const ReviewArticleScreen = ({editMode = true}) => {
                 name="final_assessment"
                 value={evaluation.final_assessment}
                 onChange={handleEvaluationChange}
-                style={styles.evaluationInput}
+                style={{
+                  ...styles.evaluationInput,
+                  borderColor: errors.final_assessment ? "red" : "#4CAF50",
+                }}
               >
                 <option value="" disabled>Vyberte hodnotenie</option>
                 <option value="4">publikovať v predloženej forme</option>
@@ -385,6 +393,7 @@ const ReviewArticleScreen = ({editMode = true}) => {
                     <button
                       style={{ ...styles.popupButton, backgroundColor: "#d3d3d3" }}
                       onClick={() => handleSubmit(3)}
+                      
                     >
                       Uložiť ako Koncept
                     </button>

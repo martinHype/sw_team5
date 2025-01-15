@@ -105,8 +105,9 @@ const UploadArticle = ({ formMode = "New" }) => {
           console.error(`No files found in localStorage under the key: ${id_article}`);
           return;
         }
-        const files = JSON.parse(filesData);
-
+        const files = JSON.parse(filesData).filter(item => item.isFetched === false);
+        console.log("files to import "+ files.length);
+        console.log("article to attach" + id_article);
         files.forEach(async (file) => {
           try{
             const response = await axios.post(
@@ -114,8 +115,7 @@ const UploadArticle = ({ formMode = "New" }) => {
               {
                 file_content: file.content,
                 file_name: file.name,
-                file_type: file.type,
-                article_id: id_article, // Replace with dynamic article ID if needed
+                file_type: file.type
               },
               {
                 headers: {
@@ -176,7 +176,8 @@ const UploadArticle = ({ formMode = "New" }) => {
   }
   const handleSubmit = (status) => {
     console.log(article_id);
-    if (!validateForm()) {
+
+    if (!validateForm() && status === 2) {
       return; // Prevent submission if form is invalid
     }
     if(article_id){
