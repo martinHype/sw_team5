@@ -43,7 +43,9 @@ class EventController extends Controller
                 )
                 ->leftJoin('acticle_status', 'article.acticle_status_idacticle_status', '=', 'acticle_status.idacticle_status')
                 ->leftJoin('category', 'article.category_idcategory', '=', 'category.idcategory');
-            },'articles.keywords:word'])->get();
+            },'articles.keywords:word'])
+            ->whereDate('event_date', '>=', now()) 
+            ->get();
         } else {
             $events = Event::with(['articles' => function ($query) use ($user, $roles) {
                 $query->select(
@@ -61,7 +63,9 @@ class EventController extends Controller
                         $q->orWhere('article.idreviewer', $user->iduser);
                     }
                 });
-            },'articles.keywords:word'])->get();
+            },'articles.keywords:word'])
+            ->whereDate('event_date', '>=', now()) 
+            ->get();
         }
 
         return response()->json($events);
