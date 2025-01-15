@@ -17,7 +17,7 @@ const ReviewArticleScreen = ({editMode = true}) => {
       title: "something",
       category: "category",
       Description: "afaf",
-      keywords: "adfa",
+      keywords_string: "adfa",
       files: [], // This will hold file information
     });
     const [evaluation, setEvaluation] = useState({
@@ -154,7 +154,7 @@ const ReviewArticleScreen = ({editMode = true}) => {
                 <h1 style={styles.articleTitle}>{articleData.title}</h1>
                 <p><strong>{articleData.category_name}</strong></p>
                 <p>{articleData.Description}</p>
-                <p><span style={styles.keywords}>Key words</span></p>
+                <p><span style={styles.keywords}>{articleData.keywords_string}</span></p>
 
                 {/* Files Section */}
                 <h3>Stiahnuť súbory</h3>

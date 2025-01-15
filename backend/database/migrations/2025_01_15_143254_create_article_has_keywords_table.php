@@ -9,12 +9,14 @@ return new class extends Migration
 {
     public function up()
     {
-        Schema::create('article_has_keywords', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('keyword_id')->constrained('key_words')->onDelete('cascade');
-            $table->foreignId('article_id')->constrained('articles')->onDelete('cascade');
-            $table->timestamps();
-        });
+        if (!Schema::hasTable('article_has_keywords')) {
+            Schema::create('article_has_keywords', function (Blueprint $table) {
+                $table->id();
+                $table->foreignId('keyword_id')->constrained('key_words')->onDelete('cascade');
+                $table->foreignId('article_id')->constrained('articles')->onDelete('cascade');
+                $table->timestamps();
+            });
+        }
     }
 
     public function down()

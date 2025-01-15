@@ -87,6 +87,7 @@ const MainScreen = () => {
     };
 
     const handlenavigation = (article,event) => {
+        
         if (String(article.idreviewer) === sessionStorage.getItem("userId")) {
             if(article.acticle_status_idacticle_status > 3)
                 navigate(`/viewreviewarticle/${article.idarticle}`);
@@ -193,7 +194,7 @@ const MainScreen = () => {
                                                         <h3 style={styles.articleTitle}>{article.title}</h3>
                                                         <p style={styles.articleText}>{article.Description}</p>
                                                         <p style={styles.articleText}><strong>{article.category_name}</strong></p>
-                                                        <p style={styles.articleText}>Key words</p>
+                                                        <p style={styles.articleText}>{article.keywords.map(keyword => keyword.word).join(', ')}</p>
                                                         <span style={styles.articleDate}>{format(new Date(article.created_at), 'dd.MM.yyyy')}</span>
                                                         {/* Status Label */}
                                                         <div

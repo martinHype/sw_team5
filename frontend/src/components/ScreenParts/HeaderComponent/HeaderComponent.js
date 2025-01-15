@@ -38,6 +38,9 @@ const HeaderComponent = () => {
     const profile = () =>{
         navigate('/profile')
     }
+    const home = () =>{
+      navigate('/home')
+  }
 
   return (
     <header style={styles.header}>
@@ -46,18 +49,38 @@ const HeaderComponent = () => {
         <img
           src={graduation_hat}
           alt="Logo"
-          style={{ height: "50px", width: "auto" }}
+          style={{
+            height: "50px",
+            width: "auto",
+            cursor: "pointer",
+            opacity: isHoveringLogout ? 0.7 : 1, // Adjust opacity on hover
+            transition: "opacity 0.3s ease", // Smooth hover transition
+          }}
+          onClick={home}
+
         />
         {/* Navigation */}
         <div style={styles.nav}>
-          <h1 style={styles.navTitle}>Študentská vedecká konferencia</h1>
+          <h1 style={{
+              cursor: "pointer",
+              opacity: isHoveringLogout ? 0.7 : 1, // Adjust opacity on hover
+              transition: "opacity 0.3s ease", // Smooth hover transition
+            }}
+            onClick={home}
+            >Študentská vedecká konferencia</h1>
         </div>
         {/* Icons */}
         <div style={styles.icons}>
           <img
             src={user}
             alt="User profile"
-            style={{ height: "30px", width: "auto" }}
+            style={{
+              height: "30px",
+              width: "auto",
+              cursor: "pointer",
+              opacity: isHoveringLogout ? 0.7 : 1, // Adjust opacity on hover
+              transition: "opacity 0.3s ease", // Smooth hover transition
+            }}
             onClick={profile}
           />
            <img

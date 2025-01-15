@@ -15,6 +15,7 @@ class Keyword extends Model
     /**
      * The attributes that are mass assignable.
      */
+    protected $table = 'key_words';
     protected $fillable = [
         'word', // Add any additional fields here
     ];
