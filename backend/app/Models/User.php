@@ -44,7 +44,8 @@ class User extends Authenticatable
 		'email',
 		'password',
 		'firstname',
-		'lastname'
+		'lastname',
+		'university',
 	];
 
 	public function articles()

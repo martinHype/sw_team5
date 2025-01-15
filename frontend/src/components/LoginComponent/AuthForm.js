@@ -77,8 +77,8 @@ const AuthForm = () => {
                 lastname: formData.lastName,
                 email: formData.email,
                 password: formData.password,
-                password_confirmation: formData.confirmPassword
-                //university: formData.university,
+                password_confirmation: formData.confirmPassword,
+                university: formData.university,
             });
             const token = response.data.token;
             const roles = response.data.roles;
@@ -209,9 +209,9 @@ const AuthForm = () => {
                                 <option value="" disabled hidden>
                                     Vyberte univerzitu
                                 </option>
-                                <option value="value1">UKF FPVAI</option>
-                                <option value="value2">MB FPV</option>
-                                <option value="value3">UCM FPV</option>
+                                <option value="UKF FPVAI">UKF FPVAI</option>
+                                <option value="MB FPV">MB FPV</option>
+                                <option value="UCM FPV">UCM FPV</option>
                             </select>
                             {error && (
                                 <p style={styles.error_message}>{errorMessage}</p>
