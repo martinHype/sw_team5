@@ -87,6 +87,7 @@ const MainScreen = () => {
     };
 
     const handlenavigation = (article,event) => {
+        
         if (String(article.idreviewer) === sessionStorage.getItem("userId")) {
             if(article.acticle_status_idacticle_status > 3)
                 navigate(`/viewreviewarticle/${article.idarticle}`);

@@ -318,7 +318,7 @@ const UploadArticle = ({ formMode = "New" }) => {
               borderColor: errors.title ? "red" : "#ccc",
             }}
             readOnly={formMode === "View" && "locked"} />
-            <p style={styles.charCount}>{255 - ArticleData.title.length} znakov zostáva.</p>
+            {formMode !== "View" && (<p style={styles.charCount}>{255 - ArticleData.title.length} znakov zostáva.</p>)}
             {errors.title && <p style={styles.errorMessage}>{errors.title}</p>}
           </div>
           {/*Categoria */}
@@ -358,7 +358,7 @@ const UploadArticle = ({ formMode = "New" }) => {
               borderColor: errors.Description ? "red" : "#ccc",
             }}
             readOnly={formMode === "View" || formMode === "Review"}/>
-            <p style={styles.charCount}>{500 - ArticleData.Description.length} znakov zostáva.</p>
+            {formMode !== "View" && (<p style={styles.charCount}>{500 - ArticleData.Description.length} znakov zostáva.</p>)}
             {errors.Description && <p style={styles.errorMessage}>{errors.Description}</p>}
           </div>
           
@@ -377,7 +377,7 @@ const UploadArticle = ({ formMode = "New" }) => {
               borderColor: errors.keywords_string ? "red" : "#ccc",
             }}
             readOnly={formMode === "View"} />
-            <p style={styles.hint}>Zadajte presne tri slová oddelené čiarkou (napr. slovo1, slovo2, slovo3).</p>
+            {formMode !== "View" && (<p style={styles.hint}>Zadajte presne tri slová oddelené čiarkou (napr. slovo1, slovo2, slovo3).</p>)}
             {errors.keywords_string && <p style={styles.errorMessage}>{errors.keywords_string}</p>}
           </div>
           
@@ -385,9 +385,9 @@ const UploadArticle = ({ formMode = "New" }) => {
           <label>Dokumenty</label>
           <div>
           <FileDropArea fieldMode={formMode} articleId={article_id}/>
-          <p style={styles.hint}>
+          {formMode !== "View" && (<p style={styles.hint}>
             Nahrajte presne 2 súbory: jeden vo formáte <strong>PDF</strong> a druhý vo formáte <strong>DOCX</strong>.
-          </p>
+          </p>)}
           {errors.files && <p style={styles.errorMessage}>{errors.files}</p>}
           </div>
           
