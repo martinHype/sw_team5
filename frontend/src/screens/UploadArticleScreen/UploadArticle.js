@@ -8,7 +8,6 @@ import HeaderComponent from "../../components/ScreenParts/HeaderComponent/Header
 import FooterComponent from "../../components/ScreenParts/FooterComponent/FooterComponent.js";
 
 const UploadArticle = ({ formMode = "New" }) => {
-  const [userVerified,setUserVerified] = useState(false);
   const { article_id } = useParams();
   const location = useLocation();
   const { conferenceId } = location.state || {};
@@ -20,7 +19,7 @@ const UploadArticle = ({ formMode = "New" }) => {
     title: "",
     Description: "",
     category_idcategory:0,
-    keywords:"",
+    keywords_string:"",
   });
   
   useEffect(() => {
@@ -53,6 +52,7 @@ const UploadArticle = ({ formMode = "New" }) => {
           console.log(response.data);
           setArticleData(response.data); // Assuming the response is an array with one object
           ArticleData.category_idcategory = response.data.category_idcategory;
+          ArticleData.keywords_string = response.data.keywords_string;
           //setEvaluation(response.data);
           console.log(ArticleData);
         } catch (error) {
@@ -87,12 +87,12 @@ const UploadArticle = ({ formMode = "New" }) => {
       delete updatedErrors.Description;
     } else if (name === "category_idcategory" && value) {
       delete updatedErrors.category_idcategory;
-    } else if (name === "keywords") {
+    } else if (name === "keywords_string") {
       // Rozdeľ hodnotu podľa čiarky a trimuj medzery
       const keywordsArray = value.split(",").map(word => word.trim());
       if (keywordsArray.length === 3 && keywordsArray.every(word => word)) {
         // Ak sú presne tri slová a žiadne z nich nie je prázdne
-        delete updatedErrors.keywords;
+        delete updatedErrors.keywords_string;
       }
     }
     setErrors(updatedErrors);
@@ -199,7 +199,7 @@ const UploadArticle = ({ formMode = "New" }) => {
           title: ArticleData.title,
           description: ArticleData.Description,
           category:parseInt(ArticleData.category_idcategory,10),
-          keywords:ArticleData.keywords,
+          key_words:ArticleData.keywords_string,
       },
       {
         headers: {
@@ -227,7 +227,7 @@ const UploadArticle = ({ formMode = "New" }) => {
           category:parseInt(ArticleData.category_idcategory,10),
           event:conferenceId,
           status:actualStatus,
-          keywords:ArticleData.keywords,
+          key_words:ArticleData.keywords_string,
       },
       {
         headers: {
@@ -271,16 +271,16 @@ const UploadArticle = ({ formMode = "New" }) => {
     }
   
     // Validation for keywords
-    if (!ArticleData.keywords?.trim()) {
-      newErrors.keywords = "Pole musí byť vyplnené.";
+    if (!ArticleData.keywords_string?.trim()) {
+      newErrors.keywords_string = "Pole musí byť vyplnené.";
     } else {
-      const keywordsArray = ArticleData.keywords.split(",").map(word => word.trim());
+      const keywordsArray = ArticleData.keywords_string.split(",").map(word => word.trim());
       if (keywordsArray.length !== 3) {
-        newErrors.keywords = "Musíte zadať presne tri slová oddelené čiarkou.";
+        newErrors.keywords_string = "Musíte zadať presne tri slová oddelené čiarkou.";
       }
       // Optional: Check for empty words
       if (keywordsArray.some(word => !word)) {
-        newErrors.keywords = "Každé slovo musí obsahovať znaky a byť oddelené čiarkou.";
+        newErrors.keywords_string = "Každé slovo musí obsahovať znaky a byť oddelené čiarkou.";
       }
     }
 
@@ -288,14 +288,6 @@ const UploadArticle = ({ formMode = "New" }) => {
     const files = JSON.parse(localStorage.getItem("files") || "[]");
     if (files.length !== 2) {
       newErrors.files = "Musíte nahrať presne 2 súbory.";
-    } else {
-      const fileTypes = files.map(file => file.type);
-      if (!fileTypes.includes("application/pdf")) {
-        newErrors.files = "Jeden zo súborov musí byť typu PDF.";
-      }
-      if (!fileTypes.includes("application/vnd.openxmlformats-officedocument.wordprocessingml.document")) {
-        newErrors.files = "Jeden zo súborov musí byť typu DOCX.";
-      }
     }
 
   
@@ -375,18 +367,18 @@ const UploadArticle = ({ formMode = "New" }) => {
           {/* Klucove slova */}
           <div>
             <input 
-            name="keywords"
+            name="keywords_string"
             type="text" 
             placeholder="Zadajte tri slová oddelené čiarkou (napr. slovo1, slovo2, slovo3)"
-            value={ArticleData.keywords || ""}
+            value={ArticleData.keywords_string || ""}
             onChange={handleChange}
             style={{
               ...styles.input,
-              borderColor: errors.keywords ? "red" : "#ccc",
+              borderColor: errors.keywords_string ? "red" : "#ccc",
             }}
             readOnly={formMode === "View"} />
             <p style={styles.hint}>Zadajte presne tri slová oddelené čiarkou (napr. slovo1, slovo2, slovo3).</p>
-            {errors.keywords && <p style={styles.errorMessage}>{errors.keywords}</p>}
+            {errors.keywords_string && <p style={styles.errorMessage}>{errors.keywords_string}</p>}
           </div>
           
 

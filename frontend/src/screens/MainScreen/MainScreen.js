@@ -193,7 +193,7 @@ const MainScreen = () => {
                                                         <h3 style={styles.articleTitle}>{article.title}</h3>
                                                         <p style={styles.articleText}>{article.Description}</p>
                                                         <p style={styles.articleText}><strong>{article.category_name}</strong></p>
-                                                        <p style={styles.articleText}>Key words</p>
+                                                        <p style={styles.articleText}>{article.keywords.map(keyword => keyword.word).join(', ')}</p>
                                                         <span style={styles.articleDate}>{format(new Date(article.created_at), 'dd.MM.yyyy')}</span>
                                                         {/* Status Label */}
                                                         <div

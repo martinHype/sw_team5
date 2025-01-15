@@ -37,6 +37,10 @@ const FileDropArea = ({fieldMode = "New", articleId = 0}) => {
             url: file.url,
             isFetched: true, // Mark these files as fetched to differentiate them
           }));
+          
+          //const files = JSON.parse(localStorage.getItem("files") || "[]");
+    
+          localStorage.setItem("files", JSON.stringify(fetchedFiles));
 
           setFiles(fetchedFiles);
         } catch (error) {
@@ -105,16 +109,16 @@ const FileDropArea = ({fieldMode = "New", articleId = 0}) => {
 
 
 
-  const handleDrop = (event) => {
+  /*const handleDrop = (event) => {
     event.preventDefault();
     if (fieldMode !== "View" && files.length + event.dataTransfer.files.length <= 2) {
         setFiles((prevFiles) => [...prevFiles, ...Array.from(event.dataTransfer.files)]);
       }
-  };
+  };*/
 
-  const handleDragOver = (event) => {
+  /*const handleDragOver = (event) => {
     event.preventDefault();
-  };
+  };*/
 
   const handleRemoveFile = async (indexToRemove,documentid) => {
     if (fieldMode !== "View") {
@@ -132,8 +136,8 @@ const FileDropArea = ({fieldMode = "New", articleId = 0}) => {
   return (
     <div
       onClick={handleClick}
-      onDrop={handleDrop}
-      onDragOver={handleDragOver}
+      //onDrop={handleDrop}
+      //onDragOver={handleDragOver}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
       style={styles.dropZone(files.length,isHovered,fieldMode === "View")}

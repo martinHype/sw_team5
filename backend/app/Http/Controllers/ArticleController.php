@@ -47,26 +47,35 @@ class ArticleController extends Controller
         ], 201);
     }
     
-    public function getArticle($id){
+    public function getArticle($id)
+    {
         try {
-            // Fetch articles associated with the given conference ID
+            // Fetch the article and its relationships
             $article = Article::where('idarticle', $id)
-                ->with('user:iduser,firstname,lastname') // Include user details
+                ->with([
+                    'user:iduser,firstname,lastname', // Include user details
+                ])
                 ->leftJoin('category', 'article.category_idcategory', '=', 'category.idcategory')
                 ->leftJoin('acticle_status', 'article.acticle_status_idacticle_status', '=', 'acticle_status.idacticle_status')
                 ->first();
+
             if (!$article) {
                 return response()->json(['message' => 'Article not found.'], 404);
             }
+            
+            $article->keywords_string = $article->keywords->pluck('word')->join(', '); // Replace keywords array with the string
+            // Fetch associated documents
             $documentController = new DocumentController();
             $documentResponse = $documentController->getDocumentsByArticle($id);
-            // Add documents to the article response
+
             if ($documentResponse->getStatusCode() === 200) {
                 $article->documents = $documentResponse->getData(); // Attach documents to article
             } else {
                 $article->documents = []; // No documents found
             }
-            return response()->json($article, 200);
+
+            // Ensure the modified article is returned
+            return response()->json($article->toArray(), 200); // Convert to array to reflect modifications
         } catch (\Exception $e) {
             return response()->json([
                 'message' => 'Article not found',
