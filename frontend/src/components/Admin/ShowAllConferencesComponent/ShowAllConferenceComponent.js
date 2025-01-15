@@ -11,7 +11,8 @@ const ShowAllConferenceComponent = () => {
     const [selectedDate, setSelectedDate] = useState(''); // For date filter
     const [searchQuery, setSearchQuery] = useState(''); // For name filter
 
-    const [filters, setFilters] = useState({ date: '', name: '' }); // Store applied filters
+    const [filters, setFilters] = useState({ date: '', name: '', isHistorical: false }); // Store applied filters
+
 
     const navigate = useNavigate();
 
@@ -24,8 +25,18 @@ const ShowAllConferenceComponent = () => {
         try {
             let response;
 
-            if (filters.date || filters.name) {
-                // Ak sú zadané filtre, použijeme ich
+            if (filters.isHistorical) {
+                // Fetch historical conferences
+                response = await axios.get('http://localhost:8080/api/get-admin-events', {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                    params: {
+                        historical: true, // Parameter pre historické konferencie
+                    },
+                });
+            } else if (filters.date || filters.name) {
+                // Ak sú zadané iné filtre
                 response = await axios.get('http://localhost:8080/api/get-admin-events', {
                     headers: {
                         Authorization: `Bearer ${token}`,
@@ -36,7 +47,7 @@ const ShowAllConferenceComponent = () => {
                     },
                 });
             } else {
-                // Ak nie sú ani filtre, ani ID, načítame všetky konferencie
+                // Ak nie sú žiadne filtre, načítaj všetko
                 response = await axios.get('http://localhost:8080/api/get-admin-events', {
                     headers: {
                         Authorization: `Bearer ${token}`,
@@ -44,7 +55,6 @@ const ShowAllConferenceComponent = () => {
                 });
             }
 
-            // Nastavenie konferencií
             setConferences(response.data.data || []);
         } catch (error) {
             console.error('Error fetching conferences:', error.response?.data || error.message);
@@ -52,7 +62,8 @@ const ShowAllConferenceComponent = () => {
         } finally {
             setIsLoading(false);
         }
-    }, [filters.date, filters.name]);
+    }, [filters]);
+
 
 
     // Fetch conferences on component mount and when filters are applied
@@ -64,6 +75,10 @@ const ShowAllConferenceComponent = () => {
     // Handle date change
     const handleDateChange = (e) => {
         setSelectedDate(e.target.value); // Update local state only
+    };
+
+    const handleShowHistorical = () => {
+        setFilters({ date: '', name: '', isHistorical: true }); // Nastaví filter na historické konferencie
     };
 
     // Handle name change
@@ -120,13 +135,18 @@ const ShowAllConferenceComponent = () => {
 
                 {/* Apply Filters Button */}
                 <button onClick={handleApplyFilters} style={styles.button}>
-                    Použiť filtre
+                    Filtrovať
                 </button>
 
                 {/* Reload Button */}
                 <button onClick={handleReload} style={styles.button}>
-                    Načítať znovu
+                    Refresh
                 </button>
+
+                <button onClick={handleShowHistorical} style={styles.button}>
+                    Historické
+                </button>
+
             </div>
 
             {/* Conference List */}

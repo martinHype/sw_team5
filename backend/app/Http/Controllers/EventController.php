@@ -150,32 +150,33 @@ class EventController extends Controller
     public function getAdminEvents(Request $request)
     {
         try {
-            // Získanie základného dotazu
             $query = Event::query();
+            if ($request->filled('historical')) {
+                // Filtrovanie pre historické udalosti
+                $query->where('event_upload_EndDate', '<', now());
+            }else {
+                if ($request->filled('date') || $request->filled('name')) {
+                    if ($request->filled('date')) {
+                        $query->whereDate('event_date', $request->date);
+                    }
 
-            if ($request->filled('date') || $request->filled('name')){
-                if ($request->filled('date')) {
-                    $query->whereDate('event_date', $request->date);
+                    if ($request->filled('name')) {
+                        $query->where('event_name', 'like', '%' . $request->name . '%');
+                    }
+                } else {
+                    $threeDaysAgo = Carbon::now()->subDays(3)->startOfDay();
+                    $query
+                        ->where('event_date', '>=', $threeDaysAgo)
+                        ->orderBy('created_on', 'desc');
                 }
-
-                if ($request->filled('name')) {
-                    $query->where('event_name', 'like', '%' . $request->name . '%');
-                }
-            } else{
-                $threeDaysAgo = Carbon::now()->subDays(3)->startOfDay();
-                $query
-                    ->where('event_date', '>=', $threeDaysAgo)
-                    ->orderBy('created_on', 'desc');
             }
-
-            // Získanie výsledkov
             $events = $query->get();
 
-            // Vrátenie odpovede
             return response()->json([
                 'success' => true,
                 'data' => $events,
             ], 200);
+
         } catch (\Throwable $e) {
             // Spracovanie výnimiek
             return response()->json([
